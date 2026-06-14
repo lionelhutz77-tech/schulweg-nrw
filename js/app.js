@@ -13,6 +13,7 @@
   function speichereProfile(p) { localStorage.setItem("schulweg_profile", JSON.stringify(p)); }
 
   var state = { profil: null, fachKey: null, thema: null };
+  var verwaltenModus = false;
 
   // ---------- Antwort-Pruefung (flexibel: 0,5 = 0.5 = 1/2) ----------
   function alsZahl(text) {
@@ -52,32 +53,84 @@
         '<div class="card profile-card" data-profil="' + i + '">' +
         '<div class="avatar" style="background:var(--akzent-bg)">' + p.avatar + "</div>" +
         "<h3>" + p.name + "</h3>" +
-        '<p class="muted">Klasse ' + p.klasse + "</p></div>"
+        '<p class="muted">Klasse ' + p.klasse + "</p>" +
+        (verwaltenModus ? '<p class="muted" style="margin-top:6px;color:var(--akzent)">✎ bearbeiten</p>' : "") +
+        "</div>"
       );
     }).join("");
     var addTile = '<button class="card add-tile" id="add"><span style="font-size:30px">+</span><span>Kind hinzufügen</span></button>';
 
     app.innerHTML =
-      topbar("Schulweg NRW", "Wer lernt heute?", false) +
+      '<div class="topbar"><div><h1>Schulweg NRW</h1><p class="sub">Wer lernt heute?</p></div><div class="spacer"></div>' +
+      (profile.length ? '<button class="back" id="verw" aria-label="Profile verwalten">' + (verwaltenModus ? "✓" : "✎") + "</button>" : "") +
+      "</div>" +
       '<div class="grid">' + karten + addTile + "</div>" +
-      '<p class="center muted" style="margin-top:28px"><button class="btn btn-soft" id="eltern" style="max-width:280px;margin:0 auto">Eltern-Bereich</button></p>';
+      '<p class="center" style="margin-top:28px"><button class="btn btn-soft" id="eltern" style="max-width:280px;margin:0 auto">Eltern-Bereich</button></p>';
 
     app.querySelectorAll("[data-profil]").forEach(function (n) {
-      n.onclick = function () { state.profil = ladeProfile()[+n.dataset.profil]; zeigeFaecher(); };
+      n.onclick = function () {
+        var i = +n.dataset.profil;
+        if (verwaltenModus) { kindFormular(i); }
+        else { state.profil = ladeProfile()[i]; zeigeFaecher(); }
+      };
     });
-    document.getElementById("add").onclick = neuesProfil;
+    document.getElementById("add").onclick = function () { kindFormular(null); };
     document.getElementById("eltern").onclick = zeigeEltern;
+    var vb = document.getElementById("verw");
+    if (vb) vb.onclick = function () { verwaltenModus = !verwaltenModus; zeigeProfile(); };
   }
 
-  function neuesProfil() {
-    var name = prompt("Name des Kindes:");
-    if (!name) return;
-    var klasse = prompt("Klasse (5, 6 oder 7):", "5");
-    if (!klasse) return;
+  // In-App-Maske statt Eingabe-Fenster
+  function kindFormular(index) {
     var profile = ladeProfile();
-    profile.push({ name: name.trim(), klasse: klasse.trim(), avatar: AVATARE[profile.length % AVATARE.length], fortschritt: {} });
-    speichereProfile(profile);
-    zeigeProfile();
+    var edit = (index != null) ? profile[index] : null;
+    var daten = { name: edit ? edit.name : "", klasse: edit ? edit.klasse : "", avatar: edit ? edit.avatar : AVATARE[profile.length % AVATARE.length] };
+
+    function render() {
+      app.innerHTML =
+        topbar(edit ? "Kind bearbeiten" : "Kind hinzufügen", null, true) +
+        '<div class="intro-box">' +
+        '<label class="form-label">Name</label>' +
+        '<input id="f-name" class="text-in" placeholder="Vorname" value="' + daten.name.replace(/"/g, "&quot;") + '" />' +
+        '<label class="form-label">Klasse</label>' +
+        '<div class="chips" id="f-klasse">' + ["5", "6", "7"].map(function (k) {
+          return '<button class="chip' + (k === daten.klasse ? " on" : "") + '" data-k="' + k + '">' + k + "</button>";
+        }).join("") + "</div>" +
+        '<label class="form-label">Figur</label>' +
+        '<div class="chips" id="f-avatar">' + AVATARE.map(function (a) {
+          return '<button class="chip av' + (a === daten.avatar ? " on" : "") + '" data-a="' + a + '">' + a + "</button>";
+        }).join("") + "</div>" +
+        '<button class="btn btn-primary" id="f-save">Speichern</button>' +
+        (edit ? '<button class="btn btn-soft" id="f-del">Dieses Kind löschen</button>' : "") +
+        "</div>";
+
+      app.querySelector(".back").onclick = zeigeProfile;
+      var nameIn = document.getElementById("f-name");
+      nameIn.oninput = function () { daten.name = nameIn.value; saveBtnState(); };
+      app.querySelectorAll("#f-klasse .chip").forEach(function (b) {
+        b.onclick = function () { daten.klasse = b.dataset.k; render(); };
+      });
+      app.querySelectorAll("#f-avatar .chip").forEach(function (b) {
+        b.onclick = function () { daten.avatar = b.dataset.a; render(); };
+      });
+      document.getElementById("f-save").onclick = speichern;
+      if (edit) document.getElementById("f-del").onclick = loeschen;
+      saveBtnState();
+    }
+    function saveBtnState() {
+      document.getElementById("f-save").disabled = !(daten.name.trim() && daten.klasse);
+    }
+    function speichern() {
+      var p = ladeProfile();
+      if (edit) { edit.name = daten.name.trim(); edit.klasse = daten.klasse; edit.avatar = daten.avatar; p[index] = edit; }
+      else { p.push({ name: daten.name.trim(), klasse: daten.klasse, avatar: daten.avatar, fortschritt: {} }); }
+      speichereProfile(p); verwaltenModus = false; zeigeProfile();
+    }
+    function loeschen() {
+      if (!confirm("Dieses Kind und seinen Fortschritt wirklich löschen?")) return;
+      var p = ladeProfile(); p.splice(index, 1); speichereProfile(p); verwaltenModus = false; zeigeProfile();
+    }
+    render();
   }
 
   // ---------- Bildschirm 2: Faecher ----------
