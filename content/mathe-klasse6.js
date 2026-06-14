@@ -17,10 +17,12 @@ window.SCHULWEG.faecher["mathe-6"] = {
       voraussetzung: "Was ein Winkel ist (Scheitelpunkt, Schenkel)",
       intro:
         "Winkel teilt man nach ihrer Größe ein: spitz (kleiner 90°), recht (genau 90°), stumpf (zwischen 90° und 180°), gestreckt (genau 180°), überstumpf (zwischen 180° und 360°) und Vollwinkel (genau 360°).",
+      explorer: { modus: "winkelarten" },
       aufgaben: [
         {
           typ: "mc",
           frage: "Ein Winkel misst 50°. Welche Winkelart ist das?",
+          bild: { art: "winkel", grad: 50 },
           antworten: ["spitz", "recht", "stumpf"],
           richtig: "spitz",
           erklaerung: "Spitze Winkel sind größer als 0° und kleiner als 90°.",
@@ -76,6 +78,28 @@ window.SCHULWEG.faecher["mathe-6"] = {
             "Winkelbogen": "Der Winkelbogen ist der kleine Bogen, der den Winkel markiert. Der Treffpunkt der Schenkel heißt Scheitelpunkt.",
             "Nullpunkt": "Der Nullpunkt sitzt auf dem Geodreieck. Am Winkel selbst heißt der Treffpunkt Scheitelpunkt."
           }
+        },
+        {
+          typ: "zahl",
+          frage: "Schätze: Wie groß ist dieser Winkel ungefähr? (in Grad)",
+          bild: { art: "winkel", grad: 70, opts: { zeigeGrad: false } },
+          richtig: "70",
+          toleranz: 12,
+          erklaerung: "Der Winkel ist spitz (kleiner als 90°), ungefähr 70°.",
+          schritte: ["Vergleiche mit einem rechten Winkel (90°).", "Der Winkel ist etwas kleiner → ungefähr 70°."]
+        },
+        {
+          typ: "mc",
+          frage: "Welche Winkelart zeigt das Bild?",
+          bild: { art: "winkel", grad: 115, opts: { zeigeGrad: false } },
+          antworten: ["spitz", "stumpf", "überstumpf"],
+          richtig: "stumpf",
+          erklaerung: "Der Winkel ist größer als 90°, aber kleiner als 180° → stumpf.",
+          schritte: ["Vergleiche mit dem rechten Winkel (90°): der Winkel ist größer.", "Aber kleiner als eine gerade Linie (180°).", "Also stumpf."],
+          fehler: {
+            "spitz": "Spitz wäre kleiner als 90°. Hier ist der Winkel deutlich größer.",
+            "überstumpf": "Überstumpf wäre größer als 180° (mehr als eine gerade Linie). Hier nicht."
+          }
         }
       ]
     },
@@ -100,6 +124,7 @@ window.SCHULWEG.faecher["mathe-6"] = {
         {
           typ: "zahl",
           frage: "Es ist genau 3 Uhr. Welchen Winkel bilden Stunden- und Minutenzeiger? (in Grad)",
+          bild: { art: "uhr", stunde: 3 },
           richtig: "90",
           erklaerung: "Von der 12 bis zur 3 sind es 3 Abschnitte: 3 × 30° = 90°.",
           schritte: ["Von 12 bis 3 sind es 3 Abschnitte.", "Jeder Abschnitt ist 30°.", "3 × 30° = 90°."],
@@ -111,6 +136,7 @@ window.SCHULWEG.faecher["mathe-6"] = {
         {
           typ: "mc",
           frage: "Es ist 3 Uhr. Welche Winkelart bilden die Zeiger?",
+          bild: { art: "uhr", stunde: 3 },
           antworten: ["spitz", "recht", "stumpf"],
           richtig: "recht",
           erklaerung: "Die Zeiger bilden 90° – das ist ein rechter Winkel.",
@@ -123,6 +149,7 @@ window.SCHULWEG.faecher["mathe-6"] = {
         {
           typ: "zahl",
           frage: "Es ist genau 6 Uhr. Welchen Winkel bilden die Zeiger? (in Grad)",
+          bild: { art: "uhr", stunde: 6 },
           richtig: "180",
           erklaerung: "Von der 12 bis zur 6 sind es 6 Abschnitte: 6 × 30° = 180°.",
           schritte: ["Von 12 bis 6 sind es 6 Abschnitte.", "6 × 30° = 180°."],
@@ -139,10 +166,12 @@ window.SCHULWEG.faecher["mathe-6"] = {
       voraussetzung: "Winkelarten (spitz/stumpf) als Kontrolle",
       intro:
         "Zum Messen legst du die Zeichenkante des Geodreiecks an einen Schenkel und den Nullpunkt genau auf den Scheitelpunkt. Es gibt zwei Skalen (innere und äußere). Du liest die Skala ab, die am angelegten Schenkel bei 0° beginnt.",
+      explorer: { modus: "geodreieck" },
       aufgaben: [
         {
           typ: "mc",
           frage: "Du misst einen spitzen Winkel. Das Geodreieck zeigt an einer Skala 40°, an der anderen 140°. Welcher Wert stimmt?",
+          bild: { art: "geodreieck", grad: 40 },
           antworten: ["40°", "140°"],
           richtig: "40°",
           erklaerung: "Der Winkel ist spitz, also kleiner als 90°. Richtig sind 40°.",

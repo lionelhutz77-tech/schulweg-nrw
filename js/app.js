@@ -135,13 +135,20 @@
   // ---------- Bildschirm 4: Intro ("Wozu brauche ich das") ----------
   function zeigeIntro() {
     var t = state.thema;
+    var hatExplorer = t.explorer && window.WINKEL;
+    var explorerHTML = hatExplorer
+      ? '<div id="explorer" style="margin:16px 0 6px"></div>' +
+        '<p class="muted center" style="font-size:14px">Probier es oben aus – dann geht’s zu den Aufgaben.</p>'
+      : "";
     app.innerHTML =
-      topbar(t.titel, "Kurz erklaert", true) +
+      topbar(t.titel, hatExplorer ? "Grundlagen ausprobieren" : "Kurz erklaert", true) +
       '<div class="intro-box">' +
       '<div class="prereq">✓ Dafür brauchst du: ' + t.voraussetzung + "</div>" +
-      "<p style=\"font-size:18px;line-height:1.6\">" + t.intro + "</p>" +
-      '<button class="btn btn-primary" id="los">Los geht’s →</button></div>';
+      "<p style=\"font-size:17px;line-height:1.6\">" + t.intro + "</p>" +
+      explorerHTML +
+      '<button class="btn btn-primary" id="los">' + (hatExplorer ? "Jetzt üben →" : "Los geht’s →") + "</button></div>";
     app.querySelector(".back").onclick = zeigeThemen;
+    if (hatExplorer) window.WINKEL.initExplorer(document.getElementById("explorer"), t.explorer);
     document.getElementById("los").onclick = function () { starteQuiz(t); };
   }
 
@@ -170,10 +177,11 @@
           '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" placeholder="Antwort" />' +
           '<p class="hint-input">Du darfst 0,5 oder 1/2 schreiben – beides zählt.</p>';
       }
+      var bild = (a.bild && window.WINKEL) ? window.WINKEL.bildHTML(a.bild) : "";
       app.innerHTML =
         topbar(thema.titel, null, true) +
         '<p class="q-meta">Aufgabe ' + idx + " · noch " + (warteschlange.length + 1) + " offen</p>" +
-        '<div class="q-card"><p class="q-frage">' + a.frage + "</p>" + koerper +
+        '<div class="q-card"><p class="q-frage">' + a.frage + "</p>" + bild + koerper +
         '<button class="btn btn-primary" id="pruefen" disabled>Überprüfen</button>' +
         '<div class="feedback" id="fb"></div></div>';
 
@@ -196,7 +204,13 @@
       }
 
       pruefBtn.onclick = function () {
-        var ok = istRichtig(gewaehlt, a.richtig);
+        var ok;
+        if (a.toleranz != null) {
+          var g = alsZahl(gewaehlt);
+          ok = g !== null && Math.abs(g - alsZahl(a.richtig)) <= a.toleranz;
+        } else {
+          ok = istRichtig(gewaehlt, a.richtig);
+        }
         beantwortet++;
         if (ok && falschGehabt.indexOf(a) === -1) richtigErst++;
         zeigeFeedback(a, gewaehlt, ok);
