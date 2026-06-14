@@ -1,0 +1,15 @@
+{
+  "name": "Schulweg NRW",
+  "short_name": "Schulweg",
+  "description": "Lern-App für die Gesamtschule NRW, Klasse 5-7: Mathe, Deutsch, Englisch - ohne Zeitdruck, mit echter Fehleranalyse.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f6f2",
+  "theme_color": "#f7f6f2",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
