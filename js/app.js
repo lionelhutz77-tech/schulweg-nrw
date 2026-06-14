@@ -33,6 +33,39 @@
     return String(eingabe).trim().toLowerCase() === String(loesung).trim().toLowerCase();
   }
 
+  function kiAktiv() {
+    return !!(window.SCHULWEG_CONFIG && window.SCHULWEG_CONFIG.kiEndpoint);
+  }
+
+  // Fragt den Cloudflare-Worker (der wiederum Groq fragt) nach einer
+  // individuellen Erklaerung fuer genau diese falsche Antwort.
+  function frageKI(aufgabe, antwort, themaTitel, btn) {
+    var out = document.getElementById("ki-out");
+    btn.disabled = true; btn.textContent = "🤖 denkt nach …";
+    var fach = (window.SCHULWEG.faecher[state.fachKey] || {}).fach || "";
+    fetch(window.SCHULWEG_CONFIG.kiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fach: fach, klasse: state.profil.klasse, thema: themaTitel,
+        frage: aufgabe.frage, antwort: String(antwort), richtig: String(aufgabe.richtig)
+      })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      var schritte = (d.schritte || []).map(function (s, i) {
+        return '<div class="step"><span class="n">' + (i + 1) + "</span>" + s + "</div>";
+      }).join("");
+      out.innerHTML =
+        '<div class="analyse" style="margin-top:12px;background:var(--richtig-bg)">' +
+        '<div class="head" style="color:#085041">🤖 Noch eine Erklärung für dich</div>' +
+        '<p style="color:#085041">' + (d.analyse || "Geh es einfach Schritt für Schritt durch.") + "</p>" +
+        '<div class="steps">' + schritte + "</div></div>";
+      btn.style.display = "none";
+    }).catch(function () {
+      out.innerHTML = '<p class="muted" style="margin-top:10px">Die KI ist gerade nicht erreichbar – aber die Erklärung oben hilft dir trotzdem weiter.</p>';
+      btn.disabled = false; btn.textContent = "🤖 Nochmal versuchen";
+    });
+  }
+
   // ---------- kleine DOM-Helfer ----------
   function el(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
   function topbar(titel, sub, zurueck) {
@@ -297,12 +330,18 @@
           }).join("");
           if (falschGehabt.indexOf(a) === -1) falschGehabt.push(a);
           warteschlange.push(a);   // Lernbox: nochmal ueben
+          var kiBtn = kiAktiv()
+            ? '<button class="btn btn-soft" id="ki-btn" style="margin-top:12px">🤖 Erklär’s mir nochmal anders</button><div id="ki-out"></div>'
+            : "";
           fb.innerHTML =
             '<div class="row-result"><span class="pill no">🔄 Versuch’s gleich nochmal</span>' +
             '<span class="pill ok">Richtig: ' + a.richtig + "</span></div>" +
             '<div class="analyse"><div class="head">✨ Das ist hier passiert</div>' +
             "<p>" + diagnose + "</p><div class=\"steps\">" + schritte + "</div></div>" +
+            kiBtn +
             '<button class="btn btn-primary" id="weiter" style="margin-top:16px">Verstanden, weiter →</button>';
+          var kib = document.getElementById("ki-btn");
+          if (kib) kib.onclick = function () { frageKI(a, gewaehlt, thema.titel, kib); };
         }
         document.getElementById("weiter").onclick = naechste;
       }
