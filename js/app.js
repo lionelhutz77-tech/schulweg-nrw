@@ -93,9 +93,10 @@
         '<label class="form-label">Name</label>' +
         '<input id="f-name" class="text-in" placeholder="Vorname" value="' + daten.name.replace(/"/g, "&quot;") + '" />' +
         '<label class="form-label">Klasse</label>' +
-        '<div class="chips" id="f-klasse">' + ["5", "6", "7"].map(function (k) {
+        '<div class="chips" id="f-klasse">' + ["4", "5", "6", "7", "8", "9", "10"].map(function (k) {
           return '<button class="chip' + (k === daten.klasse ? " on" : "") + '" data-k="' + k + '">' + k + "</button>";
         }).join("") + "</div>" +
+        (edit ? '<button class="btn btn-soft" id="f-promote" style="margin-top:10px">⬆ Eine Klasse weiter (neues Schuljahr)</button>' : "") +
         '<label class="form-label">Figur</label>' +
         '<div class="chips" id="f-avatar">' + AVATARE.map(function (a) {
           return '<button class="chip av' + (a === daten.avatar ? " on" : "") + '" data-a="' + a + '">' + a + "</button>";
@@ -115,6 +116,11 @@
       });
       document.getElementById("f-save").onclick = speichern;
       if (edit) document.getElementById("f-del").onclick = loeschen;
+      var pb = document.getElementById("f-promote");
+      if (pb) pb.onclick = function () {
+        var n = parseInt(daten.klasse, 10) || 0;
+        if (n) { daten.klasse = String(Math.min(n + 1, 10)); render(); }
+      };
       saveBtnState();
     }
     function saveBtnState() {
