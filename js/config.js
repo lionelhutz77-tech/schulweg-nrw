@@ -5,5 +5,5 @@
  * Die Adresse ist NICHT geheim (der geheime Groq-Schluessel liegt im Worker).
  */
 window.SCHULWEG_CONFIG = {
-  kiEndpoint: ""
+  kiEndpoint: "https://schulweg-ki.lernapp-nrw.workers.dev"
 };
