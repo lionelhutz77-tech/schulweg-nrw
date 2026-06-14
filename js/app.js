@@ -17,7 +17,7 @@
   // ---------- Antwort-Pruefung (flexibel: 0,5 = 0.5 = 1/2) ----------
   function alsZahl(text) {
     if (text == null) return null;
-    var s = String(text).trim().replace(",", ".").replace(/\s/g, "");
+    var s = String(text).trim().replace(",", ".").replace(/[°\s]/g, "");
     if (/^-?\d+\/\d+$/.test(s)) {
       var t = s.split("/");
       var n = parseFloat(t[1]);
@@ -82,23 +82,27 @@
 
   // ---------- Bildschirm 2: Faecher ----------
   function zeigeFaecher() {
-    var faecher = [
-      { key: "mathe-5", name: "Mathe", thema: "Punkt vor Strich & Brüche", farbe: "mathe", icon: "➕", aktiv: true },
-      { key: "deutsch-5", name: "Deutsch", thema: "Bald verfügbar", farbe: "deutsch", icon: "📖", aktiv: false },
-      { key: "englisch-5", name: "Englisch", thema: "Bald verfügbar", farbe: "englisch", icon: "🇬🇧", aktiv: false }
+    var kl = state.profil.klasse;
+    var defs = [
+      { fach: "mathe", name: "Mathe", farbe: "mathe", icon: "➕" },
+      { fach: "deutsch", name: "Deutsch", farbe: "deutsch", icon: "📖" },
+      { fach: "englisch", name: "Englisch", farbe: "englisch", icon: "🇬🇧" }
     ];
-    var karten = faecher.map(function (f) {
-      var data = (window.SCHULWEG.faecher[f.key]) ? f.key : "";
+    var karten = defs.map(function (d) {
+      var key = d.fach + "-" + kl;
+      var data = window.SCHULWEG.faecher[key];
+      var aktiv = !!data;
+      var thema = aktiv ? (data.themen.length + " Themen") : "Bald verfügbar";
       return (
-        '<div class="card" data-fach="' + data + '" style="' + (f.aktiv ? "" : "opacity:.5") + '">' +
-        '<div class="icon" style="background:var(--' + f.farbe + '-bg)">' + f.icon + "</div>" +
-        "<h3>" + f.name + "</h3><p>" + f.thema + "</p>" +
-        '<div class="bar"><span style="width:' + (f.aktiv ? "20%" : "0") + ';background:var(--' + f.farbe + ')"></span></div></div>'
+        '<div class="card" data-fach="' + (aktiv ? key : "") + '" style="' + (aktiv ? "" : "opacity:.5") + '">' +
+        '<div class="icon" style="background:var(--' + d.farbe + '-bg)">' + d.icon + "</div>" +
+        "<h3>" + d.name + "</h3><p>" + thema + "</p>" +
+        '<div class="bar"><span style="width:' + (aktiv ? "8%" : "0") + ';background:var(--' + d.farbe + ')"></span></div></div>'
       );
     }).join("");
 
     app.innerHTML =
-      topbar("Hallo " + state.profil.name, "Klasse " + state.profil.klasse + " · Was lernen wir?", true) +
+      topbar("Hallo " + state.profil.name, "Klasse " + kl + " · Was lernen wir?", true) +
       '<div class="grid">' + karten + "</div>";
 
     app.querySelector(".back").onclick = zeigeProfile;
