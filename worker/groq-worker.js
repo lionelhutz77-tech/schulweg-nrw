@@ -46,6 +46,21 @@ export default {
         "Gib kurzes, ermutigendes Feedback: Was ist gut gelungen? Nenne danach 1 bis 2 konkrete, einfache " +
         "Verbesserungen (Grammatik, fehlende geforderte Woerter, vollstaendige Saetze). " +
         'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1-2 Saetze Lob und Gesamteindruck","schritte":["Verbesserung 1","Verbesserung 2"]}';
+    } else if (modus === "neue_aufgabe") {
+      // Eine neue, aehnliche Uebungsaufgabe zum selben Lernziel erzeugen
+      system =
+        "Du bist Lehrkraft und erstellst EINE neue Uebungsaufgabe fuer ein Kind in Klasse " + klasse +
+        " an einer Gesamtschule in NRW, Fach " + fach + ". Kindgerecht, gleiches Niveau und gleiches " +
+        "Lernziel wie die Beispielaufgabe, aber mit anderen Woertern/Zahlen. Erklaerungen auf Deutsch.";
+      user =
+        "Thema: " + thema + "\nBeispielaufgabe (hatte das Kind falsch): " + frage +
+        "\nRichtige Antwort war: " + richtig + "\nFalsche Antwort des Kindes: " + antwort +
+        "\n\nErstelle EINE neue, aehnliche Aufgabe zum selben Lernziel. Antworte AUSSCHLIESSLICH als JSON: " +
+        '{"typ":"mc oder text","frage":"...","antworten":["..."],"richtig":"...","erklaerung":"1 Satz mit der Regel",' +
+        '"schritte":["inhaltlicher Denkschritt 1","inhaltlicher Denkschritt 2"],"fehler":{"<konkrete falsche Antwort>":"freundliche Erklaerung des Denkfehlers"}}. ' +
+        "Regeln: Bei typ mc muss 'richtig' genau eine der 'antworten' sein (2-4 Optionen), und die Schluessel in 'fehler' muessen ECHTE falsche Optionen aus 'antworten' sein. " +
+        "Bei typ text lass 'antworten' weg; 'fehler'-Schluessel sind typische Falschschreibungen. " +
+        "'schritte' sollen erklaeren WIE man denkt (nicht 'Frage lesen'). Halte es einfach.";
     } else {
       // Falsche Antwort erklaeren (Denkfehler)
       system =
@@ -84,10 +99,12 @@ export default {
     if (!groqRes.ok) return json({ error: "Groq-Fehler", status: groqRes.status }, 502);
 
     const data = await groqRes.json();
-    let out = { analyse: "", schritte: [] };
-    try { out = JSON.parse(data.choices[0].message.content); } catch (e) { /* Fallback unten */ }
-    if (!out.analyse) out.analyse = "Geh die Aufgabe einfach Schritt fuer Schritt durch.";
-    if (!Array.isArray(out.schritte)) out.schritte = [];
+    let out = {};
+    try { out = JSON.parse(data.choices[0].message.content); } catch (e) { out = {}; }
+    if (modus !== "neue_aufgabe") {
+      if (!out.analyse) out.analyse = "Geh die Aufgabe einfach Schritt fuer Schritt durch.";
+      if (!Array.isArray(out.schritte)) out.schritte = [];
+    }
     return json(out, 200);
   }
 };

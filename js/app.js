@@ -284,6 +284,31 @@
       zeigeAufgabe(aufgabe);
     }
 
+    // KI erzeugt eine neue, aehnliche Aufgabe und haengt sie als naechste an
+    function generiereAufgabe(a, antwort, btn) {
+      if (!kiAktiv()) return;
+      btn.disabled = true; btn.textContent = "🎯 KI denkt sich eine Aufgabe aus …";
+      fetch(window.SCHULWEG_CONFIG.kiEndpoint, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modus: "neue_aufgabe",
+          fach: (window.SCHULWEG.faecher[state.fachKey] || {}).fach || "",
+          klasse: state.profil.klasse, thema: thema.titel,
+          frage: a.frage, richtig: String(a.richtig), antwort: String(antwort)
+        })
+      }).then(function (r) { return r.json(); }).then(function (neu) {
+        if (!neu || !neu.frage || !neu.richtig) throw new Error("leer");
+        if (neu.typ !== "mc") neu.typ = "text";
+        if (neu.typ === "mc" && (!Array.isArray(neu.antworten) || neu.antworten.indexOf(neu.richtig) < 0)) throw new Error("mc kaputt");
+        if (!Array.isArray(neu.schritte)) neu.schritte = [];
+        if (!neu.erklaerung) neu.erklaerung = "Gut gemacht!";
+        warteschlange.unshift(neu);
+        naechste();
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = "🎯 Nochmal: neue Aufgabe";
+      });
+    }
+
     function zeigeAufgabe(a) {
       var koerper, btnLabel = "Überprüfen";
       if (a.typ === "mc") {
@@ -366,7 +391,9 @@
           if (falschGehabt.indexOf(a) === -1) falschGehabt.push(a);
           warteschlange.push(a);   // Lernbox: nochmal ueben
           var kiBtn = kiAktiv()
-            ? '<button class="btn btn-soft" id="ki-btn" style="margin-top:12px">🤖 Erklär’s mir nochmal anders</button><div id="ki-out"></div>'
+            ? '<button class="btn btn-soft" id="ki-btn" style="margin-top:12px">🤖 Erklär’s mir nochmal anders</button>' +
+              '<button class="btn btn-soft" id="gen-btn" style="margin-top:10px">🎯 Üb das mit einer neuen Aufgabe</button>' +
+              '<div id="ki-out"></div>'
             : "";
           fb.innerHTML =
             '<div class="row-result"><span class="pill no">🔄 Versuch’s gleich nochmal</span>' +
@@ -377,6 +404,8 @@
             '<button class="btn btn-primary" id="weiter" style="margin-top:16px">Verstanden, weiter →</button>';
           var kib = document.getElementById("ki-btn");
           if (kib) kib.onclick = function () { frageKI(a, gewaehlt, thema.titel, kib); };
+          var gb = document.getElementById("gen-btn");
+          if (gb) gb.onclick = function () { generiereAufgabe(a, gewaehlt, gb); };
         }
         document.getElementById("weiter").onclick = naechste;
       }
