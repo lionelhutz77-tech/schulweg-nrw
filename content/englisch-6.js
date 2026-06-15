@@ -311,6 +311,96 @@ window.SCHULWEG.faecher["englisch-6"] = {
         { typ: "text", frage: "Wortschatz: 'die Brücke' auf Englisch?", richtig: "bridge", erklaerung: "die Brücke = bridge.", schritte: ["bridge = Brücke"] },
         { typ: "text", frage: "Wortschatz: 'der Stein' auf Englisch?", richtig: "stone", erklaerung: "der Stein = stone.", schritte: ["stone = Stein"] }
       ]
+    },
+    {
+      id: "durchsagen",
+      titel: "Bahnhof: Durchsagen verstehen",
+      voraussetzung: "Bahnhofswortschatz (platform, train, leave …)",
+      intro: "Lies die Durchsage genau und beantworte die Frage. So übst du, das Wichtigste herauszuhören – hier zum Lesen.",
+      aufgaben: [
+        {
+          typ: "text",
+          frage: "Durchsage: 'The train to London leaves from platform 3.' — Von welchem Gleis (platform) fährt der Zug?",
+          richtig: "3",
+          erklaerung: "platform = Gleis/Bahnsteig. Hier: platform 3.",
+          schritte: ["Suche das Wort 'platform' in der Durchsage.", "Dahinter steht die Zahl: 3."]
+        },
+        {
+          typ: "text",
+          frage: "Durchsage: 'The train to Manchester is delayed by 10 minutes.' — Wie viele Minuten Verspätung?",
+          richtig: "10",
+          erklaerung: "delayed = verspätet. 10 minutes = 10 Minuten.",
+          schritte: ["'delayed' = Verspätung.", "Suche die Zahl der Minuten: 10."]
+        },
+        {
+          typ: "mc",
+          frage: "Durchsage: 'The 8 o'clock train to Bristol has been cancelled.' — Was ist mit dem Zug?",
+          antworten: ["Er fällt aus.", "Er hat Verspätung.", "Er fährt pünktlich."],
+          richtig: "Er fällt aus.",
+          erklaerung: "cancelled = fällt aus / gestrichen.",
+          schritte: ["Suchwort: cancelled.", "cancelled = fällt aus."],
+          fehler: {
+            "Er hat Verspätung.": "Das wäre 'delayed'. Hier steht 'cancelled' = fällt aus.",
+            "Er fährt pünktlich.": "'cancelled' heißt, er fährt gar nicht."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "Announcement: 'The next train to York will leave from platform 5.' — Where does the train leave from?",
+          antworten: ["Platform 3", "Platform 5", "Platform 15"],
+          richtig: "Platform 5",
+          erklaerung: "In der Durchsage steht 'platform 5'.",
+          schritte: ["Suche 'platform'.", "platform 5."],
+          fehler: {
+            "Platform 3": "In der Durchsage steht platform 5, nicht 3.",
+            "Platform 15": "Es ist platform 5, nicht 15."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "Durchsage: 'The train from Edinburgh is now arriving at platform 2.' — Was passiert gerade?",
+          antworten: ["Ein Zug kommt an.", "Ein Zug fährt ab.", "Ein Zug fällt aus."],
+          richtig: "Ein Zug kommt an.",
+          erklaerung: "arriving = ankommend – der Zug kommt gerade an.",
+          schritte: ["Suchwort: arriving.", "arrive = ankommen."],
+          fehler: {
+            "Ein Zug fährt ab.": "Abfahren wäre 'leaving' / 'departing'. Hier: 'arriving' = ankommen.",
+            "Ein Zug fällt aus.": "Ausfallen wäre 'cancelled'."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "Durchsage: 'Please mind the gap between the train and the platform.' — Worauf sollst du achten?",
+          antworten: ["auf den Spalt zwischen Zug und Bahnsteig", "auf dein Ticket", "auf das Wetter"],
+          richtig: "auf den Spalt zwischen Zug und Bahnsteig",
+          erklaerung: "mind the gap = Achte auf den Spalt (zwischen Zug und Bahnsteig).",
+          schritte: ["mind = achte auf.", "gap = Spalt/Lücke."],
+          fehler: {
+            "auf dein Ticket": "Von einem Ticket ist hier nicht die Rede.",
+            "auf das Wetter": "Es geht um den Spalt am Bahnsteig, nicht ums Wetter."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Durchsage: 'The train to Leeds leaves at half past two.' — Um wie viel Uhr fährt der Zug? (z. B. 2:30)",
+          richtig: "2:30",
+          akzeptiert: ["14:30", "half past two", "2.30", "14.30"],
+          erklaerung: "half past two = halb drei = 2:30.",
+          schritte: ["half past = 30 Minuten nach der vollen Stunde.", "half past two = 2:30."]
+        },
+        {
+          typ: "mc",
+          frage: "Was bedeutet 'delayed' in einer Bahnhofsdurchsage?",
+          antworten: ["verspätet", "pünktlich", "ausgefallen"],
+          richtig: "verspätet",
+          erklaerung: "delayed = verspätet.",
+          schritte: ["delay = Verzögerung.", "delayed = verspätet."],
+          fehler: {
+            "pünktlich": "pünktlich heißt 'on time'.",
+            "ausgefallen": "ausgefallen heißt 'cancelled'."
+          }
+        }
+      ]
     }
   ]
 };
