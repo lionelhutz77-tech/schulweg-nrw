@@ -32,16 +32,32 @@ export default {
     const richtig = body.richtig || "";
     const antwort = body.antwort || "";
 
-    const system =
-      "Du bist ein geduldiger, freundlicher Lernhelfer fuer ein Kind in Klasse " + klasse +
-      " an einer Gesamtschule in Nordrhein-Westfalen. Erklaere kindgerecht, warm und ohne Beschaemung. " +
-      "Sprich das Kind mit 'du' an. Halte dich kurz und einfach.";
+    const modus = body.modus || "erklaerung";
+    let system, user;
 
-    const user =
-      "Fach: " + fach + "\nThema: " + thema + "\nAufgabe: " + frage +
-      "\nRichtige Antwort: " + richtig + "\nFalsche Antwort des Kindes: " + antwort +
-      "\n\nErklaere dem Kind freundlich, welcher Denkfehler wahrscheinlich dahintersteckt und wie es richtig denkt. " +
-      'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1 bis 3 kurze Saetze","schritte":["Schritt 1","Schritt 2","Schritt 3"]}';
+    if (modus === "freitext") {
+      // Offene Schreibaufgabe wohlwollend bewerten (kein richtig/falsch)
+      system =
+        "Du bist ein freundlicher, ermutigender Englisch-Lernhelfer fuer ein Kind in Klasse " + klasse +
+        " an einer Gesamtschule in Nordrhein-Westfalen. Bewerte den geschriebenen Text wohlwollend, " +
+        "ohne Beschaemung, in der Du-Form. Antworte auf Deutsch.";
+      user =
+        "Aufgabe: " + frage + "\nDas Kind hat geschrieben:\n\"" + antwort + "\"\n\n" +
+        "Gib kurzes, ermutigendes Feedback: Was ist gut gelungen? Nenne danach 1 bis 2 konkrete, einfache " +
+        "Verbesserungen (Grammatik, fehlende geforderte Woerter, vollstaendige Saetze). " +
+        'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1-2 Saetze Lob und Gesamteindruck","schritte":["Verbesserung 1","Verbesserung 2"]}';
+    } else {
+      // Falsche Antwort erklaeren (Denkfehler)
+      system =
+        "Du bist ein geduldiger, freundlicher Lernhelfer fuer ein Kind in Klasse " + klasse +
+        " an einer Gesamtschule in Nordrhein-Westfalen. Erklaere kindgerecht, warm und ohne Beschaemung. " +
+        "Sprich das Kind mit 'du' an. Halte dich kurz und einfach.";
+      user =
+        "Fach: " + fach + "\nThema: " + thema + "\nAufgabe: " + frage +
+        "\nRichtige Antwort: " + richtig + "\nFalsche Antwort des Kindes: " + antwort +
+        "\n\nErklaere dem Kind freundlich, welcher Denkfehler wahrscheinlich dahintersteckt und wie es richtig denkt. " +
+        'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1 bis 3 kurze Saetze","schritte":["Schritt 1","Schritt 2","Schritt 3"]}';
+    }
 
     let groqRes;
     try {

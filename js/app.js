@@ -259,22 +259,28 @@
     }
 
     function zeigeAufgabe(a) {
-      var koerper;
+      var koerper, btnLabel = "Überprüfen";
       if (a.typ === "mc") {
         koerper = '<div class="options">' + a.antworten.map(function (opt) {
           return '<button class="opt" data-val="' + opt.replace(/"/g, "&quot;") + '">' + opt + "</button>";
         }).join("") + "</div>";
+      } else if (a.typ === "freitext") {
+        btnLabel = "Abschicken";
+        koerper =
+          '<textarea id="eingabe" class="text-in" rows="4" autocomplete="off" placeholder="Schreibe hier deine Antwort …" style="resize:vertical"></textarea>' +
+          (a.tipp ? '<p class="hint-input">💡 ' + a.tipp + "</p>" : "");
       } else {
+        var istMathe = String(state.fachKey || "").indexOf("mathe") === 0;
         koerper =
           '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" placeholder="Antwort" />' +
-          '<p class="hint-input">Du darfst 0,5 oder 1/2 schreiben – beides zählt.</p>';
+          '<p class="hint-input">' + (istMathe ? "Du darfst 0,5 oder 1/2 schreiben – beides zählt." : "Tippe deine Antwort.") + "</p>";
       }
       var bild = (a.bild && window.WINKEL) ? window.WINKEL.bildHTML(a.bild) : "";
       app.innerHTML =
         topbar(thema.titel, null, true) +
         '<p class="q-meta">Aufgabe ' + idx + " · noch " + (warteschlange.length + 1) + " offen</p>" +
         '<div class="q-card"><p class="q-frage">' + a.frage + "</p>" + bild + koerper +
-        '<button class="btn btn-primary" id="pruefen" disabled>Überprüfen</button>' +
+        '<button class="btn btn-primary" id="pruefen" disabled>' + btnLabel + "</button>" +
         '<div class="feedback" id="fb"></div></div>';
 
       app.querySelector(".back").onclick = function () { if (confirm("Übung beenden?")) zeigeThemen(); };
@@ -296,6 +302,7 @@
       }
 
       pruefBtn.onclick = function () {
+        if (a.typ === "freitext") { freitextAbschicken(a, gewaehlt); return; }
         var ok;
         if (a.toleranz != null) {
           var g = alsZahl(gewaehlt);
@@ -344,6 +351,43 @@
           if (kib) kib.onclick = function () { frageKI(a, gewaehlt, thema.titel, kib); };
         }
         document.getElementById("weiter").onclick = naechste;
+      }
+
+      // Freitext: kein richtig/falsch, sondern KI-Feedback (Fallback: Beispiel-Lösung)
+      function freitextAbschicken(a, text) {
+        beantwortet++;
+        pruefBtn.style.display = "none";
+        document.getElementById("fb").innerHTML = '<div id="ft-out"><p class="muted">🤖 Dein Text wird angeschaut …</p></div>';
+        var out = document.getElementById("ft-out");
+
+        function fertig(html) {
+          out.innerHTML = html + '<button class="btn btn-primary" id="weiter" style="margin-top:14px">Weiter →</button>';
+          document.getElementById("weiter").onclick = naechste;
+        }
+        function muster(vortext) {
+          fertig((vortext || "") + (a.musterloesung
+            ? '<div class="analyse" style="background:var(--akzent-bg)"><div class="head" style="color:var(--akzent-text)">Beispiel-Lösung</div><p style="color:var(--akzent-text)">' + a.musterloesung + "</p></div>"
+            : ""));
+        }
+        if (!kiAktiv()) { muster('<p class="muted">Vergleiche deinen Text mit dem Beispiel:</p>'); return; }
+
+        fetch(window.SCHULWEG_CONFIG.kiEndpoint, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            modus: "freitext",
+            fach: (window.SCHULWEG.faecher[state.fachKey] || {}).fach || "",
+            klasse: state.profil.klasse, thema: thema.titel,
+            frage: a.frage, antwort: String(text)
+          })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          var schritte = (d.schritte || []).map(function (s, i) {
+            return '<div class="step"><span class="n">' + (i + 1) + "</span>" + s + "</div>";
+          }).join("");
+          fertig('<div class="analyse" style="background:var(--richtig-bg)"><div class="head" style="color:#085041">🤖 Feedback zu deinem Text</div><p style="color:#085041">' +
+            (d.analyse || "Schön gemacht!") + "</p>" + (schritte ? '<div class="steps">' + schritte + "</div>" : "") + "</div>");
+        }).catch(function () {
+          muster('<p class="muted">Die KI ist gerade nicht erreichbar. Vergleiche selbst mit dem Beispiel:</p>');
+        });
       }
     }
 

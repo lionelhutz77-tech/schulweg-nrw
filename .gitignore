@@ -5,3 +5,6 @@ Thumbs.db
 # Geschuetzte Quellmaterialien (E-Books, Schulbuecher) - bleiben NUR lokal,
 # werden NIE oeffentlich hochgeladen. Hier E-Books zum Einlesen ablegen.
 quelle/
+
+# wrangler build-cache
+worker/.wrangler/
