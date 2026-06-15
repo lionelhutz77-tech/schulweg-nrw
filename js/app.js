@@ -33,6 +33,32 @@
     return String(eingabe).trim().toLowerCase() === String(loesung).trim().toLowerCase();
   }
 
+  // Tolerante Prüfung für Texteingaben: Groß/Klein, Apostroph-Varianten
+  // (’ ` → '), fehlender Apostroph (wont = won't), Satzzeichen am Ende,
+  // mehrfache Leerzeichen. Zusätzliche gültige Schreibweisen über aufgabe.akzeptiert.
+  function normalisiere(s) {
+    return String(s == null ? "" : s).trim().toLowerCase()
+      .replace(/[’`´]/g, "'")
+      .replace(/[.!?,;:]+$/, "")
+      .replace(/\s+/g, " ");
+  }
+  function textRichtig(eingabe, aufgabe) {
+    var e = normalisiere(eingabe), eOhneApo = e.replace(/'/g, "");
+    var liste = [aufgabe.richtig].concat(aufgabe.akzeptiert || []);
+    return liste.some(function (k) {
+      var n = normalisiere(k);
+      return e === n || eOhneApo === n.replace(/'/g, "");
+    });
+  }
+  function fehlerText(fehlerMap, eingabe) {
+    if (!fehlerMap) return null;
+    var roh = String(eingabe).trim();
+    if (fehlerMap[roh]) return fehlerMap[roh];
+    var e = normalisiere(eingabe), treffer = null;
+    Object.keys(fehlerMap).forEach(function (k) { if (normalisiere(k) === e) treffer = fehlerMap[k]; });
+    return treffer;
+  }
+
   function kiAktiv() {
     return !!(window.SCHULWEG_CONFIG && window.SCHULWEG_CONFIG.kiEndpoint);
   }
@@ -272,7 +298,7 @@
       } else {
         var istMathe = String(state.fachKey || "").indexOf("mathe") === 0;
         koerper =
-          '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" placeholder="Antwort" />' +
+          '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Antwort" />' +
           '<p class="hint-input">' + (istMathe ? "Du darfst 0,5 oder 1/2 schreiben – beides zählt." : "Tippe deine Antwort.") + "</p>";
       }
       var bild = (a.bild && window.WINKEL) ? window.WINKEL.bildHTML(a.bild) : "";
@@ -307,6 +333,8 @@
         if (a.toleranz != null) {
           var g = alsZahl(gewaehlt);
           ok = g !== null && Math.abs(g - alsZahl(a.richtig)) <= a.toleranz;
+        } else if (a.typ === "text") {
+          ok = textRichtig(gewaehlt, a);
         } else {
           ok = istRichtig(gewaehlt, a.richtig);
         }
@@ -330,7 +358,7 @@
             '<div class="row-result"><span class="pill ok">✓ Richtig! ' + a.erklaerung + "</span></div>" +
             '<button class="btn btn-primary" id="weiter">Weiter →</button>';
         } else {
-          var diagnose = (a.fehler && a.fehler[String(gewaehlt).trim()]) ||
+          var diagnose = fehlerText(a.fehler, gewaehlt) ||
             ("Deine Antwort war " + gewaehlt + ". " + a.erklaerung);
           var schritte = a.schritte.map(function (s, i) {
             return '<div class="step"><span class="n">' + (i + 1) + "</span>" + s + "</div>";

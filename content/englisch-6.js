@@ -106,12 +106,140 @@ window.SCHULWEG.faecher["englisch-6"] = {
           typ: "text",
           frage: "Complete: I hope it ___ rain tomorrow.",
           richtig: "won't",
+          akzeptiert: ["will not"],
           erklaerung: "Wenn du hoffst, dass etwas NICHT passiert, nutzt du 'won't' (= will not).",
           schritte: ["Achte auf 'I hope' – du wünschst dir etwas.", "Du willst KEINEN Regen → won't."],
           fehler: {
             "will": "'will' würde heißen, dass es regnet – das Gegenteil von dem, was man hofft.",
             "will not": "Richtig gedacht! Schreib nur die Kurzform: won't.",
             "doesn't": "Es geht um morgen (Zukunft): nutze 'won't'."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "Look at the dark clouds! It ____ rain soon.",
+          antworten: ["will", "won't", "does"],
+          richtig: "will",
+          erklaerung: "Anzeichen wie dunkle Wolken → Vorhersage mit will.",
+          schritte: ["Dunkle Wolken = Anzeichen für Regen.", "Vorhersage mit 'will'."],
+          fehler: {
+            "won't": "Dunkle Wolken heißt: Es WIRD regnen. 'won't' wäre das Gegenteil.",
+            "does": "'does' passt hier nicht – für eine Vorhersage nutzt du 'will'."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Make it negative: 'It will snow.' → 'It ___ snow.'",
+          richtig: "won't",
+          akzeptiert: ["will not"],
+          erklaerung: "Die Verneinung von 'will' ist 'won't' (= will not).",
+          schritte: ["will + not = won't.", "'It won't snow.'"],
+          fehler: {
+            "will": "Du sollst den Satz VERNEINEN: won't.",
+            "doesn't": "Die Verneinung der Zukunft ist won't, nicht doesn't."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Adverb of 'slow' = ___",
+          richtig: "slowly",
+          erklaerung: "Aus dem Adjektiv 'slow' wird mit -ly das Adverb 'slowly'.",
+          schritte: ["Adjektiv: slow.", "+ -ly = slowly."],
+          fehler: {
+            "slow": "Das ist das Adjektiv. Das Adverb ist slowly.",
+            "slowley": "Fast! Die richtige Schreibweise ist slowly."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "He speaks very ____.",
+          antworten: ["quiet", "quietly", "quietness"],
+          richtig: "quietly",
+          erklaerung: "Wie er spricht (Verb) → Adverb: quietly.",
+          schritte: ["Verb: speaks.", "Beschreibe es mit einem Adverb: quietly."],
+          fehler: {
+            "quiet": "'quiet' ist ein Adjektiv. Das Verb 'speaks' braucht ein Adverb: quietly.",
+            "quietness": "Das ist ein Nomen (die Stille)."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Complete: She is a ___ (careful / carefully) driver.",
+          richtig: "careful",
+          erklaerung: "Vor einem Nomen ('driver') steht ein Adjektiv.",
+          schritte: ["'driver' ist ein Nomen.", "Davor steht ein Adjektiv: careful."],
+          fehler: {
+            "carefully": "Vor dem Nomen 'driver' steht ein Adjektiv: careful (nicht das Adverb)."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "She sings ____.",
+          antworten: ["beautiful", "beautifully"],
+          richtig: "beautifully",
+          erklaerung: "Wie sie singt (Verb) → Adverb: beautifully.",
+          schritte: ["Verb: sings.", "Adverb dazu: beautifully."],
+          fehler: {
+            "beautiful": "'beautiful' ist ein Adjektiv. Das Verb 'sings' braucht ein Adverb: beautifully."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "There is a lot of wind today. It's ____.",
+          antworten: ["foggy", "windy", "hot"],
+          richtig: "windy",
+          erklaerung: "Viel Wind → it's windy.",
+          schritte: ["Wind = wind.", "windig = windy."],
+          fehler: {
+            "foggy": "'foggy' heißt neblig.",
+            "hot": "'hot' heißt heiß – das passt nicht zu Wind."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "I can't see far. There is a lot of ____.",
+          antworten: ["fog", "sun", "snow"],
+          richtig: "fog",
+          erklaerung: "Schlechte Sicht → Nebel (fog).",
+          schritte: ["Man sieht schlecht.", "Das Wort dafür ist fog (Nebel)."],
+          fehler: {
+            "sun": "Bei Sonne sieht man gut.",
+            "snow": "Schnee ist möglich, aber das Wort für schlechte Sicht ist fog."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Translate into English: 'bewölkt' = ___",
+          richtig: "cloudy",
+          erklaerung: "Wolke = cloud, bewölkt = cloudy.",
+          schritte: ["Wolke = cloud.", "bewölkt = cloudy."],
+          fehler: {
+            "clody": "Fast! Die Schreibweise ist cloudy.",
+            "windy": "'windy' heißt windig, nicht bewölkt."
+          }
+        },
+        {
+          typ: "mc",
+          frage: "You need a ____ to travel by train.",
+          antworten: ["ticket", "tent", "towel"],
+          richtig: "ticket",
+          erklaerung: "Zum Bahnfahren brauchst du eine Fahrkarte: ticket.",
+          schritte: ["Denke an den Bahnhof.", "Fahrkarte = ticket."],
+          fehler: {
+            "tent": "'tent' (Zelt) gehört zum Camping.",
+            "towel": "'towel' heißt Handtuch."
+          }
+        },
+        {
+          typ: "text",
+          frage: "Opposite of 'to arrive' (at the station) = to ___",
+          richtig: "leave",
+          akzeptiert: ["depart"],
+          erklaerung: "ankommen = arrive, abfahren = leave (oder depart).",
+          schritte: ["arrive = ankommen.", "Das Gegenteil ist leave (abfahren)."],
+          fehler: {
+            "arrive": "Das ist dasselbe Wort – das Gegenteil ist leave.",
+            "go": "Zu allgemein. Am Bahnhof sagt man leave (oder depart)."
           }
         },
         {
@@ -137,6 +265,12 @@ window.SCHULWEG.faecher["englisch-6"] = {
           frage: "Mini-E-Mail (4 Sätze): Erzähle deiner Freundin/deinem Freund vom nächsten Wochenende. Benutze: I'll, won't, because und ein Wetterwort.",
           musterloesung: "Hi! Next weekend I'll go camping with my family. I hope it won't rain because we want to hike. It will be sunny, so I'll take my sunglasses. See you soon!",
           tipp: "Schreibe 4 ganze Sätze und benutze alle vier: I'll, won't, because und ein Wetterwort."
+        },
+        {
+          typ: "freitext",
+          frage: "Write a weather forecast for tomorrow (2 sentences). Use 'will' and at least one weather word.",
+          musterloesung: "Tomorrow it will be cloudy in the morning. In the afternoon it will be sunny and warm.",
+          tipp: "Nutze 'will' und mindestens ein Wetterwort (sunny, cloudy, windy …)."
         }
       ]
     }
