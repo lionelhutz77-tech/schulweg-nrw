@@ -273,6 +273,44 @@ window.SCHULWEG.faecher["englisch-6"] = {
           tipp: "Nutze 'will' und mindestens ein Wetterwort (sunny, cloudy, windy …)."
         }
       ]
+    },
+    {
+      id: "vokabeln-unit5",
+      titel: "Vokabeln Unit 5",
+      voraussetzung: "nichts Besonderes – einfach die neuen Wörter üben",
+      intro: "Trainiere die wichtigen Vokabeln aus Unit 5. Tippe das englische Wort – Groß-/Kleinschreibung ist egal.",
+      aufgaben: [
+        { typ: "text", frage: "Wetter: 'windig' auf Englisch?", richtig: "windy", erklaerung: "windig = windy.", schritte: ["der Wind = wind", "windig = windy"] },
+        { typ: "text", frage: "Wetter: 'der Wind' auf Englisch?", richtig: "wind", erklaerung: "der Wind = wind.", schritte: ["wind = der Wind"] },
+        { typ: "text", frage: "Wetter: 'wolkig' auf Englisch?", richtig: "cloudy", erklaerung: "wolkig = cloudy.", schritte: ["die Wolke = cloud", "wolkig = cloudy"] },
+        { typ: "text", frage: "Wetter: 'die Wolke' auf Englisch?", richtig: "cloud", erklaerung: "die Wolke = cloud.", schritte: ["cloud = die Wolke"] },
+        { typ: "text", frage: "Wetter: 'eiskalt / eisig' auf Englisch?", richtig: "freezing", erklaerung: "eiskalt = freezing.", schritte: ["freeze = (ein)frieren", "freezing = eiskalt"] },
+        { typ: "text", frage: "Wetter: 'der Schnee' auf Englisch?", richtig: "snow", erklaerung: "der Schnee = snow.", schritte: ["snow = der Schnee"] },
+        { typ: "text", frage: "Wetter: 'verschneit / schneebedeckt' auf Englisch?", richtig: "snowy", erklaerung: "verschneit = snowy.", schritte: ["snow = Schnee", "snowy = verschneit"] },
+        { typ: "text", frage: "Wetter: 'kühl' auf Englisch?", richtig: "cool", erklaerung: "kühl = cool.", schritte: ["cool = kühl"] },
+        { typ: "text", frage: "Wetter: 'der Grad' (Temperatur) auf Englisch?", richtig: "degree", akzeptiert: ["degrees"], erklaerung: "der Grad = degree (Mehrzahl: degrees).", schritte: ["14 degrees = 14 Grad"] },
+        { typ: "text", frage: "Wetter: 'die Jahreszeit' auf Englisch?", richtig: "season", erklaerung: "die Jahreszeit = season.", schritte: ["four seasons = vier Jahreszeiten"] },
+        { typ: "text", frage: "Jahreszeit: 'der Frühling' auf Englisch?", richtig: "spring", erklaerung: "der Frühling = spring.", schritte: ["spring = Frühling"] },
+        { typ: "text", frage: "Jahreszeit: 'der Sommer' auf Englisch?", richtig: "summer", erklaerung: "der Sommer = summer.", schritte: ["summer = Sommer"] },
+        { typ: "text", frage: "Jahreszeit: 'der Herbst' auf Englisch?", richtig: "autumn", akzeptiert: ["fall"], erklaerung: "der Herbst = autumn (in den USA: fall).", schritte: ["autumn = Herbst"] },
+        { typ: "text", frage: "Jahreszeit: 'der Winter' auf Englisch?", richtig: "winter", erklaerung: "der Winter = winter.", schritte: ["winter = Winter"] },
+        { typ: "mc", frage: "Was bedeutet 'autumn'?", antworten: ["Herbst", "Frühling", "Sommer"], richtig: "Herbst", erklaerung: "autumn = Herbst.", schritte: ["autumn = Herbst"], fehler: { "Frühling": "Frühling heißt spring.", "Sommer": "Sommer heißt summer." } },
+        { typ: "mc", frage: "Welches Wort bedeutet 'eiskalt'?", antworten: ["freezing", "cool", "windy"], richtig: "freezing", erklaerung: "eiskalt = freezing.", schritte: ["freezing = eiskalt"], fehler: { "cool": "cool heißt kühl.", "windy": "windy heißt windig." } },
+        { typ: "text", frage: "Allgemein: 'die Zukunft' auf Englisch?", richtig: "future", erklaerung: "die Zukunft = future.", schritte: ["future = Zukunft"] },
+        { typ: "text", frage: "Allgemein: 'der Zug' auf Englisch?", richtig: "train", erklaerung: "der Zug = train.", schritte: ["train = Zug"] },
+        { typ: "text", frage: "Allgemein: 'fotografieren / Fotos machen' auf Englisch?", richtig: "take photos", akzeptiert: ["take a photo", "take photo", "take a picture"], erklaerung: "Fotos machen = take photos (NICHT make photos).", schritte: ["take a photo = ein Foto machen"] },
+        { typ: "text", frage: "Adverb: 'langsam' (wie man etwas tut) auf Englisch?", richtig: "slowly", erklaerung: "langsam (Adverb) = slowly.", schritte: ["slow = langsam (Adjektiv)", "slowly = langsam (Adverb)"] },
+        { typ: "text", frage: "Adverb: 'schnell' (wie man etwas tut) auf Englisch?", richtig: "quickly", erklaerung: "schnell (Adverb) = quickly.", schritte: ["quick = schnell (Adjektiv)", "quickly = schnell (Adverb)"] },
+        { typ: "text", frage: "Weg: 'geradeaus' auf Englisch?", richtig: "straight on", akzeptiert: ["straight ahead"], erklaerung: "geradeaus = straight on.", schritte: ["Go straight on. = Geh geradeaus."] },
+        { typ: "mc", frage: "Wie sagst du 'Bieg links ab'?", antworten: ["Turn left.", "Turn right.", "Go straight on."], richtig: "Turn left.", erklaerung: "links abbiegen = turn left.", schritte: ["left = links"], fehler: { "Turn right.": "Das heißt rechts abbiegen.", "Go straight on.": "Das heißt geradeaus gehen." } },
+        { typ: "text", frage: "Weg: 'vorwärts / nach vorn' auf Englisch?", richtig: "forward", erklaerung: "nach vorn = forward.", schritte: ["one step forward = ein Schritt nach vorn"] },
+        { typ: "text", frage: "Wortschatz: 'die Sicherheit' auf Englisch?", richtig: "safety", erklaerung: "die Sicherheit = safety.", schritte: ["safe = sicher", "safety = Sicherheit"] },
+        { typ: "text", frage: "Wortschatz: 'der Kompass' auf Englisch?", richtig: "compass", erklaerung: "der Kompass = compass.", schritte: ["compass = Kompass"] },
+        { typ: "text", frage: "Wortschatz: 'der Abfall / Müll' auf Englisch?", richtig: "litter", erklaerung: "der Abfall = litter.", schritte: ["litter bin = Mülleimer"] },
+        { typ: "text", frage: "Wortschatz: 'der Mülleimer' auf Englisch?", richtig: "litter bin", akzeptiert: ["bin"], erklaerung: "der Mülleimer = litter bin.", schritte: ["litter = Abfall", "litter bin = Mülleimer"] },
+        { typ: "text", frage: "Wortschatz: 'die Brücke' auf Englisch?", richtig: "bridge", erklaerung: "die Brücke = bridge.", schritte: ["bridge = Brücke"] },
+        { typ: "text", frage: "Wortschatz: 'der Stein' auf Englisch?", richtig: "stone", erklaerung: "der Stein = stone.", schritte: ["stone = Stein"] }
+      ]
     }
   ]
 };

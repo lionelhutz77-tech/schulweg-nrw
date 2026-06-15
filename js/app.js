@@ -385,7 +385,7 @@
         } else {
           var diagnose = fehlerText(a.fehler, gewaehlt) ||
             ("Deine Antwort war " + gewaehlt + ". " + a.erklaerung);
-          var schritte = a.schritte.map(function (s, i) {
+          var schritte = (a.schritte || []).map(function (s, i) {
             return '<div class="step"><span class="n">' + (i + 1) + "</span>" + s + "</div>";
           }).join("");
           if (falschGehabt.indexOf(a) === -1) falschGehabt.push(a);
