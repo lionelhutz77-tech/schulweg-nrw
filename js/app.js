@@ -42,12 +42,23 @@
       .replace(/[.!?,;:]+$/, "")
       .replace(/\s+/g, " ");
   }
+  // Uhrzeit erkennen (H:MM oder H.MM) -> {h (mod 12), m}, damit 3:45 = 15:45 zaehlt
+  function alsZeit(s) {
+    var m = String(s == null ? "" : s).trim().match(/^(\d{1,2})[:.](\d{2})$/);
+    if (!m) return null;
+    var h = parseInt(m[1], 10), min = parseInt(m[2], 10);
+    if (h > 23 || min > 59) return null;
+    return { h: h % 12, m: min };
+  }
   function textRichtig(eingabe, aufgabe) {
     var e = normalisiere(eingabe), eOhneApo = e.replace(/'/g, "");
+    var zEin = alsZeit(eingabe);
     var liste = [aufgabe.richtig].concat(aufgabe.akzeptiert || []);
     return liste.some(function (k) {
       var n = normalisiere(k);
-      return e === n || eOhneApo === n.replace(/'/g, "");
+      if (e === n || eOhneApo === n.replace(/'/g, "")) return true;
+      var zK = alsZeit(k);
+      return !!(zEin && zK && zEin.h === zK.h && zEin.m === zK.m);
     });
   }
   function fehlerText(fehlerMap, eingabe) {
