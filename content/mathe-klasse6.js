@@ -285,6 +285,57 @@ window.SCHULWEG.faecher["mathe-6"] = {
         { typ: "zahl", frage: "Von 20 Kindern mögen 5 Fußball. Wie viel Prozent ist das?", richtig: "25", erklaerung: "5 von 20 = 1/4 = 25 %.", schritte: ["5 : 20 = 0,25.", "0,25 = 25 %."], fehler: { "5": "5 ist die Anzahl, nicht der Prozentsatz: 5 von 20 = 25 %." } },
         { typ: "mc", frage: "Was ist der 'Median'?", antworten: ["der mittlere Wert (nach dem Sortieren)", "der Durchschnitt", "der größte Wert"], richtig: "der mittlere Wert (nach dem Sortieren)", erklaerung: "Median = der mittlere Wert, wenn man die Zahlen sortiert.", schritte: ["Sortieren.", "Die Zahl in der Mitte ist der Median."], fehler: { "der Durchschnitt": "Das ist das arithmetische Mittel. Der Median ist der mittlere Wert.", "der größte Wert": "Das ist das Maximum, nicht der Median." } }
       ]
+    },
+    {
+      id: "teilbarkeit",
+      titel: "Teilbarkeit & Primzahlen",
+      seiten: "S.4–15 (Kap. 1)",
+      voraussetzung: "kleines Einmaleins und das Teilen",
+      intro: "Teilbarkeitsregeln helfen schnell: durch 2 (gerade Endziffer), durch 5 (Endung 0/5), durch 10 (Endung 0), durch 3 (Quersumme durch 3). Eine Primzahl hat nur zwei Teiler: 1 und sich selbst.",
+      aufgaben: [
+        { typ: "mc", frage: "Durch welche Zahl ist 150 sicher teilbar?", antworten: ["durch 10", "durch 4", "durch 9"], richtig: "durch 10", erklaerung: "150 endet auf 0 → teilbar durch 10 (und durch 5 und 2).", schritte: ["Endziffer ist 0.", "Endung 0 → durch 10 teilbar."], fehler: { "durch 4": "150 : 4 geht nicht auf.", "durch 9": "Quersumme 1+5+0=6, nicht durch 9 teilbar." } },
+        { typ: "mc", frage: "Eine Zahl endet auf 5. Durch welche Zahl ist sie sicher teilbar?", antworten: ["5", "2", "10"], richtig: "5", erklaerung: "Endung 0 oder 5 → teilbar durch 5.", schritte: ["Endung 5.", "→ teilbar durch 5."], fehler: { "2": "Auf 5 endende Zahlen sind ungerade → nicht durch 2 teilbar.", "10": "Durch 10 nur bei Endung 0." } },
+        { typ: "mc", frage: "Ist 348 durch 2 teilbar?", antworten: ["Ja", "Nein"], richtig: "Ja", erklaerung: "Letzte Ziffer 8 ist gerade → durch 2 teilbar.", schritte: ["Schau auf die letzte Ziffer: 8.", "8 ist gerade → durch 2 teilbar."], fehler: { "Nein": "Die letzte Ziffer (8) ist gerade → durch 2 teilbar." } },
+        { typ: "zahl", frage: "Wie groß ist die Quersumme von 153? (Ziffern addieren)", richtig: "9", erklaerung: "1 + 5 + 3 = 9.", schritte: ["Ziffern: 1, 5, 3.", "1 + 5 + 3 = 9."], fehler: { "153": "Quersumme = die Ziffern addieren: 1 + 5 + 3 = 9." } },
+        { typ: "mc", frage: "153 hat die Quersumme 9. Ist 153 durch 3 teilbar?", antworten: ["Ja", "Nein"], richtig: "Ja", erklaerung: "Ist die Quersumme durch 3 teilbar (9), ist es auch die Zahl.", schritte: ["Quersumme 9.", "9 : 3 = 3 → ja, teilbar."], fehler: { "Nein": "Quersumme 9 ist durch 3 teilbar → 153 auch." } },
+        { typ: "mc", frage: "Welche dieser Zahlen ist eine Primzahl?", antworten: ["7", "9", "15"], richtig: "7", erklaerung: "Primzahl: nur durch 1 und sich selbst teilbar. 7 ist prim.", schritte: ["9 = 3 · 3, 15 = 3 · 5 (nicht prim).", "7 hat nur die Teiler 1 und 7."], fehler: { "9": "9 = 3 · 3 → keine Primzahl.", "15": "15 = 3 · 5 → keine Primzahl." } },
+        { typ: "mc", frage: "Welche Zahl ist gerade?", antworten: ["48", "37", "91"], richtig: "48", erklaerung: "Gerade Zahlen enden auf 0, 2, 4, 6 oder 8.", schritte: ["Letzte Ziffer prüfen.", "48 endet auf 8 → gerade."], fehler: { "37": "37 endet auf 7 → ungerade.", "91": "91 endet auf 1 → ungerade." } },
+        { typ: "zahl", frage: "Wie viele Teiler hat die 6? (Tipp: 1, 2, 3, 6)", richtig: "4", erklaerung: "Teiler von 6 sind 1, 2, 3 und 6 → 4 Teiler.", schritte: ["Welche Zahlen teilen 6 ohne Rest? 1, 2, 3, 6.", "Das sind 4 Teiler."], fehler: { "6": "Gefragt ist die ANZAHL der Teiler: 1, 2, 3, 6 → 4." } }
+      ]
+    },
+    {
+      id: "brueche-kl6",
+      titel: "Brüche: kürzen, erweitern, rechnen",
+      seiten: "S.16–28 (Kap. 2)",
+      voraussetzung: "das kleine Einmaleins und was ein Bruch ist",
+      intro: "Kürzen heißt Zähler und Nenner durch dieselbe Zahl teilen, Erweitern heißt mal dieselbe Zahl. Bei gleichem Nenner addiert/subtrahiert man nur die Zähler.",
+      aufgaben: [
+        { typ: "text", frage: "Kürze den Bruch 4/8 vollständig. (als Bruch, z. B. 1/3)", richtig: "1/2", erklaerung: "4 und 8 durch 4 teilen → 1/2.", schritte: ["Größte gemeinsame Zahl: 4.", "4:4 / 8:4 = 1/2."], fehler: { "2/4": "2/4 ist noch nicht fertig gekürzt. Teile weiter durch 2 → 1/2.", "4/8": "Du sollst kürzen: 4/8 = 1/2." } },
+        { typ: "text", frage: "Kürze 6/9 vollständig.", richtig: "2/3", erklaerung: "6 und 9 durch 3 teilen → 2/3.", schritte: ["Gemeinsame Zahl: 3.", "6:3 / 9:3 = 2/3."], fehler: { "3/9": "Teile beide durch 3: 6/9 = 2/3." } },
+        { typ: "text", frage: "Erweitere 1/3 mit 2. (Ergebnis als Bruch)", richtig: "2/6", erklaerung: "Zähler und Nenner mal 2: 2/6.", schritte: ["Zähler: 1 · 2 = 2.", "Nenner: 3 · 2 = 6 → 2/6."], fehler: { "1/6": "Auch den Zähler mal 2: 2/6." } },
+        { typ: "mc", frage: "Welcher Bruch ist größer:  3/4  oder  2/4 ?", antworten: ["3/4", "2/4"], richtig: "3/4", erklaerung: "Gleicher Nenner → der größere Zähler gewinnt.", schritte: ["Nenner gleich (4).", "3 > 2 → 3/4 ist größer."], fehler: { "2/4": "Bei gleichem Nenner ist der größere Zähler größer: 3/4." } },
+        { typ: "text", frage: "1/4 + 2/4 = ?  (als Bruch)", richtig: "3/4", erklaerung: "Gleicher Nenner: Zähler addieren (1+2=3), Nenner bleibt: 3/4.", schritte: ["Zähler: 1 + 2 = 3.", "Nenner bleibt 4 → 3/4."], fehler: { "3/8": "Bei gleichem Nenner NUR die Zähler addieren. Der Nenner bleibt 4 → 3/4." } },
+        { typ: "text", frage: "3/5 − 1/5 = ?  (als Bruch)", richtig: "2/5", erklaerung: "Zähler subtrahieren (3−1=2), Nenner bleibt 5: 2/5.", schritte: ["Zähler: 3 − 1 = 2.", "Nenner bleibt 5 → 2/5."], fehler: { "2/0": "Der Nenner bleibt 5, er wird nicht abgezogen: 2/5." } },
+        { typ: "mc", frage: "Welcher Bruch ist gleich 1/2 ?", antworten: ["2/4", "2/3", "1/3"], richtig: "2/4", erklaerung: "2/4 gekürzt ergibt 1/2.", schritte: ["2/4 durch 2 kürzen.", "= 1/2."], fehler: { "2/3": "2/3 ist mehr als die Hälfte.", "1/3": "1/3 ist weniger als die Hälfte." } },
+        { typ: "text", frage: "Schreibe 'drei Viertel' als Bruch.", richtig: "3/4", erklaerung: "drei Viertel = 3 von 4 Teilen = 3/4.", schritte: ["Nenner (Viertel) = 4.", "Zähler (drei) = 3 → 3/4."], fehler: { "4/3": "Oben der Zähler (3), unten der Nenner (4): 3/4." } }
+      ]
+    },
+    {
+      id: "dezimal-grundlagen",
+      titel: "Dezimalzahlen, Brüche & Prozent",
+      seiten: "S.29–40 (Kap. 3)",
+      voraussetzung: "Brüche und das Teilen",
+      intro: "Brüche, Dezimalzahlen und Prozent sind drei Schreibweisen für dasselbe: 1/2 = 0,5 = 50 %. Von Prozent zur Dezimalzahl: durch 100.",
+      aufgaben: [
+        { typ: "zahl", frage: "Schreibe 1/2 als Dezimalzahl.", richtig: "0,5", erklaerung: "1 : 2 = 0,5.", schritte: ["Zähler durch Nenner: 1 : 2.", "= 0,5."], fehler: { "0,2": "1 : 2 = 0,5 (nicht 0,2).", "5": "Mit Komma: 1 : 2 = 0,5." } },
+        { typ: "zahl", frage: "Schreibe 3/4 als Dezimalzahl.", richtig: "0,75", erklaerung: "3 : 4 = 0,75.", schritte: ["3 : 4.", "= 0,75."], fehler: { "0,34": "Rechne 3 : 4 = 0,75." } },
+        { typ: "zahl", frage: "Schreibe 1/4 als Dezimalzahl.", richtig: "0,25", erklaerung: "1 : 4 = 0,25.", schritte: ["1 : 4.", "= 0,25."], fehler: { "0,14": "Rechne 1 : 4 = 0,25." } },
+        { typ: "mc", frage: "Welche Dezimalzahl ist größer:  0,7  oder  0,65 ?", antworten: ["0,7", "0,65"], richtig: "0,7", erklaerung: "0,7 = 0,70, und 0,70 > 0,65.", schritte: ["Gleich lang machen: 0,70 und 0,65.", "0,70 > 0,65."], fehler: { "0,65": "Schreibe 0,7 als 0,70 – dann sieht man: 0,70 > 0,65." } },
+        { typ: "zahl", frage: "Wandle 25 % in eine Dezimalzahl um.", richtig: "0,25", erklaerung: "25 % = 25 : 100 = 0,25.", schritte: ["Prozent : 100.", "25 : 100 = 0,25."], fehler: { "25": "Prozent durch 100 teilen → 0,25.", "2,5": "25 : 100 = 0,25 (zwei Stellen nach dem Komma)." } },
+        { typ: "zahl", frage: "Wandle 0,5 in Prozent um. (nur die Zahl)", richtig: "50", erklaerung: "0,5 = 50 % (mal 100).", schritte: ["Dezimalzahl mal 100.", "0,5 · 100 = 50."], fehler: { "5": "Mal 100: 0,5 = 50 %.", "0,5": "In Prozent: 0,5 · 100 = 50." } },
+        { typ: "mc", frage: "Welcher Bruch entspricht 0,25 ?", antworten: ["1/4", "1/2", "3/4"], richtig: "1/4", erklaerung: "0,25 = ein Viertel = 1/4.", schritte: ["0,25 ist ein Viertel.", "= 1/4."], fehler: { "1/2": "1/2 = 0,5.", "3/4": "3/4 = 0,75." } },
+        { typ: "zahl", frage: "Schreibe 7/10 als Dezimalzahl.", richtig: "0,7", erklaerung: "7 : 10 = 0,7.", schritte: ["Zehntel → eine Stelle nach dem Komma.", "7/10 = 0,7."], fehler: { "7": "Zehntel = 0,7 (mit Komma).", "0,07": "7/10 = 0,7 (Hundertstel wären 7/100)." } }
+      ]
     }
   ]
 };
