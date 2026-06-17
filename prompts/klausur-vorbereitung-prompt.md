@@ -34,6 +34,7 @@ Gib **AUSSCHLIESSLICH gültiges JSON** in genau diesem Format aus (kein Text au�
   "thema": {
     "id": "klausur",
     "titel": "Klausurvorbereitung [FACH]",
+    "seiten": "[SEITEN]  (z. B. 'S.94–96, WB S.63' – die Buch-/Workbook-Seiten, auf denen der Stoff steht)",
     "voraussetzung": "kurzer Satz: was man dafür schon können sollte",
     "intro": "2–3 Sätze: was hier geübt wird und warum",
     "aufgaben": [

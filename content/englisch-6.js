@@ -17,6 +17,7 @@ window.SCHULWEG.faecher["englisch-6"] = {
     {
       id: "klausur-theme5",
       titel: "Klausurvorbereitung (Theme 5)",
+      seiten: "S.94–96, 106–107, 157",
       voraussetzung: "einfache Zukunftssätze mit 'I'll' und den wichtigsten Wortschatz",
       intro:
         "Diese Übungen sind genau auf deine Klassenarbeit zugeschnitten: will/won't, Wetter, Adverbien, Bahnhof und das E-Mail-Schreiben. Sie werden langsam schwerer.",
@@ -277,6 +278,7 @@ window.SCHULWEG.faecher["englisch-6"] = {
     {
       id: "vokabeln-unit5",
       titel: "Vokabeln Unit 5",
+      seiten: "S.213–214 (Vokabelliste)",
       voraussetzung: "nichts Besonderes – einfach die neuen Wörter üben",
       intro: "Trainiere die wichtigen Vokabeln aus Unit 5. Tippe das englische Wort – Groß-/Kleinschreibung ist egal.",
       aufgaben: [
@@ -315,6 +317,7 @@ window.SCHULWEG.faecher["englisch-6"] = {
     {
       id: "durchsagen",
       titel: "Bahnhof: Durchsagen verstehen",
+      seiten: "S.100",
       voraussetzung: "Bahnhofswortschatz (platform, train, leave …)",
       intro: "Lies die Durchsage genau und beantworte die Frage. So übst du, das Wichtigste herauszuhören – hier zum Lesen.",
       aufgaben: [

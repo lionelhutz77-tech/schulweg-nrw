@@ -248,17 +248,61 @@
       return (
         '<div class="card" data-thema="' + i + '">' +
         "<h3>" + t.titel + "</h3>" +
-        '<p>' + t.aufgaben.length + " Aufgaben</p>" +
+        '<p>' + (t.seiten ? t.seiten + " · " : "") + t.aufgaben.length + " Aufgaben</p>" +
         '<div class="bar"><span style="width:0;background:var(--' + fach.farbe + ')"></span></div></div>'
       );
     }).join("");
     app.innerHTML =
       topbar(fach.fach, "Klasse " + fach.klasse + " · Thema wählen", true) +
-      '<div class="grid">' + karten + "</div>";
+      '<div class="grid">' + karten + "</div>" +
+      '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>';
     app.querySelector(".back").onclick = zeigeFaecher;
     app.querySelectorAll("[data-thema]").forEach(function (n) {
       n.onclick = function () { state.thema = fach.themen[+n.dataset.thema]; zeigeIntro(); };
     });
+    document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
+  }
+
+  function mische(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // "Für eine Arbeit lernen": mehrere Themen/Seiten auswählen -> gemischtes Lernset
+  function zeigeArbeitAuswahl() {
+    var fach = window.SCHULWEG.faecher[state.fachKey];
+    var gewaehlt = {};
+    function render() {
+      var liste = fach.themen.map(function (t, i) {
+        var an = !!gewaehlt[i];
+        return '<div class="card" data-pick="' + i + '" style="display:flex;align-items:center;gap:12px;' +
+          (an ? "border-color:var(--akzent);background:var(--akzent-bg)" : "") + '">' +
+          '<span style="font-size:22px">' + (an ? "☑" : "☐") + "</span>" +
+          '<div><h3 style="margin:0;font-size:17px">' + t.titel + "</h3>" +
+          '<p class="muted" style="margin:2px 0 0">' + (t.seiten ? t.seiten + " · " : "") + t.aufgaben.length + " Aufgaben</p></div></div>";
+      }).join("");
+      var anzahl = 0, count = 0;
+      Object.keys(gewaehlt).forEach(function (k) { if (gewaehlt[k]) { anzahl++; count += fach.themen[k].aufgaben.length; } });
+      app.innerHTML =
+        topbar(fach.fach, "Für eine Arbeit lernen", true) +
+        '<p class="muted" style="margin-bottom:14px">Wähle die Themen/Seiten, die in der Arbeit drankommen. Daraus baue ich dir ein gemischtes Lernset.</p>' +
+        '<div style="display:flex;flex-direction:column;gap:12px">' + liste + "</div>" +
+        '<button class="btn btn-primary" id="start" style="margin-top:20px"' + (anzahl ? "" : " disabled") + ">Lernset starten" + (count ? " (" + count + " Aufgaben)" : "") + "</button>";
+      app.querySelector(".back").onclick = zeigeThemen;
+      app.querySelectorAll("[data-pick]").forEach(function (n) {
+        n.onclick = function () { var i = +n.dataset.pick; gewaehlt[i] = !gewaehlt[i]; render(); };
+      });
+      document.getElementById("start").onclick = function () {
+        var aufgaben = [];
+        fach.themen.forEach(function (t, i) { if (gewaehlt[i]) aufgaben = aufgaben.concat(t.aufgaben); });
+        if (!aufgaben.length) return;
+        starteQuiz({ titel: "Lernset · " + fach.fach, aufgaben: mische(aufgaben) });
+      };
+    }
+    render();
   }
 
   // ---------- Bildschirm 4: Intro ("Wozu brauche ich das") ----------
