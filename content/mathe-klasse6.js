@@ -217,6 +217,74 @@ window.SCHULWEG.faecher["mathe-6"] = {
           }
         }
       ]
+    },
+    {
+      id: "dezimal-rechnen",
+      titel: "Mit Dezimalzahlen rechnen",
+      seiten: "S.50–63 (Kap. 5)",
+      voraussetzung: "Kommazahlen lesen und Stellenwerte (Zehntel, Hundertstel)",
+      intro: "Beim Rechnen mit Kommazahlen: Kommas untereinander beim Plus/Minus, und bei ×/: mit 10, 100, 1000 wandert das Komma. Auch hier gilt Punkt vor Strich.",
+      aufgaben: [
+        { typ: "zahl", frage: "12,5 + 3,75 = ?", richtig: "16,25", erklaerung: "Kommas untereinander, dann addieren: 12,50 + 3,75 = 16,25.", schritte: ["Schreibe 12,50 (Null anhängen).", "12,50 + 3,75 = 16,25."], fehler: { "15,25": "Stellen verrutscht. Schreibe die Kommas untereinander: 12,50 + 3,75 = 16,25." } },
+        { typ: "zahl", frage: "3,4 × 100 = ?", richtig: "340", erklaerung: "× 100 verschiebt das Komma 2 Stellen nach rechts.", schritte: ["× 100 → 2 Stellen nach rechts.", "3,4 → 340."], fehler: { "34": "× 100 sind 2 Stellen: 3,4 → 340.", "3400": "Das wäre × 1000. Bei × 100 nur 2 Stellen: 340." } },
+        { typ: "zahl", frage: "56,8 : 10 = ?", richtig: "5,68", erklaerung: ": 10 verschiebt das Komma 1 Stelle nach links.", schritte: [": 10 → 1 Stelle nach links.", "56,8 → 5,68."], fehler: { "568": "Bei : 10 wandert das Komma nach LINKS: 5,68." } },
+        { typ: "zahl", frage: "0,5 × 0,4 = ?", richtig: "0,2", erklaerung: "5 × 4 = 20, zwei Nachkommastellen → 0,20 = 0,2.", schritte: ["Ohne Komma: 5 × 4 = 20.", "Zwei Nachkommastellen → 0,20 = 0,2."], fehler: { "2": "Achte aufs Komma: 0,5 × 0,4 = 0,2 (nicht 2)." } },
+        { typ: "zahl", frage: "7,2 : 0,8 = ?", richtig: "9", erklaerung: "Beide mal 10: 72 : 8 = 9.", schritte: ["Komma weg (beide × 10): 72 : 8.", "72 : 8 = 9."], fehler: { "0,9": "Rechne 72 : 8 = 9 (beide × 10).", "90": "72 : 8 = 9, nicht 90." } },
+        { typ: "zahl", frage: "2 + 0,5 × 4 = ?", richtig: "4", erklaerung: "Punkt vor Strich: erst 0,5 × 4 = 2, dann 2 + 2 = 4.", schritte: ["Zuerst 0,5 × 4 = 2.", "Dann 2 + 2 = 4."], fehler: { "10": "Punkt vor Strich: erst 0,5 × 4 = 2, dann + 2 = 4 (nicht (2 + 0,5) × 4)." } },
+        { typ: "mc", frage: "Was rechnest du zuerst:  6,4 − 1,2 × 3 ?", antworten: ["1,2 × 3", "6,4 − 1,2"], richtig: "1,2 × 3", erklaerung: "Mal kommt vor Minus (Punkt vor Strich).", schritte: ["Mal zuerst: 1,2 × 3 = 3,6.", "Dann 6,4 − 3,6 = 2,8."], fehler: { "6,4 − 1,2": "Minus ist ein Strich-Rechen – das kommt nach dem Mal." } },
+        { typ: "zahl", frage: "9,6 : 4 = ?", richtig: "2,4", erklaerung: "9,6 : 4 = 2,4.", schritte: ["96 : 4 = 24.", "Komma setzen: 2,4."], fehler: { "24": "Achte aufs Komma: 9,6 : 4 = 2,4." } }
+      ]
+    },
+    {
+      id: "koerper-volumen",
+      titel: "Körper: Volumen & Oberfläche",
+      seiten: "S.64–79 (Kap. 6)",
+      voraussetzung: "Multiplizieren und die Begriffe Länge, Breite, Höhe",
+      intro: "Das Volumen eines Quaders ist V = Länge · Breite · Höhe. Die Oberfläche ist die Summe aller Flächen. 1 Liter = 1000 cm³.",
+      aufgaben: [
+        { typ: "zahl", frage: "Volumen eines Quaders mit a = 3 cm, b = 4 cm, c = 5 cm? (in cm³)", richtig: "60", erklaerung: "V = a · b · c = 3 · 4 · 5 = 60.", schritte: ["V = Länge · Breite · Höhe.", "3 · 4 · 5 = 60."], fehler: { "12": "Du hast nur 3 · 4 gerechnet. V = 3 · 4 · 5 = 60.", "47": "Volumen ist Multiplikation: 3 · 4 · 5 = 60 (nicht addieren)." } },
+        { typ: "zahl", frage: "Volumen eines Würfels mit Kante a = 2 cm? (in cm³)", richtig: "8", erklaerung: "Würfel: V = a · a · a = 2 · 2 · 2 = 8.", schritte: ["Alle Kanten gleich: 2 · 2 · 2.", "= 8."], fehler: { "6": "Würfel: 2 · 2 · 2 = 8 (nicht 2 · 3).", "4": "Das ist nur 2 · 2. Würfel: 2 · 2 · 2 = 8." } },
+        { typ: "zahl", frage: "Oberfläche eines Würfels mit Kante 3 cm? (in cm²)", richtig: "54", erklaerung: "Ein Würfel hat 6 Flächen: 6 · (3 · 3) = 6 · 9 = 54.", schritte: ["Eine Fläche: 3 · 3 = 9.", "6 Flächen: 6 · 9 = 54."], fehler: { "9": "Das ist nur eine Fläche. Ein Würfel hat 6: 6 · 9 = 54.", "27": "27 ist das Volumen (3³). Oberfläche = 6 · 9 = 54." } },
+        { typ: "zahl", frage: "1 Liter = ? cm³", richtig: "1000", erklaerung: "1 l = 1000 cm³.", schritte: ["1 l entspricht 1000 cm³."], fehler: { "100": "1 l = 1000 cm³ (nicht 100).", "1": "1 l sind 1000 cm³." } },
+        { typ: "zahl", frage: "1 m³ = ? Liter", richtig: "1000", erklaerung: "1 m³ = 1000 l.", schritte: ["1 Kubikmeter fasst 1000 Liter."], fehler: { "100": "1 m³ = 1000 l." } },
+        { typ: "zahl", frage: "Volumen eines Quaders mit a = 10 cm, b = 2 cm, c = 5 cm? (in cm³)", richtig: "100", erklaerung: "V = 10 · 2 · 5 = 100.", schritte: ["10 · 2 = 20.", "20 · 5 = 100."], fehler: { "17": "Volumen wird multipliziert: 10 · 2 · 5 = 100." } },
+        { typ: "mc", frage: "Welcher Körper hat 6 gleich große quadratische Flächen?", antworten: ["Würfel", "Quader", "Kugel"], richtig: "Würfel", erklaerung: "Der Würfel hat 6 gleiche Quadrate.", schritte: ["6 gleiche Quadrate → Würfel."], fehler: { "Quader": "Ein Quader hat Rechtecke (nicht alle gleich).", "Kugel": "Eine Kugel hat gar keine ebenen Flächen." } },
+        { typ: "zahl", frage: "Oberfläche eines Quaders mit a = 2, b = 3, c = 4 cm?  O = 2 · (a·b + a·c + b·c) (in cm²)", richtig: "52", erklaerung: "O = 2 · (2·3 + 2·4 + 3·4) = 2 · (6 + 8 + 12) = 2 · 26 = 52.", schritte: ["Flächen: 6 + 8 + 12 = 26.", "Mal 2: 52."], fehler: { "24": "24 ist das Volumen (2·3·4). Oberfläche = 2 · 26 = 52.", "26": "Du hast das · 2 vergessen: 2 · 26 = 52." } }
+      ]
+    },
+    {
+      id: "zuordnungen-negative",
+      titel: "Zuordnungen & negative Zahlen",
+      seiten: "S.80–91 (Kap. 7)",
+      voraussetzung: "Zahlenstrahl und Plus/Minus",
+      intro: "Negative Zahlen liegen links von der 0. Je weiter links, desto kleiner. Bei Zuordnungen gehören zwei Größen zusammen (z. B. Menge und Preis).",
+      aufgaben: [
+        { typ: "mc", frage: "Welche Zahl ist größer:  −3  oder  −5 ?", antworten: ["−3", "−5"], richtig: "−3", erklaerung: "Auf dem Zahlenstrahl liegt −3 weiter rechts (näher an 0) → größer.", schritte: ["Beide sind negativ.", "−3 ist näher an 0 → größer."], fehler: { "−5": "5 ist zwar größer als 3, aber bei negativen Zahlen ist −3 größer (näher an 0)." } },
+        { typ: "zahl", frage: "Es ist −4 °C. Es wird 6 °C wärmer. Wie viel °C sind es jetzt?", richtig: "2", erklaerung: "−4 + 6 = 2.", schritte: ["Von −4 erst 4 Grad bis 0.", "Dann noch 2 weiter: 2 °C."], fehler: { "10": "Nicht 4 + 6. Es ist −4 + 6 = 2.", "-10": "Es wird wärmer: −4 + 6 = 2." } },
+        { typ: "zahl", frage: "Wie groß ist der Unterschied zwischen −3 °C und 5 °C? (in °C)", richtig: "8", erklaerung: "Von −3 bis 5 sind es 8 Schritte (über die 0).", schritte: ["Von −3 bis 0 sind 3.", "Von 0 bis 5 sind 5. 3 + 5 = 8."], fehler: { "2": "Achtung über die 0: von −3 bis 0 sind 3, dann + 5 = 8.", "-8": "Der Unterschied ist immer positiv: 8." } },
+        { typ: "mc", frage: "Welche Zahl ist die kleinste:  −1,  −7,  3,  0 ?", antworten: ["−7", "−1", "0"], richtig: "−7", erklaerung: "Am weitesten links auf dem Zahlenstrahl ist die kleinste: −7.", schritte: ["Negative sind kleiner als 0.", "−7 liegt am weitesten links."], fehler: { "−1": "−1 ist größer als −7.", "0": "0 ist größer als jede negative Zahl." } },
+        { typ: "zahl", frage: "3 Brötchen kosten 1,20 €. Was kosten 6 Brötchen? (in €)", richtig: "2,40", erklaerung: "6 ist das Doppelte von 3 → doppelter Preis: 2,40 €.", schritte: ["6 = 2 · 3.", "2 · 1,20 € = 2,40 €."], fehler: { "1,20": "6 Brötchen sind das Doppelte: 2,40 €.", "4,80": "Das wäre das Vierfache. 6 ist das Doppelte von 3 → 2,40 €." } },
+        { typ: "zahl", frage: "1 Heft kostet 0,80 €. Was kosten 5 Hefte? (in €)", richtig: "4", erklaerung: "5 · 0,80 € = 4,00 €.", schritte: ["5 · 0,80.", "= 4,00 €."], fehler: { "0,80": "Das ist 1 Heft. 5 · 0,80 = 4,00 €." } },
+        { typ: "mc", frage: "Welche Temperatur ist am kältesten?", antworten: ["−2 °C", "0 °C", "−8 °C"], richtig: "−8 °C", erklaerung: "−8 liegt am weitesten links → am kältesten.", schritte: ["Je kleiner die Zahl, desto kälter.", "−8 ist die kleinste."], fehler: { "−2 °C": "−2 ist wärmer als −8.", "0 °C": "0 ist wärmer als jede Minustemperatur." } },
+        { typ: "zahl", frage: "Welche Zahl liegt genau in der Mitte zwischen −2 und 4?", richtig: "1", erklaerung: "Mitte = (−2 + 4) : 2 = 2 : 2 = 1.", schritte: ["−2 + 4 = 2.", "2 : 2 = 1."], fehler: { "2": "Das ist die Summe. Die Mitte ist 2 : 2 = 1.", "0": "Die Mitte zwischen −2 und 4 ist 1 (nicht 0)." } }
+      ]
+    },
+    {
+      id: "daten",
+      titel: "Daten: Mittelwert, Median & Diagramme",
+      seiten: "S.92–105 (Kap. 8)",
+      voraussetzung: "Addieren, Teilen und Prozent-Grundidee",
+      intro: "Das arithmetische Mittel (Durchschnitt) = Summe : Anzahl. Der Median ist der mittlere Wert, wenn man sortiert. Im Kreisdiagramm sind 100 % = 360°.",
+      aufgaben: [
+        { typ: "zahl", frage: "Berechne das arithmetische Mittel (Durchschnitt) von 4, 6, 8.", richtig: "6", erklaerung: "Summe 18 : 3 Werte = 6.", schritte: ["4 + 6 + 8 = 18.", "18 : 3 = 6."], fehler: { "18": "Du hast nur addiert. Mittelwert = Summe : Anzahl = 18 : 3 = 6.", "9": "Teile durch die Anzahl (3): 18 : 3 = 6." } },
+        { typ: "zahl", frage: "Mittelwert von 2, 4, 6, 8?", richtig: "5", erklaerung: "Summe 20 : 4 = 5.", schritte: ["2 + 4 + 6 + 8 = 20.", "20 : 4 = 5."], fehler: { "20": "Noch durch die Anzahl teilen: 20 : 4 = 5." } },
+        { typ: "zahl", frage: "Median von 3, 7, 5 (der mittlere Wert nach dem Sortieren)?", richtig: "5", erklaerung: "Sortiert: 3, 5, 7 → die Mitte ist 5.", schritte: ["Sortiere: 3, 5, 7.", "Der mittlere Wert ist 5."], fehler: { "7": "Erst sortieren: 3, 5, 7. Die Mitte ist 5.", "3": "Sortiert 3, 5, 7 → Mitte ist 5." } },
+        { typ: "zahl", frage: "Median von 2, 8, 4, 6, 10?", richtig: "6", erklaerung: "Sortiert 2, 4, 6, 8, 10 → die Mitte ist 6.", schritte: ["Sortiere: 2, 4, 6, 8, 10.", "Mittlerer Wert: 6."], fehler: { "8": "Sortiere zuerst: 2, 4, 6, 8, 10 → Mitte ist 6." } },
+        { typ: "mc", frage: "Im Kreisdiagramm sind 25 %. Wie groß ist der Winkel?", antworten: ["90°", "180°", "25°"], richtig: "90°", erklaerung: "25 % von 360° = 90°.", schritte: ["100 % = 360°.", "25 % = ein Viertel = 90°."], fehler: { "180°": "180° wären 50 %.", "25°": "Prozent ist nicht gleich Grad: 25 % von 360° = 90°." } },
+        { typ: "zahl", frage: "Wie viel Grad sind 50 % in einem Kreisdiagramm?", richtig: "180", erklaerung: "50 % von 360° = 180°.", schritte: ["100 % = 360°.", "Die Hälfte: 180°."], fehler: { "50": "Prozent ≠ Grad: 50 % von 360° = 180°." } },
+        { typ: "zahl", frage: "Von 20 Kindern mögen 5 Fußball. Wie viel Prozent ist das?", richtig: "25", erklaerung: "5 von 20 = 1/4 = 25 %.", schritte: ["5 : 20 = 0,25.", "0,25 = 25 %."], fehler: { "5": "5 ist die Anzahl, nicht der Prozentsatz: 5 von 20 = 25 %." } },
+        { typ: "mc", frage: "Was ist der 'Median'?", antworten: ["der mittlere Wert (nach dem Sortieren)", "der Durchschnitt", "der größte Wert"], richtig: "der mittlere Wert (nach dem Sortieren)", erklaerung: "Median = der mittlere Wert, wenn man die Zahlen sortiert.", schritte: ["Sortieren.", "Die Zahl in der Mitte ist der Median."], fehler: { "der Durchschnitt": "Das ist das arithmetische Mittel. Der Median ist der mittlere Wert.", "der größte Wert": "Das ist das Maximum, nicht der Median." } }
+      ]
     }
   ]
 };
