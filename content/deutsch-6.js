@@ -142,6 +142,118 @@ window.SCHULWEG.faecher["deutsch-6"] = {
           tipp: "Nenne die Textstelle und erkläre, was sie beim Leser bewirkt (z. B. lebendig, fröhlich)."
         }
       ]
+    },
+    {
+      id: "tutor-gedicht",
+      titel: "Tutor: Gedicht untersuchen (Schritt für Schritt)",
+      seiten: "Klartext S.110–111 (Methode)",
+      lektionen: [
+        {
+          titel: "1. Die Aufgabe aufschlüsseln",
+          erklaerung: [
+            { text: "Bevor du losschreibst, schlüssle die Aufgabe auf. Markiere die OPERATOREN – das sind die Tu-Wörter wie 'untersuche', 'erkläre', 'beschreibe', 'nimm Stellung'. Jeder Operator sagt dir, WAS du tun sollst." },
+            { titel: "Der rote Faden", text: "Eine Gedichtuntersuchung folgt fast immer dieser Reihenfolge: Einleitung (TATT) → Inhalt → Form → sprachliche Bilder & Deutung → Stellungnahme. TATT steht für Titel, Autor, Textsorte, Thema." }
+          ],
+          check: {
+            typ: "mc", frage: "Wofür steht TATT im Einleitungssatz?",
+            antworten: ["Titel, Autor, Textsorte, Thema", "Text, Aufgabe, Tabelle, Thema", "Titel, Absatz, Text, These"],
+            richtig: "Titel, Autor, Textsorte, Thema",
+            erklaerung: "TATT = Titel, Autor, Textsorte, Thema.",
+            fehler: { "Text, Aufgabe, Tabelle, Thema": "Fast – aber es geht um Titel, Autor, Textsorte, Thema.", "Titel, Absatz, Text, These": "Nicht ganz: Titel, Autor, Textsorte, Thema." }
+          }
+        },
+        {
+          titel: "2. Der Einleitungssatz (TATT)",
+          erklaerung: [
+            { text: "Der Einleitungssatz nennt in EINEM Satz: Titel (in Anführungszeichen), Autor(in), Textsorte (Gedicht) und worum es geht (Thema) – alles im Präsens." },
+            { titel: "Beispiel", text: "In dem Gedicht 'Sturmnacht' von Lena Berg geht es um einen nächtlichen Sturm, der ein kleines Dorf erschreckt." }
+          ],
+          check: {
+            typ: "freitext",
+            frage: "Schreibe einen Einleitungssatz für ein (erfundenes) Gedicht mit dem Titel 'Der erste Schnee' von Tom Velten, in dem es um einen Jungen geht, der sich über den ersten Schnee freut.",
+            kriterien: "Enthält Titel, Autor, Textsorte (Gedicht) und Thema; im Präsens; ein einziger Satz.",
+            musterloesung: "In dem Gedicht 'Der erste Schnee' von Tom Velten geht es um einen Jungen, der sich über den ersten Schnee des Winters freut.",
+            tipp: "Titel in Anführungszeichen, Autor, 'Gedicht', Thema – im Präsens."
+          }
+        },
+        {
+          titel: "3. Den Inhalt zusammenfassen",
+          erklaerung: [
+            { text: "Fasse den Inhalt in eigenen Worten zusammen – Strophe für Strophe nur das Wichtigste. Tipp: Gib jeder Strophe zuerst eine kurze Überschrift, daraus schreibst du dann die Zusammenfassung." },
+            { titel: "Wichtig", punkte: ["Präsens (Gegenwart).", "Eigene Worte – keine Zitate, keine Reime nachsprechen.", "KEINE eigene Meinung (die kommt erst ganz am Ende)."] }
+          ],
+          check: {
+            typ: "mc", frage: "Was gehört NICHT in die Inhaltszusammenfassung?",
+            antworten: ["deine eigene Meinung", "das Thema", "der Ablauf der Strophen"],
+            richtig: "deine eigene Meinung",
+            erklaerung: "Die Zusammenfassung ist sachlich – deine Meinung kommt erst in der Stellungnahme.",
+            fehler: { "das Thema": "Das Thema gehört durchaus hinein.", "der Ablauf der Strophen": "Genau den fasst du ja zusammen." }
+          }
+        },
+        {
+          titel: "4. Die Form beschreiben",
+          erklaerung: [
+            { text: "Bei der Form beschreibst du den Aufbau: Wie viele Strophen? Wie viele Verse (Zeilen) pro Strophe? Und das Reimschema." },
+            { titel: "Die drei häufigsten Reimschemata", punkte: ["Paarreim (aabb): Zeile 1+2 reimen, 3+4 reimen.", "Kreuzreim (abab): Zeile 1+3 und 2+4 reimen.", "umarmender Reim (abba): Zeile 1+4 und 2+3 reimen."] }
+          ],
+          check: {
+            typ: "mc", frage: "Ein Gedicht reimt sich so: Zeile 1 mit Zeile 3, Zeile 2 mit Zeile 4. Welches Reimschema ist das?",
+            antworten: ["Kreuzreim (abab)", "Paarreim (aabb)", "umarmender Reim (abba)"],
+            richtig: "Kreuzreim (abab)",
+            erklaerung: "1+3 und 2+4 → das ist der Kreuzreim (abab).",
+            fehler: { "Paarreim (aabb)": "Beim Paarreim reimen sich direkt aufeinanderfolgende Zeilen (1+2, 3+4).", "umarmender Reim (abba)": "Beim umarmenden Reim umschließt der äußere Reim (1+4) den inneren (2+3)." }
+          }
+        },
+        {
+          titel: "5. Sprachliche Bilder erkennen",
+          erklaerung: [
+            { text: "Sprachliche Bilder machen ein Gedicht anschaulich. Drei sind besonders wichtig:" },
+            { punkte: ["Vergleich: mit 'wie' oder 'als' (z. B. 'kalt wie Eis').", "Personifikation: ein Ding/Tier/die Natur tut etwas Menschliches (z. B. 'die Sonne lacht').", "Metapher: ein bildlicher Ausdruck OHNE 'wie' (z. B. 'ein Meer aus Schnee')."] },
+            { titel: "Schreib es in eine Tabelle", text: "Drei Spalten: Textstelle | Sprachliches Mittel | Erklärung → Wirkung." }
+          ],
+          check: {
+            typ: "mc", frage: "'Der Wind tanzt durch die Nacht.' – welches sprachliche Bild ist das?",
+            antworten: ["Personifikation", "Vergleich", "Metapher"],
+            richtig: "Personifikation",
+            erklaerung: "Der Wind 'tanzt' – das ist menschlich → Personifikation.",
+            fehler: { "Vergleich": "Es gibt kein 'wie'. Der Wind selbst tanzt → Personifikation.", "Metapher": "Hier handelt ein Ding menschlich (tanzen) → Personifikation." }
+          }
+        },
+        {
+          titel: "6. Die Wirkung deuten",
+          erklaerung: [
+            { text: "Beim Deuten erklärst du die WIRKUNG: Was bewirkt das Bild beim Leser? Wirkt etwas lebendig, bedrohlich, fröhlich? Welche Stimmung entsteht?" },
+            { titel: "Beispiel", text: "'Der Wind tanzt durch die Nacht' ist eine Personifikation. Wirkung: Der Wind wirkt lebendig und verspielt, fast wie ein Mensch, der tanzt." }
+          ],
+          check: {
+            typ: "freitext",
+            frage: "Erkläre die Wirkung von 'Die Sonne lacht vom Himmel' in 1–2 Sätzen.",
+            kriterien: "benennt die Personifikation; erklärt die Wirkung (z. B. fröhlich, lebendig, die Sonne wirkt wie ein Mensch).",
+            musterloesung: "'Die Sonne lacht' ist eine Personifikation. Sie bewirkt, dass der Tag fröhlich und freundlich wirkt, als würde sich die Sonne freuen.",
+            tipp: "Nenne erst das Bild, dann die Wirkung."
+          }
+        },
+        {
+          titel: "7. Stellung nehmen",
+          erklaerung: [
+            { text: "Ganz am Ende sagst du deine eigene Meinung – aber IMMER begründet. Nutze das Wort 'weil'. Achtung: Deine Meinung gehört NUR hierher, nicht in die Inhaltszusammenfassung." }
+          ],
+          check: {
+            typ: "freitext",
+            frage: "Eine Schülerin sagt: 'Gedichte sind langweilig.' Nimm kurz begründet Stellung (1–2 Sätze).",
+            kriterien: "enthält eine eigene Meinung und mindestens eine Begründung (z. B. mit 'weil').",
+            musterloesung: "Ich finde nicht, dass Gedichte langweilig sind, weil sie mit wenigen Worten starke Bilder im Kopf erzeugen können.",
+            tipp: "Meinung + Begründung mit 'weil'."
+          }
+        },
+        {
+          titel: "8. Dein Bauplan – fertig!",
+          erklaerung: [
+            { titel: "So gehst du jede Gedichtuntersuchung an", schritte: ["Aufgabe aufschlüsseln (Operatoren markieren).", "Einleitungssatz nach TATT.", "Inhalt zusammenfassen (Präsens, eigene Worte, keine Meinung).", "Form beschreiben (Strophen, Verse, Reimschema).", "Sprachliche Bilder + ihre Wirkung (Tabelle).", "Stellung nehmen – begründet."] },
+            { text: "Tipp zum Schluss: Überarbeite deinen Text mit der Checkliste (Klartext S. 110)." }
+          ]
+        }
+      ]
     }
   ]
 };

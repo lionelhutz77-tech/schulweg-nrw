@@ -248,7 +248,8 @@
       return (
         '<div class="card" data-thema="' + i + '">' +
         "<h3>" + t.titel + "</h3>" +
-        '<p>' + (t.seiten ? t.seiten + " · " : "") + t.aufgaben.length + " Aufgaben</p>" +
+        '<p>' + (t.seiten ? t.seiten + " · " : "") +
+          (t.lektionen ? t.lektionen.length + " Lektionen" : (t.aufgaben || []).length + " Aufgaben") + "</p>" +
         '<div class="bar"><span style="width:0;background:var(--' + fach.farbe + ')"></span></div></div>'
       );
     }).join("");
@@ -261,7 +262,7 @@
       n.onclick = function () {
         var t = fach.themen[+n.dataset.thema];
         state.thema = t;
-        if (t.lernweg) zeigeLernweg(t); else zeigeIntro();
+        if (t.lektionen) starteTutor(t); else if (t.lernweg) zeigeLernweg(t); else zeigeIntro();
       };
     });
     document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
@@ -281,6 +282,7 @@
     var gewaehlt = {};
     function render() {
       var liste = fach.themen.map(function (t, i) {
+        if (!t.aufgaben || !t.aufgaben.length) return "";   // Tutor-Themen (lektionen) sind nicht kombinierbar
         var an = !!gewaehlt[i];
         return '<div class="card" data-pick="' + i + '" style="display:flex;align-items:center;gap:12px;' +
           (an ? "border-color:var(--akzent);background:var(--akzent-bg)" : "") + '">' +
@@ -289,7 +291,7 @@
           '<p class="muted" style="margin:2px 0 0">' + (t.seiten ? t.seiten + " · " : "") + t.aufgaben.length + " Aufgaben</p></div></div>";
       }).join("");
       var anzahl = 0, count = 0;
-      Object.keys(gewaehlt).forEach(function (k) { if (gewaehlt[k]) { anzahl++; count += fach.themen[k].aufgaben.length; } });
+      Object.keys(gewaehlt).forEach(function (k) { if (gewaehlt[k]) { anzahl++; count += (fach.themen[k].aufgaben || []).length; } });
       app.innerHTML =
         topbar(fach.fach, "Für eine Arbeit lernen", true) +
         '<p class="muted" style="margin-bottom:14px">Wähle die Themen/Seiten, die in der Arbeit drankommen. Daraus baue ich dir ein gemischtes Lernset.</p>' +
@@ -301,7 +303,7 @@
       });
       document.getElementById("start").onclick = function () {
         var aufgaben = [];
-        fach.themen.forEach(function (t, i) { if (gewaehlt[i]) aufgaben = aufgaben.concat(t.aufgaben); });
+        fach.themen.forEach(function (t, i) { if (gewaehlt[i] && t.aufgaben) aufgaben = aufgaben.concat(t.aufgaben); });
         if (!aufgaben.length) return;
         starteQuiz({ titel: "Lernset · " + fach.fach, aufgaben: mische(aufgaben) });
       };
@@ -309,23 +311,26 @@
     render();
   }
 
+  // Rendert einen Erklär-Abschnitt (text / schritte / punkte) als Karte
+  function abschnittHTML(s) {
+    var inner = "";
+    if (s.text) inner += '<p style="font-size:16px;line-height:1.65;margin:0 0 4px">' + s.text + "</p>";
+    if (s.schritte) inner += '<div class="steps" style="margin-top:8px">' + s.schritte.map(function (x, i) {
+      return '<div class="step"><span class="n">' + (i + 1) + "</span>" + x + "</div>";
+    }).join("") + "</div>";
+    if (s.punkte) inner += '<ul style="margin:8px 0 0;padding-left:20px;line-height:1.7">' +
+      s.punkte.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>";
+    return '<div class="intro-box" style="margin-bottom:14px">' +
+      (s.titel ? '<h3 style="margin:0 0 10px;font-size:17px">' + s.titel + "</h3>" : "") + inner + "</div>";
+  }
+
   // ---------- "So gehst du vor": Strategie/Erklärung zum Lesen ----------
   function zeigeLernweg(thema) {
-    var teile = (thema.lernweg || []).map(function (s) {
-      var inner = "";
-      if (s.text) inner += '<p style="font-size:16px;line-height:1.65;margin:0 0 4px">' + s.text + "</p>";
-      if (s.schritte) inner += '<div class="steps" style="margin-top:8px">' + s.schritte.map(function (x, i) {
-        return '<div class="step"><span class="n">' + (i + 1) + "</span>" + x + "</div>";
-      }).join("") + "</div>";
-      if (s.punkte) inner += '<ul style="margin:8px 0 0;padding-left:20px;line-height:1.7">' +
-        s.punkte.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>";
-      return '<div class="intro-box" style="margin-bottom:14px"><h3 style="margin:0 0 10px;font-size:17px">' + s.titel + "</h3>" + inner + "</div>";
-    }).join("");
     var hatAufgaben = thema.aufgaben && thema.aufgaben.length;
     app.innerHTML =
       topbar(thema.titel, "So gehst du vor", true) +
       (thema.wozu ? '<div class="prereq" style="margin-bottom:14px">💡 ' + thema.wozu + "</div>" : "") +
-      teile +
+      (thema.lernweg || []).map(abschnittHTML).join("") +
       (hatAufgaben
         ? '<button class="btn btn-primary" id="ueben">Jetzt üben →</button>'
         : '<button class="btn btn-soft" id="ueben">Verstanden</button>');
@@ -333,6 +338,134 @@
     document.getElementById("ueben").onclick = function () {
       if (hatAufgaben) starteQuiz(thema); else zeigeThemen();
     };
+  }
+
+  // ---------- Interaktiver Tutor: kleine Lektionen (erklären → prüfen → nachfragen) ----------
+  function starteTutor(thema) {
+    var lekts = thema.lektionen;
+    var i = 0;
+    var EP = (window.SCHULWEG_CONFIG || {}).kiEndpoint;
+    var fachName = (window.SCHULWEG.faecher[state.fachKey] || {}).fach || "";
+
+    function naechste() { if (i < lekts.length - 1) { i++; zeigeLektion(); } else zeigeFertig(); }
+
+    function frageKastenHTML() {
+      return '<div class="intro-box" style="margin-top:16px;background:var(--akzent-bg)">' +
+        '<div style="font-weight:600;color:var(--akzent-text);margin-bottom:8px">🙋 Etwas unklar? Frag den Tutor</div>' +
+        '<textarea id="frage-in" class="text-in" rows="2" placeholder="Deine Frage …"></textarea>' +
+        '<button class="btn btn-soft" id="frage-btn" style="margin-top:8px">Frage senden</button><div id="frage-out"></div></div>';
+    }
+    function wireFrage(kontext) {
+      var btn = document.getElementById("frage-btn"), inp = document.getElementById("frage-in"), out = document.getElementById("frage-out");
+      if (!btn) return;
+      btn.onclick = function () {
+        var q = (inp.value || "").trim(); if (!q) return;
+        if (!EP) { out.innerHTML = '<p class="muted" style="margin-top:8px">Die Tutor-Frage braucht die KI (gerade nicht aktiv).</p>'; return; }
+        btn.disabled = true; out.innerHTML = '<p class="muted" style="margin-top:8px">🤖 Tutor denkt nach …</p>';
+        fetch(EP, { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ modus: "frage", fach: fachName, klasse: state.profil.klasse, thema: thema.titel, kontext: kontext, frage_text: q })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          out.innerHTML = '<div class="analyse" style="margin-top:10px"><div class="head">🤖 Tutor</div><p>' + (d.analyse || "…") + "</p></div>";
+          btn.disabled = false;
+        }).catch(function () { out.innerHTML = '<p class="muted" style="margin-top:8px">Gerade nicht erreichbar.</p>'; btn.disabled = false; });
+      };
+    }
+
+    function kontextVon(L) {
+      return L.titel + " — " + (L.erklaerung || []).map(function (s) {
+        return (s.text || "") + (s.punkte ? " " + s.punkte.join(" ") : "") + (s.schritte ? " " + s.schritte.join(" ") : "");
+      }).join(" ");
+    }
+
+    function zeigeLektion() {
+      var L = lekts[i], c = L.check, kontext = kontextVon(L), koerper = "";
+      if (c) {
+        if (c.typ === "mc") koerper = '<div class="options">' + c.antworten.map(function (o) {
+          return '<button class="opt" data-val="' + o.replace(/"/g, "&quot;") + '">' + o + "</button>";
+        }).join("") + "</div>";
+        else if (c.typ === "freitext") koerper = '<textarea id="ein" class="text-in" rows="3" placeholder="Deine Antwort …"></textarea>' +
+          (c.tipp ? '<p class="hint-input">💡 ' + c.tipp + "</p>" : "");
+        else koerper = '<input id="ein" class="text-in" autocapitalize="none" autocorrect="off" autocomplete="off" placeholder="Antwort" />';
+      }
+      app.innerHTML =
+        topbar(thema.titel, "Lektion " + (i + 1) + " von " + lekts.length, true) +
+        '<h2 style="font-size:19px;margin:0 0 12px">' + L.titel + "</h2>" +
+        (L.erklaerung || []).map(abschnittHTML).join("") +
+        (c
+          ? '<div class="q-card"><p class="q-frage" style="font-size:18px">' + c.frage + "</p>" + koerper +
+            '<button class="btn btn-primary" id="pruef" disabled>' + (c.typ === "freitext" ? "Abschicken" : "Prüfen") + "</button>" +
+            '<div class="feedback" id="fb"></div></div>'
+          : '<button class="btn btn-primary" id="weiter2">Weiter →</button>') +
+        frageKastenHTML();
+      app.querySelector(".back").onclick = zeigeThemen;
+      wireFrage(kontext);
+      if (!c) { document.getElementById("weiter2").onclick = naechste; return; }
+
+      var gew = null, pruef = document.getElementById("pruef");
+      if (c.typ === "mc") {
+        app.querySelectorAll(".opt").forEach(function (b) {
+          b.onclick = function () {
+            app.querySelectorAll(".opt").forEach(function (x) { x.classList.remove("sel"); });
+            b.classList.add("sel"); gew = b.dataset.val; pruef.disabled = false;
+          };
+        });
+      } else {
+        var inp = document.getElementById("ein");
+        inp.oninput = function () { gew = inp.value; pruef.disabled = !inp.value.trim(); };
+      }
+      pruef.onclick = function () {
+        if (c.typ === "freitext") { freitextCheck(c, gew); return; }
+        var ok = c.typ === "text" ? textRichtig(gew, c) : istRichtig(gew, c.richtig);
+        pruef.style.display = "none";
+        if (c.typ === "mc") app.querySelectorAll(".opt").forEach(function (b) {
+          b.disabled = true;
+          if (b.dataset.val === c.richtig) b.classList.add("ok");
+          else if (b.dataset.val === gew) b.classList.add("no");
+        });
+        var fb = document.getElementById("fb");
+        if (ok) {
+          fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Genau! ' + (c.erklaerung || "") + "</span></div>" +
+            '<button class="btn btn-primary" id="weiter2">Weiter →</button>';
+          document.getElementById("weiter2").onclick = naechste;
+        } else {
+          var diag = fehlerText(c.fehler, gew) || c.erklaerung || "Schau nochmal in die Erklärung oben.";
+          fb.innerHTML = '<div class="row-result"><span class="pill no">🔄 Fast – schau nochmal</span></div>' +
+            '<div class="analyse"><p>' + diag + "</p></div>" +
+            '<button class="btn btn-soft" id="retry" style="margin-top:12px">Nochmal versuchen</button>';
+          document.getElementById("retry").onclick = function () { zeigeLektion(); };
+        }
+      };
+    }
+
+    function freitextCheck(c, text) {
+      var pruef = document.getElementById("pruef"); pruef.style.display = "none";
+      var fb = document.getElementById("fb"); fb.innerHTML = '<p class="muted">🤖 Tutor schaut sich deine Antwort an …</p>';
+      function done(html) {
+        fb.innerHTML = html + '<button class="btn btn-primary" id="weiter2" style="margin-top:12px">Weiter →</button>';
+        document.getElementById("weiter2").onclick = naechste;
+      }
+      var beispiel = c.musterloesung ? '<div class="analyse" style="background:var(--akzent-bg)"><div class="head" style="color:var(--akzent-text)">Beispiel</div><p style="color:var(--akzent-text)">' + c.musterloesung + "</p></div>" : "";
+      if (!EP) { done(beispiel); return; }
+      fetch(EP, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ modus: "freitext", fach: fachName, klasse: state.profil.klasse, thema: thema.titel, frage: c.frage, antwort: String(text), kriterien: c.kriterien || "" })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        var sch = (d.schritte || []).map(function (s, k) { return '<div class="step"><span class="n">' + (k + 1) + "</span>" + s + "</div>"; }).join("");
+        done('<div class="analyse" style="background:var(--richtig-bg)"><div class="head" style="color:#085041">🤖 Tutor-Feedback</div><p style="color:#085041">' +
+          (d.analyse || "Gut gemacht!") + "</p>" + (sch ? '<div class="steps">' + sch + "</div>" : "") + "</div>");
+      }).catch(function () { done('<p class="muted">Tutor gerade nicht erreichbar.</p>' + beispiel); });
+    }
+
+    function zeigeFertig() {
+      app.innerHTML =
+        topbar(thema.titel, "Geschafft!", true) +
+        '<div class="result-hero"><div class="big">🎉</div><p>Du hast den ganzen Tutor-Weg durchgearbeitet!</p></div>' +
+        '<div class="intro-box"><p>Du kennst jetzt den Bauplan: Einleitung (TATT) → Inhalt → Form → sprachliche Bilder &amp; Deutung → Stellungnahme.</p></div>' +
+        '<button class="btn btn-soft" id="zurueck">Zurück zu den Themen</button>';
+      app.querySelector(".back").onclick = zeigeThemen;
+      document.getElementById("zurueck").onclick = zeigeThemen;
+    }
+
+    zeigeLektion();
   }
 
   // ---------- Bildschirm 4: Intro ("Wozu brauche ich das") ----------

@@ -32,6 +32,8 @@ export default {
     const richtig = body.richtig || "";
     const antwort = body.antwort || "";
     const kriterien = body.kriterien || "";
+    const kontext = body.kontext || "";
+    const frageText = body.frage_text || "";
 
     const modus = body.modus || "erklaerung";
     let system, user;
@@ -49,6 +51,17 @@ export default {
         "Gib kurzes, ermutigendes Feedback: Was ist gut gelungen? Nenne danach 1 bis 2 konkrete Verbesserungen, " +
         "die sich an den genannten Kriterien orientieren (weise auch hin, wenn etwas Gefordertes fehlt oder etwas Unerwuenschtes wie eine eigene Meinung enthalten ist). " +
         'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1-2 Saetze Lob und Gesamteindruck","schritte":["Verbesserung 1","Verbesserung 2"]}';
+    } else if (modus === "frage") {
+      // Kind stellt dem Tutor eine Verstaendnisfrage zur aktuellen Lektion
+      system =
+        "Du bist ein geduldiger, freundlicher Tutor fuer das Fach " + fach + " fuer ein Kind in Klasse " + klasse +
+        " an einer Gesamtschule in NRW. Erklaere einfach, kindgerecht und ermutigend auf Deutsch, ohne Beschaemung.";
+      user =
+        "Das Kind lernt gerade: " + thema + ".\nKontext der Lektion: " + kontext +
+        "\nDas Kind fragt: '" + frageText + "'" +
+        "\n\nBeantworte GENAU diese Frage direkt, einfach und kindgerecht, am besten mit einem kurzen Beispiel. " +
+        "Mach KEINE Annahme darueber, was das Kind falsch macht. " +
+        'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"die direkte, einfache Antwort in 1 bis 3 Saetzen","schritte":["optional ein kurzes Beispiel"]}';
     } else if (modus === "neue_aufgabe") {
       // Eine neue, aehnliche Uebungsaufgabe zum selben Lernziel erzeugen
       system =
