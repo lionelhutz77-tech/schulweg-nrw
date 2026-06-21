@@ -130,7 +130,7 @@ window.SCHULWEG.faecher["deutsch-6"] = {
         {
           typ: "freitext",
           frage: "Schreibe eine kurze Inhaltszusammenfassung (3–4 Sätze) zum Gedicht 'Ich und mein Regenschirm'. Denk an: Titel, Autorin, Textart (Gedicht) und worum es geht.",
-          kriterien: "Präsens (Gegenwart); eigene Worte; KEINE eigene Meinung und keine Gefühle; Titel, Autorin und Textart (Gedicht) im Einleitungssatz genannt; Inhalt knapp und sachlich.",
+          kriterien: "Präsens (Gegenwart); eigene Worte; KEINE eigene Meinung und keine Gefühle; im Einleitungssatz Titel, Autorin, Erscheinungsjahr (1921) und Textart (Gedicht) genannt (TATTE); Inhalt knapp und sachlich.",
           musterloesung: "In dem Gedicht 'Ich und mein Regenschirm' von Hanna Harnisch (1921) geht es um einen Regenschirm, der wie ein Mensch beschrieben wird. Wenn es regnet, ist der Schirm fröhlich und begleitet das Ich beim Spaziergang. Scheint die Sonne, ist der Schirm schlecht gelaunt und steht nutzlos herum. Am Ende stellt sich das Ich extra in den Regen, damit der Schirm wieder gute Laune bekommt.",
           tipp: "Präsens, eigene Worte, keine Meinung. Beginne mit einem Einleitungssatz (Titel, Autorin, Gedicht)."
         },
@@ -152,7 +152,7 @@ window.SCHULWEG.faecher["deutsch-6"] = {
           titel: "1. Die Aufgabe aufschlüsseln",
           erklaerung: [
             { text: "Bevor du losschreibst, schlüssle die Aufgabe auf. Markiere die OPERATOREN – das sind die Tu-Wörter wie 'untersuche', 'erkläre', 'beschreibe', 'nimm Stellung'. Jeder Operator sagt dir, WAS du tun sollst." },
-            { titel: "Der rote Faden", text: "Eine Gedichtuntersuchung folgt fast immer dieser Reihenfolge: Einleitung (TATT) → Inhalt → Form → sprachliche Bilder & Deutung → Stellungnahme. TATT steht für Titel, Autor, Textsorte, Thema." }
+            { titel: "Der rote Faden", text: "Eine Gedichtuntersuchung folgt fast immer dieser Reihenfolge: Einleitung (TATT) → Inhalt → Form → sprachliche Bilder & Deutung → Stellungnahme. TATT steht für Titel, Autor, Textsorte, Thema. (Steht ein Erscheinungsjahr dabei, wird daraus TATTE – dazu mehr in Lektion 2.)" }
           ],
           check: {
             typ: "mc", frage: "Wofür steht TATT im Einleitungssatz?",
@@ -163,17 +163,18 @@ window.SCHULWEG.faecher["deutsch-6"] = {
           }
         },
         {
-          titel: "2. Der Einleitungssatz (TATT)",
+          titel: "2. Der Einleitungssatz (TATT / TATTE)",
           erklaerung: [
-            { text: "Der Einleitungssatz nennt in EINEM Satz: Titel (in Anführungszeichen), Autor(in), Textsorte (Gedicht) und worum es geht (Thema) – alles im Präsens." },
-            { titel: "Beispiel", text: "In dem Gedicht 'Sturmnacht' von Lena Berg geht es um einen nächtlichen Sturm, der ein kleines Dorf erschreckt." }
+            { text: "Der Einleitungssatz nennt in EINEM Satz: Titel (in Anführungszeichen), Autor(in), Textsorte (Gedicht) und worum es geht (Thema) – alles im Präsens. Merkhilfe: TATT." },
+            { titel: "Wenn ein Jahr dabeisteht: TATTE", text: "Steht beim Gedicht ein Erscheinungsjahr, gehört es auch in den Einleitungssatz! Dann wird aus TATT → TATTE (das E steht für Erscheinungsjahr). Also: Titel, Autor, Textsorte, Thema UND das Jahr." },
+            { titel: "Beispiel mit Jahr", text: "In dem Gedicht 'Sturmnacht' von Lena Berg aus dem Jahr 1995 geht es um einen nächtlichen Sturm, der ein kleines Dorf erschreckt." }
           ],
           check: {
             typ: "freitext",
-            frage: "Schreibe einen Einleitungssatz für ein (erfundenes) Gedicht mit dem Titel 'Der erste Schnee' von Tom Velten, in dem es um einen Jungen geht, der sich über den ersten Schnee freut.",
-            kriterien: "Enthält Titel, Autor, Textsorte (Gedicht) und Thema; im Präsens; ein einziger Satz.",
-            musterloesung: "In dem Gedicht 'Der erste Schnee' von Tom Velten geht es um einen Jungen, der sich über den ersten Schnee des Winters freut.",
-            tipp: "Titel in Anführungszeichen, Autor, 'Gedicht', Thema – im Präsens."
+            frage: "Schreibe einen Einleitungssatz für ein (erfundenes) Gedicht mit dem Titel 'Der erste Schnee' von Tom Velten aus dem Jahr 1987, in dem es um einen Jungen geht, der sich über den ersten Schnee freut.",
+            kriterien: "Enthält Titel, Autor, Textsorte (Gedicht), das Erscheinungsjahr (1987) und das Thema; im Präsens; ein einziger Satz.",
+            musterloesung: "In dem Gedicht 'Der erste Schnee' von Tom Velten aus dem Jahr 1987 geht es um einen Jungen, der sich über den ersten Schnee des Winters freut.",
+            tipp: "Titel, Autor, 'Gedicht', das Erscheinungsjahr und das Thema – im Präsens."
           }
         },
         {
