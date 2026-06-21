@@ -258,7 +258,11 @@
       '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>';
     app.querySelector(".back").onclick = zeigeFaecher;
     app.querySelectorAll("[data-thema]").forEach(function (n) {
-      n.onclick = function () { state.thema = fach.themen[+n.dataset.thema]; zeigeIntro(); };
+      n.onclick = function () {
+        var t = fach.themen[+n.dataset.thema];
+        state.thema = t;
+        if (t.lernweg) zeigeLernweg(t); else zeigeIntro();
+      };
     });
     document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
   }
@@ -303,6 +307,32 @@
       };
     }
     render();
+  }
+
+  // ---------- "So gehst du vor": Strategie/Erklärung zum Lesen ----------
+  function zeigeLernweg(thema) {
+    var teile = (thema.lernweg || []).map(function (s) {
+      var inner = "";
+      if (s.text) inner += '<p style="font-size:16px;line-height:1.65;margin:0 0 4px">' + s.text + "</p>";
+      if (s.schritte) inner += '<div class="steps" style="margin-top:8px">' + s.schritte.map(function (x, i) {
+        return '<div class="step"><span class="n">' + (i + 1) + "</span>" + x + "</div>";
+      }).join("") + "</div>";
+      if (s.punkte) inner += '<ul style="margin:8px 0 0;padding-left:20px;line-height:1.7">' +
+        s.punkte.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>";
+      return '<div class="intro-box" style="margin-bottom:14px"><h3 style="margin:0 0 10px;font-size:17px">' + s.titel + "</h3>" + inner + "</div>";
+    }).join("");
+    var hatAufgaben = thema.aufgaben && thema.aufgaben.length;
+    app.innerHTML =
+      topbar(thema.titel, "So gehst du vor", true) +
+      (thema.wozu ? '<div class="prereq" style="margin-bottom:14px">💡 ' + thema.wozu + "</div>" : "") +
+      teile +
+      (hatAufgaben
+        ? '<button class="btn btn-primary" id="ueben">Jetzt üben →</button>'
+        : '<button class="btn btn-soft" id="ueben">Verstanden</button>');
+    app.querySelector(".back").onclick = zeigeThemen;
+    document.getElementById("ueben").onclick = function () {
+      if (hatAufgaben) starteQuiz(thema); else zeigeThemen();
+    };
   }
 
   // ---------- Bildschirm 4: Intro ("Wozu brauche ich das") ----------
@@ -489,7 +519,7 @@
             modus: "freitext",
             fach: (window.SCHULWEG.faecher[state.fachKey] || {}).fach || "",
             klasse: state.profil.klasse, thema: thema.titel,
-            frage: a.frage, antwort: String(text)
+            frage: a.frage, antwort: String(text), kriterien: a.kriterien || ""
           })
         }).then(function (r) { return r.json(); }).then(function (d) {
           var schritte = (d.schritte || []).map(function (s, i) {

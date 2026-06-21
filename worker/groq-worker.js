@@ -31,6 +31,7 @@ export default {
     const frage = body.frage || "";
     const richtig = body.richtig || "";
     const antwort = body.antwort || "";
+    const kriterien = body.kriterien || "";
 
     const modus = body.modus || "erklaerung";
     let system, user;
@@ -38,13 +39,15 @@ export default {
     if (modus === "freitext") {
       // Offene Schreibaufgabe wohlwollend bewerten (kein richtig/falsch)
       system =
-        "Du bist ein freundlicher, ermutigender Englisch-Lernhelfer fuer ein Kind in Klasse " + klasse +
+        "Du bist ein freundlicher, ermutigender Lernhelfer fuer das Fach " + fach + " fuer ein Kind in Klasse " + klasse +
         " an einer Gesamtschule in Nordrhein-Westfalen. Bewerte den geschriebenen Text wohlwollend, " +
         "ohne Beschaemung, in der Du-Form. Antworte auf Deutsch.";
       user =
-        "Aufgabe: " + frage + "\nDas Kind hat geschrieben:\n\"" + antwort + "\"\n\n" +
-        "Gib kurzes, ermutigendes Feedback: Was ist gut gelungen? Nenne danach 1 bis 2 konkrete, einfache " +
-        "Verbesserungen (Grammatik, fehlende geforderte Woerter, vollstaendige Saetze). " +
+        "Aufgabe: " + frage +
+        (kriterien ? "\nDie Loesung soll diese Kriterien erfuellen: " + kriterien : "") +
+        "\nDas Kind hat geschrieben:\n\"" + antwort + "\"\n\n" +
+        "Gib kurzes, ermutigendes Feedback: Was ist gut gelungen? Nenne danach 1 bis 2 konkrete Verbesserungen, " +
+        "die sich an den genannten Kriterien orientieren (weise auch hin, wenn etwas Gefordertes fehlt oder etwas Unerwuenschtes wie eine eigene Meinung enthalten ist). " +
         'Antworte AUSSCHLIESSLICH als JSON: {"analyse":"1-2 Saetze Lob und Gesamteindruck","schritte":["Verbesserung 1","Verbesserung 2"]}';
     } else if (modus === "neue_aufgabe") {
       // Eine neue, aehnliche Uebungsaufgabe zum selben Lernziel erzeugen
