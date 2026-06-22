@@ -404,6 +404,34 @@ window.SCHULWEG.faecher["englisch-6"] = {
           }
         }
       ]
+    },
+    {
+      id: "aufarbeitung",
+      titel: "Aufarbeitung: deine Lernfelder",
+      seiten: "gezielt aus deinen letzten Arbeiten",
+      voraussetzung: "Grundwortschatz – wir schließen gezielt Lücken",
+      intro: "Diese Übungen sind genau auf deine letzten Englischarbeiten zugeschnitten: Simple Past (auch unregelmäßige Verben), was/were und die Verneinung, und die richtigen Präpositionen. Keine Sorge – das kriegen wir Stück für Stück hin.",
+      aufgaben: [
+        { typ: "text", frage: "Past tense of 'find': Yesterday I ___ my keys.", richtig: "found", erklaerung: "'find' ist unregelmäßig: find → found.", schritte: ["find ist unregelmäßig.", "find → found."], fehler: { "finded": "'find' ist unregelmäßig: find → found (nicht 'finded').", "find": "Es ist Vergangenheit: find → found." } },
+        { typ: "text", frage: "Past tense of 'make': She ___ a cake.", richtig: "made", erklaerung: "make → made (unregelmäßig).", schritte: ["make ist unregelmäßig.", "make → made."], fehler: { "maked": "Unregelmäßig: make → made.", "maled": "make → made (nicht 'maled')." } },
+        { typ: "text", frage: "Past tense of 'drive': We ___ to the city.", richtig: "drove", erklaerung: "drive → drove (unregelmäßig).", schritte: ["drive ist unregelmäßig.", "drive → drove."], fehler: { "drived": "Unregelmäßig: drive → drove.", "drive": "Vergangenheit: drive → drove." } },
+        { typ: "text", frage: "Past tense of 'go': They ___ to school.", richtig: "went", erklaerung: "go → went (unregelmäßig).", schritte: ["go ist unregelmäßig.", "go → went."], fehler: { "goed": "Unregelmäßig: go → went.", "goes": "Vergangenheit: go → went." } },
+        { typ: "text", frage: "Past tense of 'buy': He ___ a new bike.", richtig: "bought", erklaerung: "buy → bought (unregelmäßig).", schritte: ["buy ist unregelmäßig.", "buy → bought."], fehler: { "buyed": "Unregelmäßig: buy → bought.", "buy": "Vergangenheit: bought." } },
+        { typ: "mc", frage: "Which is correct? Yesterday I ___ my friend.", antworten: ["meeted", "met", "meet"], richtig: "met", erklaerung: "meet → met (unregelmäßig).", schritte: ["meet ist unregelmäßig.", "meet → met."], fehler: { "meeted": "Unregelmäßig: meet → met (nicht 'meeted').", "meet": "Vergangenheit: met." } },
+        { typ: "mc", frage: "The weather ___ nice yesterday.", antworten: ["was", "were"], richtig: "was", erklaerung: "'weather' ist Singular → was.", schritte: ["weather = Einzahl.", "Einzahl → was."], fehler: { "were": "'weather' ist Singular → was." } },
+        { typ: "mc", frage: "We ___ at home all day.", antworten: ["was", "were"], richtig: "were", erklaerung: "we → were.", schritte: ["we = Mehrzahl.", "Mehrzahl → were."], fehler: { "was": "Bei 'we' nimmt man were." } },
+        { typ: "mc", frage: "How ___ your holidays?", antworten: ["was", "were"], richtig: "were", erklaerung: "'holidays' ist Mehrzahl → were.", schritte: ["holidays = Mehrzahl.", "→ were."], fehler: { "was": "'holidays' ist Mehrzahl → were." } },
+        { typ: "text", frage: "Make it negative: 'It was cold.' → 'It ___ cold.'", richtig: "wasn't", akzeptiert: ["was not"], erklaerung: "was + not = wasn't (Singular).", schritte: ["it = Einzahl → was.", "was + not = wasn't."], fehler: { "weren't": "'it' ist Singular → wasn't.", "not was": "Reihenfolge: was + not = wasn't." } },
+        { typ: "text", frage: "Make it negative: 'They were happy.' → 'They ___ happy.'", richtig: "weren't", akzeptiert: ["were not"], erklaerung: "were + not = weren't (Mehrzahl).", schritte: ["they = Mehrzahl → were.", "were + not = weren't."], fehler: { "wasn't": "'they' ist Mehrzahl → weren't.", "not were": "Reihenfolge: were + not = weren't." } },
+        { typ: "text", frage: "Make it negative: 'She found it.' → 'She ___ find it.'", richtig: "didn't", akzeptiert: ["did not"], erklaerung: "Verneinung im Past: didn't + Grundform (find!).", schritte: ["Verneinung mit didn't.", "Danach die Grundform: didn't find."], fehler: { "didn't found": "Nach 'didn't' kommt die GRUNDFORM: didn't find.", "not found": "Nutze didn't + Grundform: didn't find." } },
+        { typ: "mc", frage: "Which is the correct negative? 'I ___ my homework.'", antworten: ["didn't do", "didn't did", "not did"], richtig: "didn't do", erklaerung: "didn't + Grundform (do).", schritte: ["Verneinung: didn't.", "+ Grundform: didn't do."], fehler: { "didn't did": "Nach didn't die Grundform: didn't do.", "not did": "Verneinung im Past: didn't + Grundform." } },
+        { typ: "text", frage: "Make it negative: 'We went home.' → 'We ___ go home.'", richtig: "didn't", akzeptiert: ["did not"], erklaerung: "didn't + Grundform (go).", schritte: ["Verneinung: didn't.", "Danach Grundform: didn't go."], fehler: { "didn't went": "Nach didn't die Grundform: didn't go." } },
+        { typ: "mc", frage: "We went ___ Disneyland.", antworten: ["to", "in", "at"], richtig: "to", erklaerung: "go TO a place.", schritte: ["Bewegung zu einem Ort.", "go to Disneyland."], fehler: { "in": "Man sagt go TO a place (nicht 'in').", "at": "Bei Bewegung: go to." } },
+        { typ: "mc", frage: "We travelled ___ bus.", antworten: ["by", "with", "in"], richtig: "by", erklaerung: "Verkehrsmittel: by bus/car/train.", schritte: ["Verkehrsmittel → by.", "by bus."], fehler: { "with": "Verkehrsmittel: by bus (nicht 'with the bus').", "in": "Man sagt by bus." } },
+        { typ: "mc", frage: "Which sentence is correct?", antworten: ["On Saturday I met my friends.", "On Saturday I met with my friends.", "On Saturday I meet my friends."], richtig: "On Saturday I met my friends.", erklaerung: "'meet' braucht kein 'with', und es ist Vergangenheit (met).", schritte: ["meet → met (Vergangenheit).", "Kein 'with' nötig."], fehler: { "On Saturday I met with my friends.": "'meet' braucht kein 'with': I met my friends.", "On Saturday I meet my friends.": "Es ist Vergangenheit: met." } },
+        { typ: "freitext", frage: "Correct this sentence: 'Yesterday we drive to the city and I finded my friend.'", kriterien: "beide Verben in der richtigen Simple-Past-Form (drove, found); Satz bleibt sonst sinnvoll und vollständig.", musterloesung: "Yesterday we drove to the city and I found my friend.", tipp: "Achte auf die unregelmäßigen Verben: drive → drove, find → found." },
+        { typ: "freitext", frage: "Write 3 sentences about your last weekend. Use the simple past.", kriterien: "drei vollständige Sätze; durchgehend Simple Past; unregelmäßige Verben in der richtigen Form; sinnvoll.", musterloesung: "Last weekend I went to my grandma. We played games and ate some cake. The weather was sunny, so we were happy.", tipp: "Vergangenheit! Denk an went, played, was/were und richtige unregelmäßige Formen." }
+      ]
     }
   ]
 };
