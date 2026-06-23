@@ -527,7 +527,61 @@
       });
     }
 
+    // Satzglieder markieren: Wörter antippen, die das gefragte Satzglied bilden
+    function zeigeMarkierenAufgabe(a) {
+      var woerter = a.satz.split(" "), sel = {};
+      app.innerHTML =
+        topbar(thema.titel, null, true) +
+        '<p class="q-meta">Aufgabe ' + idx + " · noch " + (warteschlange.length + 1) + " offen</p>" +
+        '<div class="q-card"><p class="q-frage" style="font-size:18px">' + a.frage + "</p>" +
+        (a.tipp ? '<p class="hint-input" style="margin:0 0 12px">💡 ' + a.tipp + "</p>" : "") +
+        '<div id="msatz" style="display:flex;flex-wrap:wrap;gap:8px;font-size:20px;line-height:1.9">' +
+        woerter.map(function (w, wi) {
+          return '<span class="wort" data-wi="' + wi + '" style="padding:4px 10px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer">' + w + "</span>";
+        }).join("") + "</div>" +
+        '<button class="btn btn-primary" id="pruefen" disabled style="margin-top:18px">Überprüfen</button>' +
+        '<div class="feedback" id="fb"></div></div>';
+      app.querySelector(".back").onclick = function () { if (confirm("Übung beenden?")) zeigeThemen(); };
+      var pruefBtn = document.getElementById("pruefen");
+      app.querySelectorAll(".wort").forEach(function (s) {
+        s.onclick = function () {
+          var wi = +s.dataset.wi;
+          if (sel[wi]) { delete sel[wi]; s.style.borderColor = "var(--border)"; s.style.background = ""; }
+          else { sel[wi] = true; s.style.borderColor = "var(--akzent)"; s.style.background = "var(--akzent-bg)"; }
+          pruefBtn.disabled = Object.keys(sel).length === 0;
+        };
+      });
+      pruefBtn.onclick = function () {
+        var gewaehlt = Object.keys(sel).map(Number).sort(function (x, y) { return x - y; });
+        var soll = a.richtig.slice().sort(function (x, y) { return x - y; });
+        var ok = gewaehlt.length === soll.length && gewaehlt.every(function (v, k) { return v === soll[k]; });
+        beantwortet++;
+        if (ok && falschGehabt.indexOf(a) === -1) richtigErst++;
+        pruefBtn.style.display = "none";
+        app.querySelectorAll(".wort").forEach(function (s) {
+          var wi = +s.dataset.wi; s.style.cursor = "default";
+          if (soll.indexOf(wi) > -1) { s.style.borderColor = "var(--richtig)"; s.style.background = "var(--richtig-bg)"; }
+          else if (sel[wi]) { s.style.borderColor = "var(--falsch)"; s.style.background = "var(--falsch-bg)"; }
+        });
+        var fb = document.getElementById("fb");
+        if (ok) {
+          fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Richtig! ' + (a.erklaerung || "") + "</span></div>" +
+            '<button class="btn btn-primary" id="weiter">Weiter →</button>';
+        } else {
+          if (falschGehabt.indexOf(a) === -1) falschGehabt.push(a);
+          warteschlange.push(a);
+          var loesung = soll.map(function (wi) { return woerter[wi]; }).join(" ");
+          fb.innerHTML = '<div class="row-result"><span class="pill no">🔄 Versuch’s gleich nochmal</span>' +
+            '<span class="pill ok">Richtig: ' + loesung + "</span></div>" +
+            '<div class="analyse"><div class="head">✨ So findest du es</div><p>' + (a.erklaerung || "") + "</p></div>" +
+            '<button class="btn btn-primary" id="weiter" style="margin-top:14px">Verstanden, weiter →</button>';
+        }
+        document.getElementById("weiter").onclick = naechste;
+      };
+    }
+
     function zeigeAufgabe(a) {
+      if (a.typ === "markieren") return zeigeMarkierenAufgabe(a);
       var koerper, btnLabel = "Überprüfen";
       if (a.typ === "mc") {
         koerper = '<div class="options">' + a.antworten.map(function (opt) {
