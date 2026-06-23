@@ -132,6 +132,39 @@ window.SCHULWEG.faecher["deutsch-4"] = {
         { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Am Morgen", "trinkt", "Papa", "einen Kaffee"], praedikatIndex: 1, erklaerung: "„trinkt“ bleibt an 2. Stelle, egal was vorne beginnt." },
         { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Die Kinder", "bauen", "eine Sandburg"], praedikatIndex: 1, erklaerung: "„bauen“ steht an 2. Stelle." }
       ]
+    },
+    {
+      id: "satzglieder-profi",
+      titel: "Satzglieder: schwierigere Sätze (Profi)",
+      seiten: "eine Stufe schwerer",
+      voraussetzung: "die Grundübungen sicher können",
+      intro: "Jetzt wird's kniffliger: längere Sätze, mehrteilige Prädikate, zwei Objekte und Sätze, die nicht mit dem Subjekt beginnen. Lass dir Zeit – das ist genau die gezielte Vorbereitung.",
+      aufgaben: [
+        { typ: "markieren", frage: "Markiere das Prädikat (mehrteilig!).", satz: "Gestern hat der Postbote meiner Oma ein großes Paket gebracht.", richtig: [1, 9], erklaerung: "Mehrteiliges Prädikat: hat … gebracht. Beide Teile gehören dazu.", tipp: "Zwei Verb-Teile: hat … gebracht." },
+        { typ: "markieren", frage: "Markiere das Dativobjekt (Wem?).", satz: "Gestern hat der Postbote meiner Oma ein großes Paket gebracht.", richtig: [4, 5], erklaerung: "Wem hat der Postbote das Paket gebracht? → meiner Oma.", tipp: "Frag: Wem ...?" },
+        { typ: "markieren", frage: "Markiere das Akkusativobjekt (Wen oder was?).", satz: "Gestern hat der Postbote meiner Oma ein großes Paket gebracht.", richtig: [6, 7, 8], erklaerung: "Wen oder was hat er gebracht? → ein großes Paket (alle drei Wörter).", tipp: "Frag: Wen oder was ...?" },
+        { typ: "markieren", frage: "Markiere das Prädikat (mehrteilig!).", satz: "In den Ferien wollen wir unsere Großeltern besuchen.", richtig: [3, 7], erklaerung: "Mehrteiliges Prädikat: wollen … besuchen (Modalverb + Vollverb).", tipp: "Modalverb + Vollverb: wollen … besuchen." },
+        { typ: "markieren", frage: "Markiere das Subjekt.", satz: "Nach dem Essen spült mein Vater das Geschirr.", richtig: [4, 5], erklaerung: "Wer spült? → mein Vater (auch wenn es nicht am Satzanfang steht).", tipp: "Frag: Wer spült?" },
+        { typ: "markieren", frage: "Markiere das Subjekt.", satz: "Am Wochenende fahren die Kinder mit dem Bus in die Stadt.", richtig: [3, 4], erklaerung: "Wer fährt? → die Kinder.", tipp: "Das Subjekt steht hier hinter dem Verb." },
+        { typ: "markieren", frage: "Markiere das Dativobjekt (Wem?).", satz: "Der Lehrer erklärt den Schülern die schwierige Aufgabe.", richtig: [3, 4], erklaerung: "Wem erklärt der Lehrer die Aufgabe? → den Schülern.", tipp: "Frag: Wem ...?" },
+        { typ: "markieren", frage: "Markiere das Akkusativobjekt (Wen oder was?).", satz: "Der Lehrer erklärt den Schülern die schwierige Aufgabe.", richtig: [5, 6, 7], erklaerung: "Wen oder was erklärt er? → die schwierige Aufgabe.", tipp: "Frag: Wen oder was ...?" },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Am Samstag", "besucht", "meine Schwester", "ihre Freundin"], praedikatIndex: 1, erklaerung: "„besucht“ bleibt an 2. Stelle, auch wenn „Am Samstag“ vorne steht." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Nach der Schule", "macht", "Tom", "seine Hausaufgaben"], praedikatIndex: 1, erklaerung: "„macht“ steht an 2. Stelle." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Der nette Nachbar", "gießt", "jeden Tag", "die Blumen"], praedikatIndex: 1, erklaerung: "„gießt“ an 2. Stelle; davor das ganze Subjekt „Der nette Nachbar“." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz (mit zwei Objekten).", teile: ["Heute", "schenkt", "die Oma", "dem Kind", "ein Eis"], praedikatIndex: 1, erklaerung: "„schenkt“ an 2. Stelle; danach Dativ (dem Kind) und Akkusativ (ein Eis)." }
+      ]
     }
+  ],
+  druckblatt: [
+    { frage: "Unterstreiche das Prädikat.", satz: "Der kleine Junge wirft den Ball.", richtig: [3] },
+    { frage: "Unterstreiche das Subjekt.", satz: "Im Wald singen die Vögel laut.", richtig: [3, 4] },
+    { frage: "Unterstreiche das Dativobjekt (Wem?).", satz: "Meine Schwester schreibt ihrer Freundin einen Brief.", richtig: [3, 4] },
+    { frage: "Unterstreiche das Akkusativobjekt (Wen oder was?).", satz: "Meine Schwester schreibt ihrer Freundin einen Brief.", richtig: [5, 6] },
+    { frage: "Unterstreiche das Akkusativobjekt.", satz: "Der Koch kocht eine leckere Suppe.", richtig: [3, 4, 5] },
+    { frage: "Unterstreiche das Subjekt.", satz: "Die Maus versteckt sich vor der Katze.", richtig: [0, 1] },
+    { frage: "Unterstreiche das Prädikat.", satz: "Der Bauer füttert die Tiere.", richtig: [2] },
+    { frage: "Unterstreiche das Dativobjekt (Wem?).", satz: "Tim gibt seinem Bruder das Spielzeug.", richtig: [2, 3] },
+    { frage: "Unterstreiche das Akkusativobjekt (Wen oder was?).", satz: "Tim gibt seinem Bruder das Spielzeug.", richtig: [4, 5] },
+    { frage: "Unterstreiche das Subjekt.", satz: "Nach dem Spiel trinken die Spieler Wasser.", richtig: [4, 5] }
   ]
 };

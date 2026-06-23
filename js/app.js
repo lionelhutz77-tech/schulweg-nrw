@@ -281,13 +281,20 @@
 
   // "Für eine Arbeit lernen": mehrere Themen/Seiten auswählen -> gemischtes Lernset
   function hatMarkieren(fach) {
+    if (fach.druckblatt && fach.druckblatt.length) return true;
     return fach.themen.some(function (t) { return (t.aufgaben || []).some(function (a) { return a.typ === "markieren"; }); });
   }
 
-  // Druckbares Arbeitsblatt aus den Markier-Sätzen (zum Ausdrucken / als PDF speichern)
+  // Druckbares Arbeitsblatt — bevorzugt ein eigenes Satz-Set (fach.druckblatt),
+  // damit es NICHT dieselben Sätze wie am Bildschirm enthält.
   function zeigeArbeitsblatt(fach) {
-    var saetze = [];
-    fach.themen.forEach(function (t) { (t.aufgaben || []).forEach(function (a) { if (a.typ === "markieren") saetze.push(a); }); });
+    var saetze;
+    if (fach.druckblatt && fach.druckblatt.length) {
+      saetze = fach.druckblatt.slice();
+    } else {
+      saetze = [];
+      fach.themen.forEach(function (t) { (t.aufgaben || []).forEach(function (a) { if (a.typ === "markieren") saetze.push(a); }); });
+    }
     saetze = mische(saetze);
     var datum = new Date().toLocaleDateString("de-DE");
     var aufg = saetze.map(function (a, i) {
