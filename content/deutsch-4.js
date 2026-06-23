@@ -118,9 +118,20 @@ window.SCHULWEG.faecher["deutsch-4"] = {
         { typ: "markieren", frage: "Markiere das Subjekt.", satz: "Die schwarze Katze schläft auf dem Sofa.", richtig: [0, 1, 2], erklaerung: "Frage: Wer schläft? → Die schwarze Katze.", tipp: "Frag: Wer schläft?" },
         { typ: "markieren", frage: "Markiere das Prädikat (es ist mehrteilig!).", satz: "Mein Bruder hat den Ball gefangen.", richtig: [2, 5], erklaerung: "Mehrteiliges Prädikat: hat (Hilfsverb) … gefangen (Vollverb). Beide Teile gehören dazu.", tipp: "Achte auf zwei Verb-Teile: hat … gefangen." }
       ]
+    },
+    {
+      id: "satz-bauen",
+      titel: "Sätze bauen (Umstellprobe)",
+      voraussetzung: "die Satzglieder erkennen können",
+      intro: "Tippe die Satzglieder der Reihe nach an, sodass ein richtiger Aussagesatz entsteht. Wichtig: Das gebeugte Verb steht an 2. Stelle. Oft gibt es mehrere richtige Lösungen!",
+      aufgaben: [
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Tom", "spielt", "im Garten"], praedikatIndex: 1, erklaerung: "Das Verb „spielt“ steht an 2. Stelle." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Der Hund", "frisst", "einen Knochen"], praedikatIndex: 1, erklaerung: "Das Verb „frisst“ steht an 2. Stelle." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Heute", "scheint", "die Sonne"], praedikatIndex: 1, erklaerung: "Auch wenn „Heute“ vorne steht: das Verb „scheint“ bleibt an 2. Stelle." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Anna", "schenkt", "ihrer Freundin", "ein Buch"], praedikatIndex: 1, erklaerung: "„schenkt“ steht an 2. Stelle, danach folgen die Objekte." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Am Morgen", "trinkt", "Papa", "einen Kaffee"], praedikatIndex: 1, erklaerung: "„trinkt“ bleibt an 2. Stelle, egal was vorne beginnt." },
+        { typ: "satzbau", frage: "Baue einen richtigen Aussagesatz.", teile: ["Die Kinder", "bauen", "eine Sandburg"], praedikatIndex: 1, erklaerung: "„bauen“ steht an 2. Stelle." }
+      ]
     }
   ]
 };
-
-// Auch unter Klasse 5 anbieten, falls Joris' Profil Klasse 5 ist
-window.SCHULWEG.faecher["deutsch-5"] = window.SCHULWEG.faecher["deutsch-4"];

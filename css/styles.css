@@ -167,6 +167,19 @@ input.zahl:focus { outline: none; border-color: var(--akzent); }
 .muted { color: var(--text-soft); font-size: 15px; }
 .center { text-align: center; }
 
+/* --- Druckbares Arbeitsblatt --- */
+.arbeitsblatt h2 { margin: 0 0 4px; }
+.arbeitsblatt h3 { margin: 0 0 8px; }
+.ab-meta { color: var(--text-soft); margin: 0 0 16px; }
+.ab-item { margin: 14px 0; font-size: 16px; }
+.ab-satz { border-bottom: 1px solid var(--text); padding: 10px 0 8px; font-size: 18px; }
+@media print {
+  .no-print, .topbar, .back, .btn { display: none !important; }
+  html, body, .app { background: #fff; color: #000; }
+  .arbeitsblatt { font-size: 13pt; }
+  .ab-satz { border-color: #000; }
+}
+
 /* --- Formular (Kind anlegen/bearbeiten) --- */
 .form-label { display: block; font-size: 14px; color: var(--text-soft); margin: 16px 0 8px; }
 .form-label:first-child { margin-top: 0; }

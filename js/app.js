@@ -256,7 +256,8 @@
     app.innerHTML =
       topbar(fach.fach, "Klasse " + fach.klasse + " · Thema wählen", true) +
       '<div class="grid">' + karten + "</div>" +
-      '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>';
+      '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>' +
+      (hatMarkieren(fach) ? '<button class="btn btn-soft" id="drucken" style="margin-top:10px">📄 Arbeitsblatt zum Ausdrucken</button>' : "");
     app.querySelector(".back").onclick = zeigeFaecher;
     app.querySelectorAll("[data-thema]").forEach(function (n) {
       n.onclick = function () {
@@ -266,6 +267,8 @@
       };
     });
     document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
+    var db = document.getElementById("drucken");
+    if (db) db.onclick = function () { zeigeArbeitsblatt(fach); };
   }
 
   function mische(arr) {
@@ -277,6 +280,36 @@
   }
 
   // "Für eine Arbeit lernen": mehrere Themen/Seiten auswählen -> gemischtes Lernset
+  function hatMarkieren(fach) {
+    return fach.themen.some(function (t) { return (t.aufgaben || []).some(function (a) { return a.typ === "markieren"; }); });
+  }
+
+  // Druckbares Arbeitsblatt aus den Markier-Sätzen (zum Ausdrucken / als PDF speichern)
+  function zeigeArbeitsblatt(fach) {
+    var saetze = [];
+    fach.themen.forEach(function (t) { (t.aufgaben || []).forEach(function (a) { if (a.typ === "markieren") saetze.push(a); }); });
+    saetze = mische(saetze);
+    var datum = new Date().toLocaleDateString("de-DE");
+    var aufg = saetze.map(function (a, i) {
+      return '<div class="ab-item"><b>' + (i + 1) + ".</b> " + a.frage + '<div class="ab-satz">' + a.satz + "</div></div>";
+    }).join("");
+    var loes = saetze.map(function (a, i) {
+      var w = a.satz.split(" ");
+      return "<div>" + (i + 1) + ". " + a.richtig.map(function (wi) { return w[wi]; }).join(" ") + "</div>";
+    }).join("");
+    app.innerHTML =
+      '<div class="no-print" style="display:flex;gap:10px;margin-bottom:14px"><button class="back" id="zur" aria-label="Zurück">←</button>' +
+      '<button class="btn btn-primary" id="druck" style="flex:1;margin:0">📄 Drucken / als PDF speichern</button></div>' +
+      '<div class="arbeitsblatt">' +
+      "<h2>Satzglieder – Arbeitsblatt</h2>" +
+      '<p class="ab-meta">Name: ______________________   Datum: ' + datum + "</p>" +
+      "<p>Unterstreiche in jedem Satz das gefragte Satzglied.</p>" +
+      aufg +
+      '<div style="page-break-before:always"><h3>Lösungen</h3>' + loes + "</div></div>";
+    document.getElementById("zur").onclick = zeigeThemen;
+    document.getElementById("druck").onclick = function () { window.print(); };
+  }
+
   function zeigeArbeitAuswahl() {
     var fach = window.SCHULWEG.faecher[state.fachKey];
     var gewaehlt = {};
@@ -580,7 +613,64 @@
       };
     }
 
+    // Satz bauen / Umstellprobe: Satzglied-Kärtchen in eine richtige Reihenfolge tippen
+    function zeigeSatzbauAufgabe(a) {
+      var teile = a.teile, praedikat = teile[a.praedikatIndex];
+      var pool = mische(teile.map(function (t, k) { return { t: t, i: k }; }));
+      var gebaut = [];
+      function render() {
+        var poolHTML = pool.map(function (c) { return '<button class="chip" data-pi="' + c.i + '">' + c.t + "</button>"; }).join("");
+        var bauHTML = gebaut.length
+          ? gebaut.map(function (c, k) { return '<button class="chip on" data-bi="' + k + '">' + (k + 1) + ". " + c.t + "</button>"; }).join("")
+          : '<span class="muted">Tippe die Satzglieder unten der Reihe nach an …</span>';
+        app.innerHTML =
+          topbar(thema.titel, null, true) +
+          '<p class="q-meta">Aufgabe ' + idx + " · noch " + (warteschlange.length + 1) + " offen</p>" +
+          '<div class="q-card"><p class="q-frage" style="font-size:18px">' + a.frage + "</p>" +
+          (a.tipp ? '<p class="hint-input" style="margin:0 0 10px">💡 ' + a.tipp + "</p>" : "") +
+          '<div id="bau" style="min-height:46px;display:flex;flex-wrap:wrap;gap:8px;padding:10px;border:1.5px dashed var(--border);border-radius:12px;margin-bottom:12px">' + bauHTML + "</div>" +
+          '<div id="pool" style="display:flex;flex-wrap:wrap;gap:8px">' + poolHTML + "</div>" +
+          '<button class="btn btn-primary" id="pruefen"' + (pool.length ? " disabled" : "") + ' style="margin-top:16px">Überprüfen</button>' +
+          '<div class="feedback" id="fb"></div></div>';
+        app.querySelector(".back").onclick = function () { if (confirm("Übung beenden?")) zeigeThemen(); };
+        app.querySelectorAll("#pool .chip").forEach(function (b) {
+          b.onclick = function () {
+            var pi = +b.dataset.pi, k = -1;
+            pool.forEach(function (c, idx2) { if (c.i === pi) k = idx2; });
+            if (k > -1) { gebaut.push(pool.splice(k, 1)[0]); render(); }
+          };
+        });
+        app.querySelectorAll("#bau .chip").forEach(function (b) {
+          b.onclick = function () { pool.push(gebaut.splice(+b.dataset.bi, 1)[0]); render(); };
+        });
+        document.getElementById("pruefen").onclick = pruefen;
+      }
+      function pruefen() {
+        document.getElementById("pruefen").style.display = "none";
+        beantwortet++;
+        var verbZweite = gebaut.length >= 2 && gebaut[1].t === praedikat;
+        var ok = gebaut.length === teile.length && verbZweite;
+        if (ok && falschGehabt.indexOf(a) === -1) richtigErst++;
+        var fb = document.getElementById("fb"), satz = gebaut.map(function (c) { return c.t; }).join(" ");
+        if (ok) {
+          fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Richtig! ' + satz + ".</span></div>" +
+            '<div class="analyse"><p>' + (a.erklaerung || "") + " Übrigens: Es gibt oft mehrere richtige Reihenfolgen – Hauptsache, das Verb steht an 2. Stelle.</p></div>" +
+            '<button class="btn btn-primary" id="weiter">Weiter →</button>';
+        } else {
+          if (falschGehabt.indexOf(a) === -1) falschGehabt.push(a);
+          warteschlange.push(a);
+          var grund = !verbZweite ? "Das gebeugte Verb („" + praedikat + "“) muss an 2. Stelle stehen." : "Du musst alle Satzglieder benutzen.";
+          fb.innerHTML = '<div class="row-result"><span class="pill no">🔄 Versuch’s gleich nochmal</span></div>' +
+            '<div class="analyse"><div class="head">✨ Tipp</div><p>' + grund + " Ein richtiges Beispiel: " + teile.join(" ") + ".</p></div>" +
+            '<button class="btn btn-primary" id="weiter" style="margin-top:14px">Verstanden, weiter →</button>';
+        }
+        document.getElementById("weiter").onclick = naechste;
+      }
+      render();
+    }
+
     function zeigeAufgabe(a) {
+      if (a.typ === "satzbau") return zeigeSatzbauAufgabe(a);
       if (a.typ === "markieren") return zeigeMarkierenAufgabe(a);
       var koerper, btnLabel = "Überprüfen";
       if (a.typ === "mc") {
