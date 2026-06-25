@@ -248,12 +248,52 @@ window.SCHULWEG.faecher["deutsch-6"] = {
           }
         },
         {
+          titel: "Noch mehr Stilmittel",
+          erklaerung: [
+            { text: "Neben Vergleich, Personifikation und Metapher gibt es weitere Stilmittel, die in Gedichten oft vorkommen:" },
+            { punkte: ["Alliteration: mehrere Wörter beginnen mit demselben Laut (z. B. 'Milch macht müde Männer munter').", "Hyperbel: eine starke Übertreibung (z. B. 'Ich habe einen Riesenhunger').", "Wiederholung: ein Wort oder eine Zeile wird wiederholt, um etwas zu betonen.", "Lautmalerei: Wörter, die ein Geräusch nachahmen (z. B. 'zisch', 'summ')."] }
+          ],
+          check: {
+            typ: "mc", frage: "'Wind und Wellen wüten wild.' – welches Stilmittel steckt darin?",
+            antworten: ["Alliteration", "Hyperbel", "Vergleich"],
+            richtig: "Alliteration",
+            erklaerung: "Mehrere Wörter beginnen mit demselben Laut (W) → Alliteration.",
+            fehler: { "Hyperbel": "Eine Hyperbel ist eine Übertreibung. Hier ist es der gleiche Anfangslaut → Alliteration.", "Vergleich": "Ein Vergleich hätte ein 'wie'. Hier zählt der gleiche Anfangslaut → Alliteration." }
+          }
+        },
+        {
           titel: "8. Dein Bauplan – fertig!",
           erklaerung: [
             { titel: "So gehst du jede Gedichtuntersuchung an", schritte: ["Aufgabe aufschlüsseln (Operatoren markieren).", "Einleitungssatz nach TATT.", "Inhalt zusammenfassen (Präsens, eigene Worte, keine Meinung).", "Form beschreiben (Strophen, Verse, Reimschema).", "Sprachliche Bilder + ihre Wirkung (Tabelle).", "Stellung nehmen – begründet."] },
             { text: "Tipp zum Schluss: Überarbeite deinen Text mit der Checkliste (Klartext S. 110)." }
           ]
         }
+      ]
+    },
+    {
+      id: "gedichte-profi",
+      titel: "Gedichte: mehr Übung (schwerer)",
+      seiten: "extra: Stilmittel, Reim & Form",
+      voraussetzung: "die Grundlagen (Vergleich/Personifikation/Metapher) kennen",
+      intro: "Ein großer Übungsfundus für die Arbeit: sprachliche Bilder (auch Alliteration & Hyperbel), Reimschema, Verse & Strophen, Wirkung deuten und Zusammenfassen. Lass dir Zeit und übe in Ruhe.",
+      aufgaben: [
+        { typ: "mc", frage: "'Der Mond ist eine Silbermünze am Himmel.' – welches sprachliche Bild ist das?", antworten: ["Metapher", "Vergleich", "Personifikation"], richtig: "Metapher", erklaerung: "Bildlicher Ausdruck OHNE 'wie' → Metapher.", schritte: ["Kein 'wie' vorhanden.", "Der Mond wird bildlich zu einer Silbermünze → Metapher."], fehler: { "Vergleich": "Ein Vergleich hätte ein 'wie' (z. B. 'wie eine Silbermünze').", "Personifikation": "Hier bekommt der Mond keine menschliche Handlung." } },
+        { typ: "mc", frage: "'Müde Möwen segeln über das Meer.' – welches Stilmittel steckt in den M-Wörtern?", antworten: ["Alliteration", "Vergleich", "Hyperbel"], richtig: "Alliteration", erklaerung: "Mehrere Wörter mit demselben Anfangslaut (M) → Alliteration.", schritte: ["Achte auf den Anfangslaut.", "Müde, Möwen, Meer beginnen mit M → Alliteration."], fehler: { "Vergleich": "Es gibt kein 'wie'.", "Hyperbel": "Es wird nichts übertrieben." } },
+        { typ: "mc", frage: "'Ich habe dir das schon tausendmal gesagt!' – welches Stilmittel?", antworten: ["Hyperbel (Übertreibung)", "Vergleich", "Metapher"], richtig: "Hyperbel (Übertreibung)", erklaerung: "'tausendmal' ist stark übertrieben → Hyperbel.", schritte: ["Ist das wörtlich gemeint? Nein.", "Es ist eine starke Übertreibung → Hyperbel."], fehler: { "Vergleich": "Kein 'wie' und kein Vergleich zweier Dinge.", "Metapher": "Es ist kein bildlicher Begriff, sondern eine Übertreibung." } },
+        { typ: "mc", frage: "'Der Wind flüstert leise durch die Bäume.' – welches Bild?", antworten: ["Personifikation", "Vergleich", "Metapher"], richtig: "Personifikation", erklaerung: "Der Wind 'flüstert' wie ein Mensch → Personifikation.", schritte: ["Tut hier etwas Menschliches? Ja: flüstern.", "→ Personifikation."], fehler: { "Vergleich": "Es fehlt das 'wie'.", "Metapher": "Hier handelt der Wind menschlich → Personifikation." } },
+        { typ: "mc", frage: "'Stark wie ein Löwe kämpfte der Ritter.' – welches Bild?", antworten: ["Vergleich", "Metapher", "Personifikation"], richtig: "Vergleich", erklaerung: "Das Wort 'wie' macht es zum Vergleich.", schritte: ["Signalwort 'wie' suchen.", "→ Vergleich."], fehler: { "Metapher": "Eine Metapher hat KEIN 'wie'.", "Personifikation": "Es wird nichts vermenschlicht." } },
+        { typ: "mc", frage: "'Nie, nie, nie gebe ich auf!' – welches Stilmittel?", antworten: ["Wiederholung", "Alliteration", "Vergleich"], richtig: "Wiederholung", erklaerung: "Das Wort 'nie' wird wiederholt, um es zu betonen.", schritte: ["Welches Wort kommt mehrfach? 'nie'.", "→ Wiederholung."], fehler: { "Alliteration": "Bei der Alliteration beginnen verschiedene Wörter mit demselben Laut.", "Vergleich": "Es gibt kein 'wie'." } },
+        { typ: "text", frage: "Wie nennt man ein sprachliches Bild MIT dem Wort 'wie'?", richtig: "Vergleich", erklaerung: "Mit 'wie' oder 'als' → Vergleich.", schritte: ["'wie' ist das Signalwort.", "→ Vergleich."], fehler: { "Metapher": "Die Metapher hat KEIN 'wie'.", "Personifikation": "Die Personifikation vermenschlicht etwas." } },
+        { typ: "text", frage: "Wie nennt man eine starke Übertreibung wie 'Ich sterbe vor Hunger'?", richtig: "Hyperbel", erklaerung: "Starke Übertreibung → Hyperbel.", schritte: ["Etwas wird stark übertrieben.", "→ Hyperbel."], fehler: { "Vergleich": "Eine Übertreibung ist kein Vergleich.", "Metapher": "Es ist eine Übertreibung, kein bildlicher Begriff." } },
+        { typ: "mc", frage: "Ein Gedicht reimt sich so: Zeile 1+2 reimen, Zeile 3+4 reimen. Welches Reimschema?", antworten: ["Paarreim (aabb)", "Kreuzreim (abab)", "umarmender Reim (abba)"], richtig: "Paarreim (aabb)", erklaerung: "Direkt aufeinanderfolgende Zeilen reimen → Paarreim (aabb).", schritte: ["1+2 und 3+4 → aabb.", "Das ist der Paarreim."], fehler: { "Kreuzreim (abab)": "Beim Kreuzreim reimen 1+3 und 2+4.", "umarmender Reim (abba)": "Beim umarmenden Reim reimen 1+4 und 2+3." } },
+        { typ: "mc", frage: "Zeile 1 reimt mit Zeile 4, Zeile 2 mit Zeile 3. Welches Reimschema?", antworten: ["umarmender Reim (abba)", "Paarreim (aabb)", "Kreuzreim (abab)"], richtig: "umarmender Reim (abba)", erklaerung: "Der äußere Reim (1+4) umschließt den inneren (2+3) → abba.", schritte: ["1+4 außen, 2+3 innen.", "→ umarmender Reim (abba)."], fehler: { "Paarreim (aabb)": "Beim Paarreim reimen 1+2 und 3+4.", "Kreuzreim (abab)": "Beim Kreuzreim reimen 1+3 und 2+4." } },
+        { typ: "text", frage: "Wie heißt eine einzelne Zeile in einem Gedicht (Fachwort)?", richtig: "Vers", erklaerung: "Eine Zeile im Gedicht heißt Vers.", schritte: ["Fachwort für die Zeile.", "→ Vers."], fehler: { "Zeile": "Richtig gedacht – das Fachwort dafür ist 'Vers'.", "Strophe": "Eine Strophe ist ein Block aus mehreren Versen." } },
+        { typ: "text", frage: "Wie heißt ein Block aus mehreren Versen (Fachwort)?", richtig: "Strophe", erklaerung: "Mehrere Verse bilden eine Strophe.", schritte: ["Mehrere Verse zusammen.", "→ Strophe."], fehler: { "Vers": "Ein Vers ist nur eine einzelne Zeile.", "Absatz": "Im Gedicht heißt der Block 'Strophe'." } },
+        { typ: "mc", frage: "In welcher Zeitform schreibst du die Inhaltszusammenfassung?", antworten: ["Präsens", "Präteritum", "Futur"], richtig: "Präsens", erklaerung: "Zusammenfassungen stehen im Präsens.", schritte: ["Inhaltsangabe → immer Präsens."], fehler: { "Präteritum": "Auch bei alten Gedichten: Präsens.", "Futur": "Die Zukunft passt nicht." } },
+        { typ: "mc", frage: "Ein Erscheinungsjahr ist angegeben. Was gehört in den Einleitungssatz?", antworten: ["Titel, Autor, Textsorte, Thema UND das Jahr (TATTE)", "nur der Titel", "nur die eigene Meinung"], richtig: "Titel, Autor, Textsorte, Thema UND das Jahr (TATTE)", erklaerung: "Mit Jahr wird aus TATT → TATTE (E = Erscheinungsjahr).", schritte: ["Steht ein Jahr dabei?", "Dann gehört es mit in den Einleitungssatz → TATTE."], fehler: { "nur der Titel": "Es gehören Titel, Autor, Textsorte, Thema und das Jahr hinein.", "nur die eigene Meinung": "Die Meinung kommt erst in der Stellungnahme." } },
+        { typ: "freitext", frage: "Erkläre die Wirkung dieser Personifikation: 'Die alten Bäume ächzen im Sturm.'", kriterien: "benennt die Personifikation; erklärt die Wirkung (z. B. die Bäume wirken lebendig/leidend, es entsteht eine bedrohliche Stimmung).", musterloesung: "'Die Bäume ächzen' ist eine Personifikation. Sie bewirkt, dass die Bäume wie leidende Lebewesen wirken und eine bedrohliche, unheimliche Stimmung entsteht.", tipp: "Erst das Bild benennen, dann die Wirkung/Stimmung erklären." },
+        { typ: "freitext", frage: "Schreibe selbst einen Satz mit einer Personifikation über das Wetter.", kriterien: "enthält eine Personifikation (etwas Unbelebtes tut etwas Menschliches); ein vollständiger, sinnvoller Satz.", musterloesung: "Die Sonne lächelt warm über den Feldern.", tipp: "Lass das Wetter etwas Menschliches tun (lachen, weinen, flüstern …)." },
+        { typ: "freitext", frage: "Korrigiere diese Zusammenfassung, damit sie SACHLICH ist: 'Ich finde das Gedicht voll schön, es geht glaube ich um den Herbst.'", kriterien: "ohne eigene Meinung; sachlich; im Präsens; nennt das Thema klar.", musterloesung: "In dem Gedicht geht es um den Herbst.", tipp: "Meinung weg, keine Unsicherheit ('glaube ich'), sachlich im Präsens." }
       ]
     }
   ]
