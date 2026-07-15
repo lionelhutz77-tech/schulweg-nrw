@@ -257,6 +257,7 @@
       topbar(fach.fach, "Klasse " + fach.klasse + " · Thema wählen", true) +
       '<div class="grid">' + karten + "</div>" +
       '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>' +
+      (fach.vokabeltrainer ? '<button class="btn btn-soft" id="vok" style="margin-top:10px">🗂️ Vokabeltrainer</button>' : "") +
       (hatMarkieren(fach) ? '<button class="btn btn-soft" id="drucken" style="margin-top:10px">📄 Arbeitsblatt zum Ausdrucken</button>' : "");
     app.querySelector(".back").onclick = zeigeFaecher;
     app.querySelectorAll("[data-thema]").forEach(function (n) {
@@ -269,6 +270,8 @@
     document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
     var db = document.getElementById("drucken");
     if (db) db.onclick = function () { zeigeArbeitsblatt(fach); };
+    var vb = document.getElementById("vok");
+    if (vb) vb.onclick = function () { starteVokabeltrainer(fach); };
   }
 
   function mische(arr) {
@@ -315,6 +318,91 @@
       '<div style="page-break-before:always"><h3>Lösungen</h3>' + loes + "</div></div>";
     document.getElementById("zur").onclick = zeigeThemen;
     document.getElementById("druck").onclick = function () { window.print(); };
+  }
+
+  // Vokabeltrainer (Deutsch -> Englisch tippen): Leitner/Spaced-Repetition.
+  // 10er-Block pro Runde; falsche kommen NICHT sofort, sondern ~2 später wieder;
+  // Wackelkandidaten werden pro Profil gemerkt und in Folgerunden bevorzugt.
+  function starteVokabeltrainer(fach) {
+    var alle = fach.vokabeltrainer;
+    var key = "vok_" + (state.profil && state.profil.name || "x") + "_" + state.fachKey;
+    function ladeHard() { try { return JSON.parse(localStorage.getItem(key + "_hard")) || {}; } catch (e) { return {}; } }
+    function speichereHard(h) { localStorage.setItem(key + "_hard", JSON.stringify(h)); }
+    var hard = ladeHard();
+    var ptr = parseInt(localStorage.getItem(key + "_ptr") || "0", 10);
+
+    function baueBlock() {
+      var block = [];
+      for (var i = 0; i < 10 && i < alle.length; i++) block.push((ptr + i) % alle.length);
+      ptr = (ptr + 10) % alle.length; localStorage.setItem(key + "_ptr", String(ptr));
+      var hardIdx = Object.keys(hard).filter(function (k) { return hard[k] > 0; }).map(Number)
+        .sort(function (a, b) { return hard[b] - hard[a]; });
+      hardIdx.filter(function (x) { return block.indexOf(x) === -1; }).slice(0, 3)
+        .forEach(function (hx) { block[Math.floor(Math.random() * block.length)] = hx; });
+      block = block.filter(function (v, k) { return block.indexOf(v) === k; });
+      return mische(block);
+    }
+
+    var queue = baueBlock(), gesamt = queue.length, richtigErst = 0, beantwortet = 0, falschDiese = {};
+
+    function vokRichtig(eingabe, v) {
+      var e = normalisiere(eingabe).replace(/'/g, "");
+      return [v.en].concat(v.alt || []).some(function (k) { return normalisiere(k).replace(/'/g, "") === e; });
+    }
+    function naechste() { if (!queue.length) return ergebnis(); zeigeVokabel(queue.shift()); }
+
+    function zeigeVokabel(idx) {
+      var v = alle[idx], gew = "";
+      app.innerHTML =
+        topbar("Vokabeltrainer", (state.profil.name || "") + " · noch " + (queue.length + 1), true) +
+        '<div class="q-card"><p class="muted" style="margin:0 0 6px">Wie heißt das auf Englisch?</p>' +
+        '<p class="q-frage" style="font-size:24px;margin:0 0 16px">' + v.de + "</p>" +
+        '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="englisch …" />' +
+        '<button class="btn btn-primary" id="pruefen" disabled style="margin-top:14px">Überprüfen</button>' +
+        '<div class="feedback" id="fb"></div></div>';
+      app.querySelector(".back").onclick = function () { if (confirm("Vokabeltrainer beenden?")) { speichereHard(hard); zeigeThemen(); } };
+      var inp = document.getElementById("eingabe"), pr = document.getElementById("pruefen");
+      inp.oninput = function () { gew = inp.value; pr.disabled = !inp.value.trim(); };
+      inp.focus();
+      pr.onclick = function () {
+        var ok = vokRichtig(gew, v); beantwortet++; pr.style.display = "none";
+        var fb = document.getElementById("fb");
+        if (ok) {
+          if (!falschDiese[idx]) richtigErst++;
+          if (hard[idx]) { hard[idx] = Math.max(0, hard[idx] - 1); if (!hard[idx]) delete hard[idx]; speichereHard(hard); }
+          fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Richtig! ' + v.en + "</span></div>" +
+            '<button class="btn btn-primary" id="weiter">Weiter →</button>';
+        } else {
+          falschDiese[idx] = true; hard[idx] = (hard[idx] || 0) + 1; speichereHard(hard);
+          queue.splice(Math.min(2, queue.length), 0, idx);
+          fb.innerHTML = '<div class="row-result"><span class="pill no">🔄 Merk dir das</span>' +
+            '<span class="pill ok">Richtig: ' + v.en + "</span></div>" +
+            '<div class="analyse"><p>„' + v.de + "“ heißt auf Englisch <b>" + v.en + "</b>. Schreib es dir einmal richtig auf – es kommt gleich nochmal.</p></div>" +
+            '<button class="btn btn-primary" id="weiter" style="margin-top:12px">Verstanden, weiter →</button>';
+        }
+        document.getElementById("weiter").onclick = naechste;
+      };
+    }
+
+    function ergebnis() {
+      speichereHard(hard);
+      var quote = gesamt ? Math.round((richtigErst / gesamt) * 100) : 0;
+      var offen = Object.keys(hard).filter(function (k) { return hard[k] > 0; }).length;
+      app.innerHTML =
+        topbar("Vokabeltrainer", "Runde geschafft!", true) +
+        '<div class="result-hero"><div class="big">' + quote + '%</div><p>auf Anhieb richtig</p></div>' +
+        '<div class="stat-row"><div class="stat"><div class="num">' + beantwortet + '</div><div class="lbl">Abfragen</div></div>' +
+        '<div class="stat"><div class="num">' + gesamt + '</div><div class="lbl">Vokabeln</div></div>' +
+        '<div class="stat"><div class="num">' + offen + '</div><div class="lbl">noch üben</div></div></div>' +
+        (offen ? '<p class="muted center" style="margin-bottom:14px">Die Wackelkandidaten kommen in der nächsten Runde bevorzugt dran.</p>' : "") +
+        '<button class="btn btn-primary" id="neu">Neue Runde (10 neue)</button>' +
+        '<button class="btn btn-soft" id="zurueck">Zurück</button>';
+      app.querySelector(".back").onclick = zeigeThemen;
+      document.getElementById("neu").onclick = function () { starteVokabeltrainer(fach); };
+      document.getElementById("zurueck").onclick = zeigeThemen;
+    }
+
+    naechste();
   }
 
   function zeigeArbeitAuswahl() {
