@@ -1442,5 +1442,7 @@ window.SCHULWEG.faecher["englisch-6"].vokabeltrainer = [
   { de: "der Pfad", en: "track" },
   { de: "nachschlagen", en: "look up a word" },
   { de: "die Marionette", en: "puppet" },
-  { de: "die Insel", en: "island" }
+  { de: "die Insel", en: "island" },
+  { de: "ja", en: "yes" },
+  { de: "uncool", en: "uncool" },
 ];
