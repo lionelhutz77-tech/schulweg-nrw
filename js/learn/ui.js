@@ -17,6 +17,57 @@
 
   var SKILL_LABEL = { listening: "Hören", reading: "Lesen", speaking: "Sprechen", writing: "Schreiben" };
 
+  // Fallback Refresh-Mission (3 Schritte, ca. 5 Min)
+  var REFRESH_SCHRITTE_FALLBACK = [
+    {
+      id: "r-hoeren",
+      art: "aufgabe",
+      activityType: "hoerauswahl",
+      skill: "listening",
+      titel: "Neue Person - neue Situation",
+      audio: { kind: "sentence", key: "u1.k1.refresh1", text: "Hi there! My name is James. I'm from Dublin.", lang: "en-GB" },
+      frage: "Welche Stadt wurde genannt?",
+      typ: "mc",
+      antworten: ["Dublin", "London", "Paris"],
+      richtig: "Dublin",
+      erklaerung: "James sagt deutlich: from Dublin",
+      hilfe: null
+    },
+    {
+      id: "r-schreiben",
+      art: "aufgabe",
+      activityType: "eingabe",
+      skill: "writing",
+      titel: "Antworte James",
+      frage: "Antworte mit deinem Namen und einer Information (Herkunft oder Alter). Keine Hilfe!",
+      typ: "freieingabe",
+      muster: "(i'm|my name is)\\s+\\S+.*",
+      beispiel: "I'm Clara. I'm from Berlin.",
+      erklaerung: "Sehr gut - du kennst die Struktur!",
+      hilfe: null
+    },
+    {
+      id: "r-transfer",
+      art: "aufgabe",
+      activityType: "dialog",
+      skill: "writing",
+      titel: "Transfer: vollstaendige Vorstellung ohne Hilfe",
+      partner: "James",
+      einleitung: "James moechte mehr wissen. Schreib eine komplette Vorstellung - ohne Tipps.",
+      zuege: [
+        {
+          james: "Tell me more about yourself!",
+          audio: { kind: "sentence", key: "u1.k1.r-james", text: "Tell me more about yourself!", lang: "en-GB" },
+          erwartet: "(i'm|my name is)\\s+\\S+.*",
+          merkeGruppe: 0,
+          beispiel: "I'm Clara. I'm from Berlin. I'm twelve.",
+          antwortJames: "Great! Nice meeting you too!"
+        }
+      ],
+      abschluss: "Ohne Hilfe geschafft! Das ist echte Beherrschung. Herzlichen Glueckwunsch!"
+    }
+  ];
+
   function starteLernreise(app, state, zurueck) {
     var util = root.SCHULWEG.util;
     var daten = root.SCHULWEG.unit1;
@@ -25,26 +76,36 @@
     var fachKey = daten.fachKey;
     var journeyId = daten.kompetenz.id;
 
+    // Entscheide zwischen erster Journey und Refresh-Mission
+    var stand = journey.holeStand(profileId, fachKey, journeyId, store);
+    var heute = heuteIso();
+    var istRefreshFaellig = competency.istFaellig(stand, heute);
+    var istMastered = stand.status === "mastered";
+    var schritteListe = (istRefreshFaellig && !istMastered) ? (daten.refreshSchritte || REFRESH_SCHRITTE_FALLBACK) : daten.schritte;
+
     var position = journey.holePosition(profileId, fachKey, journeyId, store);
-    if (position >= daten.schritte.length) position = 0;   // abgeschlossen -> neu beginnen
+    if (position >= schritteListe.length) position = 0;   // abgeschlossen -> neu beginnen
 
     function speicherePosition(p) { journey.merkePosition(profileId, fachKey, journeyId, p, store); }
 
     function verbuche(schritt, richtig) {
       if (!schritt.skill || !schritt.activityType) return;
+      var isRefresh = istRefreshFaellig && !istMastered;
       journey.verbucheErgebnis(profileId, fachKey, {
         competencyId: journeyId,
         skill: schritt.skill,
         activityType: schritt.activityType,
         correct: !!richtig,
-        heute: heuteIso(),
+        heute: heute,
+        transfer: isRefresh && (schritt.id && schritt.id.indexOf("r-") === 0 && (schritt.id.indexOf("transfer") !== -1 || schritt.id.indexOf("dialog") !== -1 || schritt.art === "dialog")),  // Transfer in Refresh
         vokabelIds: daten.kompetenz.vokabelIds
       }, store);
     }
 
     function kopf(untertitel) {
-      var f = journey.fortschritt(daten.schritte, position);
-      return util.topbar(daten.kompetenz.titel, untertitel || ("Schritt " + (position + 1) + " von " + f.gesamt), true) +
+      var f = journey.fortschritt(schritteListe, position);
+      var modus = (istRefreshFaellig && !istMastered) ? " (Wiederholung)" : "";
+      return util.topbar(daten.kompetenz.titel, untertitel || ("Schritt " + (position + 1) + " von " + f.gesamt + modus), true) +
         '<div class="bar" style="margin:-8px 0 18px"><span style="width:' + f.prozent + '%;background:var(--englisch)"></span></div>';
     }
 
@@ -306,7 +367,7 @@
 
     // ---------- Dispatcher ----------
     function zeige() {
-      var s = journey.naechsterSchritt(daten.schritte, position);
+      var s = journey.naechsterSchritt(schritteListe, position);
       if (!s) { zeigeAbschluss(); return; }
       if (s.art === "szene") return zeigeSzene(s);
       if (s.art === "muster") return zeigeMuster(s);

@@ -379,7 +379,7 @@ test("Fehler: loescht nicht Lerntage", function () {
 
 // ============ TESTS: MEHRFACHE ERFOLGSTAGE ============
 
-test("successfulLearningDays: maximal 30 Tage gespeichert (sliding window)", function () {
+test("successfulLearningDays: unbegrenzt gespeichert", function () {
   var store = mockStore();
   var stand = competency.leererStand(KID);
   // Simuliere 35 erfolgreiche Tage
@@ -392,9 +392,9 @@ test("successfulLearningDays: maximal 30 Tage gespeichert (sliding window)", fun
       heute: tag
     }).stand;
   }
-  assert.equal(stand.successfulLearningDays.length, 30);
-  // Die fruehesten 5 sollten entfernt sein
-  assert.equal(stand.successfulLearningDays[0], competency.tageAddieren("2026-01-01", 5));
+  assert.equal(stand.successfulLearningDays.length, 35);
+  // Alle Tage sollten gespeichert sein
+  assert.equal(stand.successfulLearningDays[0], competency.tageAddieren("2026-01-01", 0));
 });
 
 // ============ TESTS: PROFILTRENNUNG ============

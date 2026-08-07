@@ -123,11 +123,9 @@
     return versuche > 0 ? "practicing" : "introduced";
   }
 
-  function ergaenzeEindeutig(liste, wert, max) {
+  function ergaenzeEindeutig(liste, wert) {
     if (wert == null || liste.indexOf(wert) !== -1) return liste;
-    var neu = liste.concat([wert]);
-    if (max && neu.length > max) neu = neu.slice(neu.length - max);
-    return neu;
+    return liste.concat([wert]);
   }
 
   /**
@@ -162,8 +160,8 @@
       if (hilfe === HILFE_KEINE) s.erfolgeOhneHilfe += 1;
       s.letzteAm = e.heute || null;
       stand.aktivitaetstypen = ergaenzeEindeutig(stand.aktivitaetstypen, e.activityType);
-      stand.successfulLearningDays = ergaenzeEindeutig(stand.successfulLearningDays, e.heute, 30);
-      if (e.transfer) stand.transferTage = ergaenzeEindeutig(stand.transferTage, e.heute, 30);
+      stand.successfulLearningDays = ergaenzeEindeutig(stand.successfulLearningDays, e.heute);
+      if (e.transfer) stand.transferTage = ergaenzeEindeutig(stand.transferTage, e.heute);
       stand.lastEvidenceAt = e.heute || stand.lastEvidenceAt;
     }
     // Ein Fehler zaehlt als Versuch - er loescht NIE bestehende Erfolge,
