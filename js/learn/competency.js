@@ -187,15 +187,11 @@
       stand.dueDate = null;                   // Langzeit-Review ist spaetere Arbeit
     }
 
-    // Begrenze Event-Historie, erhalte alle Mastery-kritischen Aggregate
-    // MAX_EVIDENCE_EVENTS schraenkt Detailhistorie ein, aber erfolge/erfolgeOhneHilfe
-    // zaehler und Zeitstempel bleiben erhalten
-    if (stand.successfulLearningDays && stand.successfulLearningDays.length > MAX_EVIDENCE_EVENTS) {
-      stand.successfulLearningDays = stand.successfulLearningDays.slice(-MAX_EVIDENCE_EVENTS);
-    }
-    if (stand.transferTage && stand.transferTage.length > MAX_EVIDENCE_EVENTS) {
-      stand.transferTage = stand.transferTage.slice(-MAX_EVIDENCE_EVENTS);
-    }
+    // ANMERKUNG (Auftrag 4E): successfulLearningDays und transferTage sind bereits
+    // deduplizierte/aggregierte Arrays (eindeutige Tage), nicht eine Detailhistorie.
+    // Sie dürfen nicht technisch abgeschnitten werden, da sie für Mastery-Regeln B und D
+    // vollständig erforderlich sind. MAX_EVIDENCE_EVENTS reserviert für zukünftige
+    // echte Event-Log-Struktur.
 
     return { stand: stand, angewendet: true };
   }
