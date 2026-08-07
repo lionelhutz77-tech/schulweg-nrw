@@ -17,9 +17,9 @@
 
   var SKILL_LABEL = { listening: "Hören", reading: "Lesen", speaking: "Sprechen", writing: "Schreiben" };
 
-  function starteLernreise(app, state, zurueck) {
+  function starteLernreise(app, state, zurueck, optionalDaten) {
     var util = root.SCHULWEG.util;
-    var daten = root.SCHULWEG.unit1;
+    var daten = optionalDaten || root.SCHULWEG.unit1;
     if (!daten) { zurueck(); return; }
     var profileId = state.profil.profileId;
     var fachKey = daten.fachKey;
