@@ -6,9 +6,24 @@
 
   // ---------- Profile (lokal gespeichert) ----------
   var AVATARE = ["🦊", "🐱", "🐢", "🦋", "🐬", "🦉"];
+  function profilIdGenerator() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return function () { return window.SCHULWEG_VOCAB.model.erzeugeProfilId(window.crypto); };
+    }
+    return function () { return window.SCHULWEG_VOCAB.model.erzeugeProfilId(window.crypto); };
+  }
   function ladeProfile() {
-    try { return JSON.parse(localStorage.getItem("schulweg_profile")) || []; }
-    catch (e) { return []; }
+    var profile;
+    try { profile = JSON.parse(localStorage.getItem("schulweg_profile")) || []; }
+    catch (e) { profile = []; }
+    // Idempotente Profil-ID-Migration: bestehende Profile ohne profileId
+    // erhalten sofort eine, unveraendert bei jedem weiteren Aufruf.
+    if (window.SCHULWEG_VOCAB && window.SCHULWEG_VOCAB.model) {
+      var migriert = window.SCHULWEG_VOCAB.model.migriereProfilIds(profile, profilIdGenerator());
+      if (migriert.geaendert) { profile = migriert.profile; speichereProfile(profile); }
+      else { profile = migriert.profile; }
+    }
+    return profile;
   }
   function speichereProfile(p) { localStorage.setItem("schulweg_profile", JSON.stringify(p)); }
 
@@ -198,7 +213,18 @@
     }
     function speichern() {
       var p = ladeProfile();
-      if (edit) { edit.name = daten.name.trim(); edit.klasse = daten.klasse; edit.avatar = daten.avatar; p[index] = edit; }
+      if (edit) {
+        var neuerName = daten.name.trim();
+        // F-02: Alte Vokabeldaten liegen unter dem BISHERIGEN Profilnamen
+        // (vok_<Name>_<fach>_hard). Wird umbenannt, bevor der Vokabeltrainer
+        // erstmals lief, waeren sie sonst nicht mehr auffindbar - daher den
+        // bisherigen Namen merken.
+        if (edit.name && edit.name !== neuerName) {
+          edit.legacyNames = (edit.legacyNames || []);
+          if (edit.legacyNames.indexOf(edit.name) === -1) edit.legacyNames.push(edit.name);
+        }
+        edit.name = neuerName; edit.klasse = daten.klasse; edit.avatar = daten.avatar; p[index] = edit;
+      }
       else { p.push({ name: daten.name.trim(), klasse: daten.klasse, avatar: daten.avatar, fortschritt: {} }); }
       speichereProfile(p); verwaltenModus = false; zeigeProfile();
     }
@@ -320,125 +346,10 @@
     document.getElementById("druck").onclick = function () { window.print(); };
   }
 
-  // Vokabeltrainer (Deutsch -> Englisch): Leitner-Fluss.
-  // 15 aktive Vokabeln; MC-Aufwärmrunde zuerst; dann tippen.
-  // Beim 1. Mal direkt richtig ODER 2x hintereinander richtig -> gemeistert
-  // (raus, neue Vokabel aus dem Pool nach). Falsche wiederholen (mit Abstand),
-  // Wackelkandidaten pro Profil gemerkt und in Folgesessions bevorzugt.
+  // Vokabeltrainer (SRS-Kern, Phase 1): siehe js/vocab/*.js. Diese Funktion
+  // ist nur noch ein duenner Aufruf der neuen, getrennten Lernlogik-Schicht.
   function starteVokabeltrainer(fach) {
-    var alle = fach.vokabeltrainer, AKTIV = 15;
-    var key = "vok_" + (state.profil && state.profil.name || "x") + "_" + state.fachKey;
-    function ladeHard() { try { return JSON.parse(localStorage.getItem(key + "_hard")) || {}; } catch (e) { return {}; } }
-    function speichereHard(h) { localStorage.setItem(key + "_hard", JSON.stringify(h)); }
-    var hard = ladeHard();
-    var ptr = parseInt(localStorage.getItem(key + "_ptr") || "0", 10);
-
-    // Einführungs-Reihenfolge: Wackelkandidaten zuerst, dann rotierend ab ptr.
-    var hardIdx = Object.keys(hard).filter(function (k) { return hard[k] > 0; }).map(Number)
-      .sort(function (a, b) { return hard[b] - hard[a]; });
-    var reihenfolge = hardIdx.slice();
-    for (var r = 0; r < alle.length; r++) { var ix = (ptr + r) % alle.length; if (reihenfolge.indexOf(ix) === -1) reihenfolge.push(ix); }
-    ptr = (ptr + AKTIV) % alle.length; localStorage.setItem(key + "_ptr", String(ptr));
-
-    var restPtr = 0, active = {}, gemeistert = 0, beantwortet = 0, queue = [];
-    function fuelleAktiv(pushQueue) {
-      while (Object.keys(active).length < AKTIV && restPtr < reihenfolge.length) {
-        var idx = reihenfolge[restPtr++];
-        if (!(idx in active)) { active[idx] = { everWrong: false, streak: 0 }; if (pushQueue) queue.push(idx); }
-      }
-    }
-    fuelleAktiv(false);
-
-    function vokRichtig(eingabe, v) {
-      var e = normalisiere(eingabe).replace(/'/g, "");
-      return [v.en].concat(v.alt || []).some(function (k) { return normalisiere(k).replace(/'/g, "") === e; });
-    }
-    function beenden() { speichereHard(hard); zeigeThemen(); }
-    function backHandler() { app.querySelector(".back").onclick = function () { if (confirm("Vokabeltrainer beenden?")) beenden(); }; }
-
-    // ---- Phase 1: MC-Aufwärmen über die ersten aktiven Vokabeln ----
-    var warmup = mische(Object.keys(active).map(Number));
-    function naechsteWarmup() { if (!warmup.length) return starteTippen(); zeigeWarmup(warmup.shift()); }
-    function zeigeWarmup(idx) {
-      var v = alle[idx], opts = [v.en];
-      var pool2 = mische(alle.map(function (x, i) { return i; }).filter(function (i) { return i !== idx; }));
-      for (var i = 0; i < pool2.length && opts.length < 3; i++) { var c = alle[pool2[i]].en; if (opts.indexOf(c) === -1) opts.push(c); }
-      opts = mische(opts);
-      app.innerHTML =
-        topbar("Vokabeltrainer", "Aufwärmen · noch " + (warmup.length + 1), true) +
-        '<div class="q-card"><p class="muted" style="margin:0 0 6px">Welches englische Wort passt?</p>' +
-        '<p class="q-frage" style="font-size:24px;margin:0 0 16px">' + v.de + "</p>" +
-        '<div class="options">' + opts.map(function (o) { return '<button class="opt" data-val="' + o.replace(/"/g, "&quot;") + '">' + o + "</button>"; }).join("") + "</div>" +
-        '<div class="feedback" id="fb"></div></div>';
-      backHandler();
-      app.querySelectorAll(".opt").forEach(function (b) {
-        b.onclick = function () {
-          app.querySelectorAll(".opt").forEach(function (x) { x.disabled = true; if (x.dataset.val === v.en) x.classList.add("ok"); else if (x === b) x.classList.add("no"); });
-          document.getElementById("fb").innerHTML = '<div class="row-result"><span class="pill ok">' + v.de + " = " + v.en + '</span></div><button class="btn btn-primary" id="weiter">Weiter →</button>';
-          document.getElementById("weiter").onclick = naechsteWarmup;
-        };
-      });
-    }
-
-    // ---- Phase 2: Tippen (Leitner-Fluss) ----
-    function starteTippen() { queue = mische(Object.keys(active).map(Number)); naechste(); }
-    function naechste() {
-      while (queue.length && !(queue[0] in active)) queue.shift();
-      if (!queue.length) { if (Object.keys(active).length) queue = mische(Object.keys(active).map(Number)); else return fertig(); }
-      zeigeTippen(queue.shift());
-    }
-    function meistere(idx) { gemeistert++; if (hard[idx]) { delete hard[idx]; speichereHard(hard); } delete active[idx]; fuelleAktiv(true); }
-    function kopf() { return (state.profil.name || "") + " · gemeistert: " + gemeistert + " · aktiv: " + Object.keys(active).length; }
-    function zeigeTippen(idx) {
-      var v = alle[idx], gew = "", st = active[idx];
-      app.innerHTML =
-        topbar("Vokabeltrainer", kopf(), true) +
-        '<div class="q-card"><p class="muted" style="margin:0 0 6px">Wie heißt das auf Englisch? (richtig schreiben)</p>' +
-        '<p class="q-frage" style="font-size:24px;margin:0 0 16px">' + v.de + "</p>" +
-        '<input class="zahl" id="eingabe" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="englisch …" style="height:96px;font-size:24px;text-transform:lowercase" />' +
-        '<button class="btn btn-primary" id="pruefen" disabled style="margin-top:14px">Überprüfen</button>' +
-        '<div class="feedback" id="fb"></div></div>';
-      backHandler();
-      var inp = document.getElementById("eingabe"), pr = document.getElementById("pruefen");
-      inp.oninput = function () { gew = inp.value; pr.disabled = !inp.value.trim(); };
-      inp.focus();
-      pr.onclick = function () {
-        var ok = vokRichtig(gew, v); beantwortet++; pr.style.display = "none";
-        var fb = document.getElementById("fb");
-        if (ok) {
-          if (!st.everWrong || (st.streak + 1) >= 2) {
-            fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Richtig! ' + v.en + ' – sitzt! 🎉</span></div><button class="btn btn-primary" id="weiter">Weiter →</button>';
-            meistere(idx);
-          } else {
-            st.streak++;
-            queue.splice(Math.min(3, queue.length), 0, idx);
-            fb.innerHTML = '<div class="row-result"><span class="pill ok">✓ Richtig! ' + v.en + ' (noch 1× zur Sicherheit)</span></div><button class="btn btn-primary" id="weiter">Weiter →</button>';
-          }
-        } else {
-          st.everWrong = true; st.streak = 0; hard[idx] = (hard[idx] || 0) + 1; speichereHard(hard);
-          queue.splice(Math.min(2, queue.length), 0, idx);
-          fb.innerHTML = '<div class="row-result"><span class="pill no">🔄 Merk dir das</span>' +
-            '<span class="pill ok">Richtig: ' + v.en + "</span></div>" +
-            '<div class="analyse"><p>„' + v.de + "“ heißt auf Englisch <b>" + v.en + "</b>. Schreib es dir einmal richtig auf – es kommt gleich nochmal.</p></div>" +
-            '<button class="btn btn-primary" id="weiter" style="margin-top:12px">Verstanden, weiter →</button>';
-        }
-        document.getElementById("weiter").onclick = naechste;
-      };
-    }
-
-    function fertig() {
-      speichereHard(hard);
-      app.innerHTML =
-        topbar("Vokabeltrainer", "Geschafft!", true) +
-        '<div class="result-hero"><div class="big">🎉</div><p>Du hast alle Vokabeln gemeistert!</p></div>' +
-        '<div class="intro-box"><p>Gemeistert: <b>' + gemeistert + "</b> · Abfragen: " + beantwortet + "</p></div>" +
-        '<button class="btn btn-primary" id="neu">Neue Runde</button><button class="btn btn-soft" id="zurueck">Zurück</button>';
-      app.querySelector(".back").onclick = zeigeThemen;
-      document.getElementById("neu").onclick = function () { starteVokabeltrainer(fach); };
-      document.getElementById("zurueck").onclick = zeigeThemen;
-    }
-
-    naechsteWarmup();
+    window.SCHULWEG.vocabUI.starteEinheit(fach, state, app, zeigeThemen);
   }
 
   function zeigeArbeitAuswahl() {
@@ -971,6 +882,14 @@
       '<p class="muted">Aktuell angelegte Kinder: ' + (ladeProfile().map(function (p) { return p.name; }).join(", ") || "noch keine") + "</p></div>";
     app.querySelector(".back").onclick = zeigeProfile;
   }
+
+  // ---------- Export fuer js/vocab/ui.js (rein additiv, keine Verhaltensaenderung) ----------
+  window.SCHULWEG = window.SCHULWEG || {};
+  window.SCHULWEG.util = {
+    topbar: topbar, el: el, mische: mische, normalisiere: normalisiere,
+    textRichtig: textRichtig, alsZeit: alsZeit, alsZahl: alsZahl,
+    istRichtig: istRichtig, fehlerText: fehlerText
+  };
 
   zeigeProfile();
 })();
