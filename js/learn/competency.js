@@ -34,6 +34,7 @@
   var MIN_AKTIVITAETSTYPEN = 2;
   var MIN_LERNTAGE_FUER_MASTERED = 2;
   var TAGE_BIS_ERSTE_WIEDERHOLUNG = 1;   // fruehestens am naechsten Kalendertag
+  var MAX_EVIDENCE_EVENTS = 100;  // Technische Speicherbegrenzung für Detailhistorie
 
   // Hilfe-Arten (fuer spaetere adaptive Hilfen bereits im Modell vorgesehen)
   var HILFE_KEINE = "keine";

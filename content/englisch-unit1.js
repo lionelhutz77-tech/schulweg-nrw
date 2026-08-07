@@ -257,4 +257,55 @@ window.SCHULWEG.unit1 = {
       hilfe: "Erst der Name („I'm …“), dann das Alter („I'm eleven.“)."
     }
   ]
+,
+
+  refreshSchritte: [
+    {
+      id: "r-hoeren",
+      art: "aufgabe",
+      activityType: "hoerauswahl",
+      skill: "listening",
+      titel: "Neue Person - neue Situation",
+      audio: { kind: "sentence", key: "u1.k1.refresh1", text: "Hi there! My name is James. I'm from Dublin.", lang: "en-GB" },
+      frage: "Welche Stadt wurde genannt?",
+      typ: "mc",
+      antworten: ["Dublin", "London", "Paris"],
+      richtig: "Dublin",
+      erklaerung: "James sagt deutlich: from Dublin",
+      hilfe: null
+    },
+    {
+      id: "r-schreiben",
+      art: "aufgabe",
+      activityType: "eingabe",
+      skill: "writing",
+      titel: "Antworte James",
+      frage: "Antworte mit deinem Namen und einer Information (Herkunft oder Alter). Keine Hilfe!",
+      typ: "freieingabe",
+      muster: "(i'm|my name is)\\s+\\S+.*",
+      beispiel: "I'm Clara. I'm from Berlin.",
+      erklaerung: "Sehr gut - du kennst die Struktur!",
+      hilfe: null
+    },
+    {
+      id: "r-transfer",
+      art: "aufgabe",
+      activityType: "dialog",
+      skill: "writing",
+      titel: "Transfer: vollstaendige Vorstellung ohne Hilfe",
+      partner: "James",
+      einleitung: "James moechte mehr wissen. Schreib eine komplette Vorstellung - ohne Tipps.",
+      zuege: [
+        {
+          james: "Tell me more about yourself!",
+          audio: { kind: "sentence", key: "u1.k1.r-james", text: "Tell me more about yourself!", lang: "en-GB" },
+          erwartet: "(i'm|my name is)\\s+\\S+.*",
+          merkeGruppe: 0,
+          beispiel: "I'm Clara. I'm from Berlin. I'm twelve.",
+          antwortJames: "Great! Nice meeting you too!"
+        }
+      ],
+      abschluss: "Ohne Hilfe geschafft! Das ist echte Beherrschung. Herzlichen Glueckwunsch!"
+    }
+  ]
 };
