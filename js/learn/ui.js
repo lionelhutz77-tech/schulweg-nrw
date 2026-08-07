@@ -28,7 +28,45 @@
     // Entscheide zwischen erster Journey und Refresh-Mission
     var stand = journey.holeStand(profileId, fachKey, journeyId, store);
     var heute = heuteIso();
+
+    // K1→K2-Abhängigkeit: Wenn K2 und K1 < demonstrated, Rückblick voranstellen
     var schritteListe = journey.waehleSchrittliste(stand, daten.schritte, heute, daten.refreshSchritte);
+
+    if (daten.kompetenz.id === "u1.k2.describe-others" && stand.status === "introduced") {
+      var k1Stand = journey.holeStand(profileId, fachKey, "u1.k1.introduce", store);
+      if (k1Stand.status !== "demonstrated" && k1Stand.status !== "mastered") {
+        // Kurzer K1-Rückblick: maximal 2 Brückenaufgaben
+        var rueckblick = [
+          {
+            id: "bridge-1-ich-bin",
+            art: "aufgabe",
+            activityType: "lesezuordnung",
+            skill: "reading",
+            titel: "Kurzer Rückblick: Sich selbst vorstellen",
+            frage: "I'm Enya. I'm eleven. Welche Informationen gibt es über mich?",
+            typ: "mc",
+            antworten: ["Name und Alter", "Name und Stadt", "Stadt und Hobby"],
+            richtig: "Name und Alter",
+            erklaerung: "Mit I'm sagst du, wer du bist und wie alt du bist.",
+            hilfe: "I'm = Ich bin"
+          },
+          {
+            id: "bridge-2-herkunft",
+            art: "aufgabe",
+            activityType: "lesezuordnung",
+            skill: "reading",
+            titel: "Überleitung: I'm from → She is from",
+            frage: "I'm from Oberhausen. Was ändert sich, wenn eine andere Person das sagt?",
+            typ: "mc",
+            antworten: ["I'm wird zu She is", "I'm bleibt gleich", "I'm wird zu She"],
+            richtig: "I'm wird zu She is",
+            erklaerung: "Bei anderen Personen benutzen wir he/she/they + is/are.",
+            hilfe: "Pronomen wechseln → Verb ändert sich"
+          }
+        ];
+        schritteListe = rueckblick.concat(schritteListe);
+      }
+    }
 
     var position = journey.holePosition(profileId, fachKey, journeyId, store);
     if (position >= schritteListe.length) position = 0;   // abgeschlossen -> neu beginnen

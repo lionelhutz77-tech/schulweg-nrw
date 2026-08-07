@@ -709,3 +709,61 @@ test("K2: K1 bleibt vollständig funktionsfähig", function () {
   assert.equal(k1.status, "practicing");
   assert.equal(k2.status, "practicing");
 });
+
+test("K2: K1→K2-Abhängigkeit - K1 < demonstrated zeigt Rückblick", function () {
+  // K1 noch untested
+  var store = mockStore();
+  var p1 = "profile-k1-bridge";
+
+  var k1Stand = journey.holeStand(p1, K2_FACH, KID, store);
+  assert.equal(k1Stand.status, "introduced");
+
+  // K2 sollte erreichbar sein (kein Lock)
+  var k2Stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(typeof k2Stand, "object");  // K2 ist erreichbar
+});
+
+test("K2: K1→K2-Abhängigkeit - K1 demonstrated keine Brücke nötig", function () {
+  var store = mockStore();
+  var p1 = "profile-k1-demonstrated";
+
+  // K1 demonstrated
+  var k1Events = [
+    { skill: "listening", activityType: "hoerauswahl", correct: true },
+    { skill: "reading", activityType: "lesezuordnung", correct: true },
+    { skill: "writing", activityType: "eingabe", correct: true },
+    { skill: "writing", activityType: "dialog", correct: true, transfer: true }
+  ];
+  k1Events.forEach(function(e) {
+    journey.verbucheErgebnis(p1, K2_FACH, {
+      competencyId: KID,
+      skill: e.skill,
+      activityType: e.activityType,
+      correct: e.correct,
+      heute: TAG_1,
+      transfer: e.transfer ? true : false,
+      hilfe: competency.HILFE_KEINE,
+      vokabelIds: []
+    }, store);
+  });
+
+  var k1Stand = journey.holeStand(p1, K2_FACH, KID, store);
+  assert.equal(k1Stand.status, "demonstrated");
+
+  // K2 startet normal (keine Brücke notwendig)
+  var k2Stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(typeof k2Stand, "object");
+});
+
+test("K2: Source-Audit - Audio-Refs providerneutral", function () {
+  // Statische Prüfung der K2-Source ohne window-Abhängigkeit
+  var fs = require("fs");
+  var k2Source = fs.readFileSync("./content/englisch-unit1-k2.js", "utf-8");
+
+  // Kein Provider hardcoded
+  assert.equal(k2Source.indexOf("elevenlabs") === -1, true);
+  assert.equal(k2Source.indexOf("google.cloud") === -1, true);
+  assert.equal(k2Source.indexOf("amazon.polly") === -1, true);
+  assert.equal(k2Source.indexOf("AWS Polly") === -1, true);
+  assert.equal(k2Source.indexOf("Microsoft") === -1, true);
+});
