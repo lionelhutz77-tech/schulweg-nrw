@@ -187,6 +187,16 @@
       stand.dueDate = null;                   // Langzeit-Review ist spaetere Arbeit
     }
 
+    // Begrenze Event-Historie, erhalte alle Mastery-kritischen Aggregate
+    // MAX_EVIDENCE_EVENTS schraenkt Detailhistorie ein, aber erfolge/erfolgeOhneHilfe
+    // zaehler und Zeitstempel bleiben erhalten
+    if (stand.successfulLearningDays && stand.successfulLearningDays.length > MAX_EVIDENCE_EVENTS) {
+      stand.successfulLearningDays = stand.successfulLearningDays.slice(-MAX_EVIDENCE_EVENTS);
+    }
+    if (stand.transferTage && stand.transferTage.length > MAX_EVIDENCE_EVENTS) {
+      stand.transferTage = stand.transferTage.slice(-MAX_EVIDENCE_EVENTS);
+    }
+
     return { stand: stand, angewendet: true };
   }
 
