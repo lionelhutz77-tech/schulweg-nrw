@@ -279,8 +279,12 @@
         '<div class="bar"><span style="width:0;background:var(--' + fach.farbe + ')"></span></div></div>'
       );
     }).join("");
+    // Lernreise (Unit 1, Slice 1) nur anbieten, wenn Inhalt + UI geladen sind
+    var lernreise = window.SCHULWEG.unit1 && window.SCHULWEG.learnUI &&
+      window.SCHULWEG.unit1.fachKey === state.fachKey ? window.SCHULWEG.unit1 : null;
     app.innerHTML =
       topbar(fach.fach, "Klasse " + fach.klasse + " · Thema wählen", true) +
+      (lernreise ? '<button class="btn btn-primary" id="reise" style="margin:0 0 18px">🚀 Lernreise: ' + lernreise.kompetenz.titel + "</button>" : "") +
       '<div class="grid">' + karten + "</div>" +
       '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>' +
       (fach.vokabeltrainer ? '<button class="btn btn-soft" id="vok" style="margin-top:10px">🗂️ Vokabeltrainer</button>' : "") +
@@ -298,6 +302,8 @@
     if (db) db.onclick = function () { zeigeArbeitsblatt(fach); };
     var vb = document.getElementById("vok");
     if (vb) vb.onclick = function () { starteVokabeltrainer(fach); };
+    var rb = document.getElementById("reise");
+    if (rb) rb.onclick = function () { window.SCHULWEG.learnUI.starteLernreise(app, state, zeigeThemen); };
   }
 
   function mische(arr) {

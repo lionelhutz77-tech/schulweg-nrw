@@ -1,5 +1,5 @@
 /* Offline-Cache fuer Schulweg NRW (network-first: online immer aktuell) */
-var CACHE = "schulweg-v3";
+var CACHE = "schulweg-v4";
 var DATEIEN = [
   "./",
   "./index.html",
@@ -11,6 +11,12 @@ var DATEIEN = [
   "./js/vocab/storage.js",
   "./js/vocab/session.js",
   "./js/vocab/ui.js",
+  "./js/audio/registry.js",
+  "./js/audio/player.js",
+  "./js/learn/competency.js",
+  "./js/learn/journey.js",
+  "./js/learn/ui.js",
+  "./content/englisch-unit1.js",
   "./content/mathe-klasse5.js",
   "./manifest.webmanifest",
   "./icons/icon.svg"
