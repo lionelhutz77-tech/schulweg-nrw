@@ -33,7 +33,6 @@ window.SCHULWEG.unit1 = {
       "en6_0033", // too
       "en6_0104", // where
       "en6_0069", // old
-      "en6_0388", // year
       "en6_0094"  // age
     ]
   },

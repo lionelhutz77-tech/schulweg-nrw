@@ -9,13 +9,17 @@
  * Der Vokabel-SRS bleibt die autoritative Quelle fuer einzelne Vokabelstaende;
  * dieses Modul liest oder schreibt ihn nicht.
  *
- * Status: introduced -> practicing -> partially_mastered -> mastered
+ * Status:
+ *   introduced   erstmals gesehen
+ *   practicing   wird geuebt
+ *   demonstrated in der aktuellen Lernphase erfolgreich gezeigt
+ *   mastered     ueber zeitlich getrennte Abrufe UND Transfer bestaetigt
  *
- * mastered nur wenn ALLE gelten:
- *   - rezeptive Evidenz  (listening ODER reading)
- *   - produktive Evidenz (speaking  ODER writing)
- *   - >= 2 unterschiedliche Aktivitaetstypen erfolgreich
- * Eine einzelne bestandene Multiple-Choice-Aufgabe genuegt nie.
+ * Kernaussage der Regeln: Beherrschung entsteht NICHT innerhalb einer Sitzung.
+ *
+ * Datumsarithmetik ist hier bewusst lokal (wenige Zeilen) statt aus js/vocab/
+ * importiert - eine Kompetenz soll nicht an das Vokabelmodul gekoppelt sein.
+ * `heute` wird immer injiziert; nie new Date() in der Logik.
  */
 (function (root, factory) {
   var api = factory();
@@ -28,74 +32,171 @@
   var REZEPTIV = ["listening", "reading"];
   var PRODUKTIV = ["speaking", "writing"];
   var MIN_AKTIVITAETSTYPEN = 2;
+  var MIN_LERNTAGE_FUER_MASTERED = 2;
+  var TAGE_BIS_ERSTE_WIEDERHOLUNG = 1;   // fruehestens am naechsten Kalendertag
+
+  // Hilfe-Arten (fuer spaetere adaptive Hilfen bereits im Modell vorgesehen)
+  var HILFE_KEINE = "keine";
+  var HILFE_HINWEIS = "hinweis";
+  var HILFE_NACH_FEHLER = "nachFehler";
+
+  function tageAddieren(isoDatum, tage) {
+    var d = new Date(isoDatum + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() + tage);
+    return d.toISOString().slice(0, 10);
+  }
 
   function leererStand(competencyId) {
     var bySkill = {};
     FERTIGKEITEN.forEach(function (f) {
-      bySkill[f] = { versuche: 0, erfolge: 0, letzteAm: null };
+      bySkill[f] = { versuche: 0, erfolge: 0, erfolgeOhneHilfe: 0, letzteAm: null };
     });
     return {
       competencyId: competencyId,
       status: "introduced",
       bySkill: bySkill,
-      aktivitaetstypen: [],   // erfolgreich abgeschlossene, eindeutige Typen
-      vokabelIds: [],         // nur Referenz auf den SRS - keine Kopie von Staenden
+      aktivitaetstypen: [],          // eindeutige Typen mit Erfolg
+      successfulLearningDays: [],    // eindeutige Kalendertage mit Erfolg (begrenzt)
+      transferTage: [],              // Kalendertage mit erfolgreicher Transferaufgabe
+      firstDemonstratedAt: null,
+      lastEvidenceAt: null,
+      dueDate: null,
+      vokabelIds: [],                // nur Referenz auf den SRS - keine Kopie von Staenden
       updatedAt: null
     };
   }
 
-  function hatEvidenz(stand, gruppe) {
-    return gruppe.some(function (f) { return stand.bySkill[f] && stand.bySkill[f].erfolge > 0; });
+  function hatEvidenz(stand, gruppe, nurOhneHilfe) {
+    return gruppe.some(function (f) {
+      var s = stand.bySkill[f];
+      return s && (nurOhneHilfe ? s.erfolgeOhneHilfe > 0 : s.erfolge > 0);
+    });
+  }
+
+  /** Evidenz, die AUSSCHLIESSLICH an oder nach einem Stichtag entstand. */
+  function tageNach(liste, stichtag) {
+    return liste.filter(function (t) { return stichtag ? t > stichtag : true; });
+  }
+
+  /**
+   * Mastery-Regel (bewusst klein und nachvollziehbar, keine Scores):
+   *   A war zuvor demonstrated
+   *   B Erfolge an >= 2 unterschiedlichen Kalendertagen
+   *   C erneut rezeptive UND produktive Leistung (nach dem ersten Nachweis)
+   *   D die spaetere Leistung enthaelt mindestens eine Transferaktivitaet
+   *   E die entscheidende produktive Antwort ohne Hilfe
+   */
+  function pruefeMastery(stand) {
+    if (!stand.firstDemonstratedAt) return false;                                  // A
+    if (stand.successfulLearningDays.length < MIN_LERNTAGE_FUER_MASTERED) return false; // B
+
+    var spaetereTage = tageNach(stand.successfulLearningDays, stand.firstDemonstratedAt);
+    if (!spaetereTage.length) return false;                                        // B (echte Trennung)
+
+    var rezeptivSpaeter = REZEPTIV.some(function (f) {
+      var s = stand.bySkill[f];
+      return s.letzteAm && s.letzteAm > stand.firstDemonstratedAt;
+    });
+    var produktivSpaeterOhneHilfe = PRODUKTIV.some(function (f) {
+      var s = stand.bySkill[f];
+      return s.letzteAm && s.letzteAm > stand.firstDemonstratedAt && s.erfolgeOhneHilfe > 0;
+    });
+    if (!rezeptivSpaeter || !produktivSpaeterOhneHilfe) return false;              // C + E
+
+    var transferSpaeter = tageNach(stand.transferTage, stand.firstDemonstratedAt);
+    if (!transferSpaeter.length) return false;                                     // D
+
+    return true;
+  }
+
+  /** demonstrated: erste Lernphase erfolgreich gezeigt - noch NICHT beherrscht. */
+  function pruefeDemonstrated(stand) {
+    return hatEvidenz(stand, REZEPTIV) &&
+      hatEvidenz(stand, PRODUKTIV) &&
+      stand.aktivitaetstypen.length >= MIN_AKTIVITAETSTYPEN;
   }
 
   function berechneStatus(stand) {
-    var rezeptiv = hatEvidenz(stand, REZEPTIV);
-    var produktiv = hatEvidenz(stand, PRODUKTIV);
-    var genugTypen = stand.aktivitaetstypen.length >= MIN_AKTIVITAETSTYPEN;
-
-    if (rezeptiv && produktiv && genugTypen) return "mastered";
-    if (rezeptiv || produktiv) {
-      // teilweise beherrscht, sobald eine Seite belegt ist und ueberhaupt
-      // schon mehr als ein Versuch stattfand
-      return (rezeptiv && produktiv) || genugTypen ? "partially_mastered" : "practicing";
-    }
+    if (pruefeMastery(stand)) return "mastered";
+    if (stand.firstDemonstratedAt || pruefeDemonstrated(stand)) return "demonstrated";
     var versuche = FERTIGKEITEN.reduce(function (s, f) { return s + stand.bySkill[f].versuche; }, 0);
     return versuche > 0 ? "practicing" : "introduced";
+  }
+
+  function ergaenzeEindeutig(liste, wert, max) {
+    if (wert == null || liste.indexOf(wert) !== -1) return liste;
+    var neu = liste.concat([wert]);
+    if (max && neu.length > max) neu = neu.slice(neu.length - max);
+    return neu;
   }
 
   /**
    * Verbucht das Ergebnis EINER Aktivitaet.
    * @param {object|null} standVorher
    * @param {string} competencyId
-   * @param {object} ergebnis { skill, activityType, correct, heute }
+   * @param {object} e { skill, activityType, correct, heute,
+   *                     hilfe?: "keine"|"hinweis"|"nachFehler",
+   *                     transfer?: boolean }
    */
-  function verbucheAktivitaet(standVorher, competencyId, ergebnis) {
-    var stand = standVorher
-      ? JSON.parse(JSON.stringify(standVorher))
-      : leererStand(competencyId);
+  function verbucheAktivitaet(standVorher, competencyId, e) {
+    var stand = standVorher ? JSON.parse(JSON.stringify(standVorher)) : leererStand(competencyId);
 
-    if (FERTIGKEITEN.indexOf(ergebnis.skill) === -1) {
+    // Rueckwaertskompatibel: aeltere Staende ohne die neuen Felder ergaenzen
+    FERTIGKEITEN.forEach(function (f) {
+      if (!stand.bySkill[f]) stand.bySkill[f] = { versuche: 0, erfolge: 0, erfolgeOhneHilfe: 0, letzteAm: null };
+      if (typeof stand.bySkill[f].erfolgeOhneHilfe !== "number") stand.bySkill[f].erfolgeOhneHilfe = 0;
+    });
+    if (!stand.successfulLearningDays) stand.successfulLearningDays = [];
+    if (!stand.transferTage) stand.transferTage = [];
+
+    if (FERTIGKEITEN.indexOf(e.skill) === -1) {
       return { stand: stand, angewendet: false, grund: "unbekannteFertigkeit" };
     }
 
-    var s = stand.bySkill[ergebnis.skill];
+    var hilfe = e.hilfe || HILFE_KEINE;
+    var s = stand.bySkill[e.skill];
     s.versuche += 1;
-    if (ergebnis.correct) {
+
+    if (e.correct) {
       s.erfolge += 1;
-      s.letzteAm = ergebnis.heute || null;
-      if (ergebnis.activityType && stand.aktivitaetstypen.indexOf(ergebnis.activityType) === -1) {
-        stand.aktivitaetstypen.push(ergebnis.activityType);
-      }
+      if (hilfe === HILFE_KEINE) s.erfolgeOhneHilfe += 1;
+      s.letzteAm = e.heute || null;
+      stand.aktivitaetstypen = ergaenzeEindeutig(stand.aktivitaetstypen, e.activityType);
+      stand.successfulLearningDays = ergaenzeEindeutig(stand.successfulLearningDays, e.heute, 30);
+      if (e.transfer) stand.transferTage = ergaenzeEindeutig(stand.transferTage, e.heute, 30);
+      stand.lastEvidenceAt = e.heute || stand.lastEvidenceAt;
     }
-    stand.updatedAt = ergebnis.heute || null;
+    // Ein Fehler zaehlt als Versuch - er loescht NIE bestehende Erfolge,
+    // Lerntage, Transfer oder firstDemonstratedAt.
+
+    stand.updatedAt = e.heute || null;
+
+    var vorherDemonstrated = !!stand.firstDemonstratedAt;
     stand.status = berechneStatus(stand);
+
+    if (!vorherDemonstrated && (stand.status === "demonstrated" || stand.status === "mastered")) {
+      stand.firstDemonstratedAt = e.heute || null;
+      // erste Wiederholung fruehestens am naechsten Kalendertag
+      stand.dueDate = e.heute ? tageAddieren(e.heute, TAGE_BIS_ERSTE_WIEDERHOLUNG) : null;
+      stand.status = berechneStatus(stand);   // Mastery kann jetzt noch nicht greifen
+    } else if (stand.status === "mastered") {
+      stand.dueDate = null;                   // Langzeit-Review ist spaetere Arbeit
+    }
+
     return { stand: stand, angewendet: true };
+  }
+
+  /** Ist die Kompetenz heute zur Wiederholung faellig? */
+  function istFaellig(stand, heute) {
+    if (!stand || !stand.dueDate) return false;
+    if (stand.status === "mastered") return false;
+    return stand.dueDate <= heute;
   }
 
   /** Anzeige-Zusammenfassung pro Fertigkeit (fuer die UI). */
   function fertigkeitsUebersicht(stand) {
     return FERTIGKEITEN.map(function (f) {
-      var s = stand.bySkill[f];
+      var s = stand.bySkill[f] || { versuche: 0, erfolge: 0, erfolgeOhneHilfe: 0 };
       return { skill: f, erfolge: s.erfolge, versuche: s.versuche, sitzt: s.erfolge > 0 };
     });
   }
@@ -105,9 +206,18 @@
     REZEPTIV: REZEPTIV,
     PRODUKTIV: PRODUKTIV,
     MIN_AKTIVITAETSTYPEN: MIN_AKTIVITAETSTYPEN,
+    MIN_LERNTAGE_FUER_MASTERED: MIN_LERNTAGE_FUER_MASTERED,
+    TAGE_BIS_ERSTE_WIEDERHOLUNG: TAGE_BIS_ERSTE_WIEDERHOLUNG,
+    HILFE_KEINE: HILFE_KEINE,
+    HILFE_HINWEIS: HILFE_HINWEIS,
+    HILFE_NACH_FEHLER: HILFE_NACH_FEHLER,
+    tageAddieren: tageAddieren,
     leererStand: leererStand,
     berechneStatus: berechneStatus,
+    pruefeDemonstrated: pruefeDemonstrated,
+    pruefeMastery: pruefeMastery,
     verbucheAktivitaet: verbucheAktivitaet,
+    istFaellig: istFaellig,
     fertigkeitsUebersicht: fertigkeitsUebersicht
   };
 });

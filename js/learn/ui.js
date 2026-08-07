@@ -280,7 +280,7 @@
       var STATUS_TEXT = {
         introduced: "gerade kennengelernt",
         practicing: "du übst noch",
-        partially_mastered: "schon ein gutes Stück",
+        demonstrated: "schon gezeigt – komm morgen wieder!",
         mastered: "sitzt!"
       };
       app.innerHTML =
