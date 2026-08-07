@@ -550,3 +550,162 @@ test("Inhalt: Speicherfehler bricht atomar ab", function () {
   assert.equal(r.status, "storageError");
   assert.equal(basis.getItem(journey.containerKey("p1", "englisch-6")), null);
 });
+
+// ===== K2: DESCRIBE OTHERS (Unit 1, Kompetenz 2) =====
+
+var K2_ID = "u1.k2.describe-others";
+var K2_FACH = "englisch-6";
+
+test("K2: existiert als eigenständige Kompetenz", function () {
+  // Verifiziere dass K2 eine eindeutige ID hat
+  assert.notEqual(K2_ID, KID);
+  assert.equal(K2_ID, "u1.k2.describe-others");
+});
+
+test("K2: hat eigene Evidenz, getrennt von K1", function () {
+  var store = mockStore();
+  var p1 = "profile-k2-test";
+
+  // K1 erste Session
+  journey.verbucheErgebnis(p1, K2_FACH, {
+    competencyId: KID,
+    skill: "listening",
+    activityType: "hoerauswahl",
+    correct: true,
+    heute: TAG_1
+  }, store);
+
+  // K2 erste Session (gleicher Profil, gleicher Fach, aber andere Kompetenz-ID)
+  journey.verbucheErgebnis(p1, K2_FACH, {
+    competencyId: K2_ID,
+    skill: "listening",
+    activityType: "hoerauswahl",
+    correct: true,
+    heute: TAG_1
+  }, store);
+
+  // K1 und K2 Fortschritt sind getrennt
+  var k1_stand = journey.holeStand(p1, K2_FACH, KID, store);
+  var k2_stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+
+  assert.equal(k1_stand.status, "practicing");
+  assert.equal(k2_stand.status, "practicing");
+  assert.equal(k1_stand.bySkill.listening.erfolge, 1);
+  assert.equal(k2_stand.bySkill.listening.erfolge, 1);
+});
+
+test("K2: Tag 1 kann maximal demonstrated erreichen", function () {
+  var store = mockStore();
+  var p1 = "profile-k2-demo";
+
+  // K2 Tag 1: rezeptiv + produktiv + 2 Typen + Transfer
+  var events = [
+    { competencyId: K2_ID, skill: "listening", activityType: "hoerauswahl", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "reading", activityType: "lesezuordnung", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "eingabe", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "dialog", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, transfer: true, vokabelIds: [] }
+  ];
+
+  events.forEach(function (e) { journey.verbucheErgebnis(p1, K2_FACH, e, store); });
+
+  var stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(stand.status, "demonstrated");
+  assert.equal(stand.dueDate, competency.tageAddieren(TAG_1, 1));
+  assert.notEqual(stand.status, "mastered");
+});
+
+test("K2: mastery erfordert 2+ Tage + Transfer (wie K1)", function () {
+  var store = mockStore();
+  var p1 = "profile-k2-mastery";
+  var tag2 = competency.tageAddieren(TAG_1, 1);
+
+  // K2 Tag 1: demonstrated
+  var day1_events = [
+    { competencyId: K2_ID, skill: "listening", activityType: "hoerauswahl", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "reading", activityType: "lesezuordnung", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "eingabe", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "dialog", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, transfer: true, vokabelIds: [] }
+  ];
+  day1_events.forEach(function (e) { journey.verbucheErgebnis(p1, K2_FACH, e, store); });
+
+  var stand1 = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(stand1.status, "demonstrated");
+
+  // K2 Tag 2: Refresh + success
+  var day2_events = [
+    { competencyId: K2_ID, skill: "listening", activityType: "hoerauswahl", correct: true, heute: tag2, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "eingabe", correct: true, heute: tag2, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "dialog", correct: true, heute: tag2, hilfe: competency.HILFE_KEINE, transfer: true, vokabelIds: [] }
+  ];
+  day2_events.forEach(function (e) { journey.verbucheErgebnis(p1, K2_FACH, e, store); });
+
+  var stand2 = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(stand2.status, "mastered");
+});
+
+test("K2: Refresh-Mission setzt dueDate für nächsten Tag", function () {
+  var store = mockStore();
+  var p1 = "profile-k2-refresh";
+
+  // K2 Tag 1 → demonstrated
+  var events = [
+    { competencyId: K2_ID, skill: "listening", activityType: "hoerauswahl", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "reading", activityType: "lesezuordnung", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "eingabe", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "dialog", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, transfer: true, vokabelIds: [] }
+  ];
+  events.forEach(function (e) { journey.verbucheErgebnis(p1, K2_FACH, e, store); });
+
+  var stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert.equal(stand.dueDate, competency.tageAddieren(TAG_1, 1));
+  assert.equal(competency.istFaellig(stand, competency.tageAddieren(TAG_1, 1)), true);
+});
+
+test("K2: he/she/they-Pronomen verfolgt wie andere Skills", function () {
+  var store = mockStore();
+  var p1 = "profile-k2-pronouns";
+
+  // K2 mit various skills
+  var events = [
+    { competencyId: K2_ID, skill: "listening", activityType: "hoerauswahl", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "reading", activityType: "lesezuordnung", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] },
+    { competencyId: K2_ID, skill: "writing", activityType: "eingabe", correct: true, heute: TAG_1, hilfe: competency.HILFE_KEINE, vokabelIds: [] }
+  ];
+  events.forEach(function (e) { journey.verbucheErgebnis(p1, K2_FACH, e, store); });
+
+  var stand = journey.holeStand(p1, K2_FACH, K2_ID, store);
+  assert(competency.FERTIGKEITEN.indexOf("listening") !== -1);
+  assert(competency.FERTIGKEITEN.indexOf("writing") !== -1);
+  assert.equal(stand.bySkill.listening.erfolge, 1);
+  assert.equal(stand.bySkill.writing.erfolge, 1);
+});
+
+test("K2: K1 bleibt vollständig funktionsfähig", function () {
+  var store = mockStore();
+  var p1 = "profile-k1-k2-coexist";
+
+  // K1 Erfolg
+  journey.verbucheErgebnis(p1, K2_FACH, {
+    competencyId: KID,
+    skill: "listening",
+    activityType: "hoerauswahl",
+    correct: true,
+    heute: TAG_1
+  }, store);
+
+  // K2 Erfolg
+  journey.verbucheErgebnis(p1, K2_FACH, {
+    competencyId: K2_ID,
+    skill: "listening",
+    activityType: "hoerauswahl",
+    correct: true,
+    heute: TAG_1
+  }, store);
+
+  // Beide bestehen unabhängig
+  var k1 = journey.holeStand(p1, K2_FACH, KID, store);
+  var k2 = journey.holeStand(p1, K2_FACH, K2_ID, store);
+
+  assert.equal(k1.status, "practicing");
+  assert.equal(k2.status, "practicing");
+});
