@@ -219,6 +219,8 @@ test("Mastery: alle Kriterien erfuellt = mastered", function () {
   stand.bySkill.writing.erfolgeOhneHilfe = 1;
   stand.bySkill.listening.letzteAm = TAG_2;
   stand.bySkill.writing.letzteAm = TAG_2;
+  stand.bySkill.listening.letzteSacilieOhneHilfeAm = TAG_2;  // letzte war ohne Hilfe
+  stand.bySkill.writing.letzteSacilieOhneHilfeAm = TAG_2;   // letzte war ohne Hilfe
   var mastered = competency.pruefeMastery(stand);
   assert.equal(mastered, true);
 });

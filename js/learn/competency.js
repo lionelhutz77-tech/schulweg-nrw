@@ -49,7 +49,7 @@
   function leererStand(competencyId) {
     var bySkill = {};
     FERTIGKEITEN.forEach(function (f) {
-      bySkill[f] = { versuche: 0, erfolge: 0, erfolgeOhneHilfe: 0, letzteAm: null };
+      bySkill[f] = { versuche: 0, erfolge: 0, erfolgeOhneHilfe: 0, letzteAm: null, letzteSacilieOhneHilfeAm: null };
     });
     return {
       competencyId: competencyId,
@@ -97,11 +97,13 @@
       var s = stand.bySkill[f];
       return s.letzteAm && s.letzteAm > stand.firstDemonstratedAt;
     });
-    var produktivSpaeterOhneHilfe = PRODUKTIV.some(function (f) {
+    // E: die AKTUELLE (letzte) produktive Antwort MUSS ohne Hilfe sein
+    var produktivAktuelOhneHilfe = PRODUKTIV.some(function (f) {
       var s = stand.bySkill[f];
-      return s.letzteAm && s.letzteAm > stand.firstDemonstratedAt && s.erfolgeOhneHilfe > 0;
+      // letzteAm === letzteSacilieOhneHilfeAm bedeutet: die neueste Antwort war ohne Hilfe
+      return s.letzteAm && s.letzteSacilieOhneHilfeAm === s.letzteAm && s.letzteAm >= stand.firstDemonstratedAt;
     });
-    if (!rezeptivSpaeter || !produktivSpaeterOhneHilfe) return false;              // C + E
+    if (!rezeptivSpaeter || !produktivAktuelOhneHilfe) return false;              // C + E
 
     var transferSpaeter = tageNach(stand.transferTage, stand.firstDemonstratedAt);
     if (!transferSpaeter.length) return false;                                     // D
@@ -157,7 +159,10 @@
 
     if (e.correct) {
       s.erfolge += 1;
-      if (hilfe === HILFE_KEINE) s.erfolgeOhneHilfe += 1;
+      if (hilfe === HILFE_KEINE) {
+        s.erfolgeOhneHilfe += 1;
+        s.letzteSacilieOhneHilfeAm = e.heute || null;  // Nur bei "ohne Hilfe" aktualisieren
+      }
       s.letzteAm = e.heute || null;
       stand.aktivitaetstypen = ergaenzeEindeutig(stand.aktivitaetstypen, e.activityType);
       stand.successfulLearningDays = ergaenzeEindeutig(stand.successfulLearningDays, e.heute);
