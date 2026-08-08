@@ -2,7 +2,7 @@
  * Englisch Unit 1 - Kompetenz 2: "Meet my Friends"
  * Fähigkeit: einfache Informationen über andere Personen verstehen und formulieren
  *
- * Grammatik: he/she/they mit is/are, has, likes, from
+ * Grammatik: he/she/they mit is/are, from
  * Basiert auf K1 ("Sich vorstellen"), führt diese natürlich weiter
  *
  * Kinder erleben zuerst Sprache (Figuren), dann die Grammatik.
@@ -18,8 +18,8 @@ window.SCHULWEG.unit1k2 = {
   kompetenz: {
     id: "u1.k2.describe-others",
     titel: "Personen beschreiben",
-    kurz: "Sagen, wie andere Personen heißen, woher sie kommen, wie alt sie sind und was sie mögen.",
-    quelle: "Lighthouse Band 1, Unit 2–3 (nur als fachliche Referenz)"
+    kurz: "Sagen, wie andere Personen heißen, woher sie kommen und wie alt sie sind.",
+    quelle: "Lighthouse Band 1, Unit 1 (nur als fachliche Referenz)"
   },
 
   // ===== EIGENE FIGUREN für K2 =====
@@ -209,12 +209,12 @@ window.SCHULWEG.unit1k2 = {
           antwortMia: "Good! Let me tell you about them."
         },
         {
-          mia: "What does Ben like?",
-          audio: { kind: "sentence", key: "u1.k2.what-ben-like", text: "What does Ben like?", lang: "en-GB" },
-          erwartet: "^\\s*(he\\s+)?likes\\s+football",
+          mia: "Where is Ben from?",
+          audio: { kind: "sentence", key: "u1.k2.where-ben-from", text: "Where is Ben from?", lang: "en-GB" },
+          erwartet: "^\\s*(he\\s+is\\s+from\\s+)?manchester",
           merkeGruppe: 0,
-          beispiel: "He likes football.",
-          antwortMia: "Right! Ben loves football."
+          beispiel: "He is from Manchester.",
+          antwortMia: "Right! Ben is from Manchester."
         }
       ],
       abschluss: "Gut gesprochen! Du kennst meine Freunde jetzt."
@@ -257,7 +257,7 @@ window.SCHULWEG.unit1k2 = {
       activityType: "eingabe",
       skill: "writing",
       titel: "Mini-Check: Schreiben",
-      frage: "Schreib einen Satz über Alex (from London, likes reading): ‚He is ...'",
+      frage: "Schreib einen Satz über Alex (from London): ‚He is ...'",
       typ: "freieingabe",
       muster: "^\\s*he\\s+is\\s+(from\\s+)?london",
       beispiel: "He is from London.",
@@ -299,12 +299,12 @@ window.SCHULWEG.unit1k2 = {
       activityType: "eingabe",
       skill: "writing",
       titel: "Beschreib Sophie",
-      frage: "Schreib: ‚She is from ... She likes ...'",
+      frage: "Schreib: ‚She is from Glasgow.'",
       typ: "freieingabe",
-      muster: "^\\s*she\\s+is\\s+from\\s+glasgow.*likes\\s+art",
-      beispiel: "She is from Glasgow. She likes art.",
+      muster: "^\\s*she\\s+is\\s+from\\s+glasgow",
+      beispiel: "She is from Glasgow.",
       erklaerung: "Perfekt!",
-      hilfe: "Glasgow und art sind Sophies Merkmale."
+      hilfe: "Schreib ‚She is from Glasgow.'"
     },
 
     {
