@@ -1,5 +1,5 @@
 /* Offline-Cache fuer Schulweg NRW (network-first: online immer aktuell) */
-var CACHE = "schulweg-v4";
+var CACHE = "schulweg-v5";
 var DATEIEN = [
   "./",
   "./index.html",
@@ -19,7 +19,31 @@ var DATEIEN = [
   "./content/englisch-unit1.js",
   "./content/mathe-klasse5.js",
   "./manifest.webmanifest",
-  "./icons/icon.svg"
+  "./icons/icon.svg",
+  // K1 + K2 Audio-Assets (en-GB-LibbyNeural, Microsoft Neural TTS)
+  "./audio/english/unit1/u1_k1_d-from.mp3",
+  "./audio/english/unit1/u1_k1_d-name.mp3",
+  "./audio/english/unit1/u1_k1_d-old.mp3",
+  "./audio/english/unit1/u1_k1_mia.mp3",
+  "./audio/english/unit1/u1_k1_muster-im.mp3",
+  "./audio/english/unit1/u1_k1_nice-to-meet.mp3",
+  "./audio/english/unit1/u1_k1_r-james.mp3",
+  "./audio/english/unit1/u1_k1_refresh1.mp3",
+  "./audio/english/unit1/u1_k1_sam-hello.mp3",
+  "./audio/english/unit1/u1_k2_alex-intro.mp3",
+  "./audio/english/unit1/u1_k2_ankommen.mp3",
+  "./audio/english/unit1/u1_k2_b-hoer1.mp3",
+  "./audio/english/unit1/u1_k2_ben-intro.mp3",
+  "./audio/english/unit1/u1_k2_check-hoer.mp3",
+  "./audio/english/unit1/u1_k2_do-you-like.mp3",
+  "./audio/english/unit1/u1_k2_mia-intro.mp3",
+  "./audio/english/unit1/u1_k2_muster-pronouns.mp3",
+  "./audio/english/unit1/u1_k2_r-do-you-know.mp3",
+  "./audio/english/unit1/u1_k2_r-hoer-neu.mp3",
+  "./audio/english/unit1/u1_k2_r-recap.mp3",
+  "./audio/english/unit1/u1_k2_r-where-mia.mp3",
+  "./audio/english/unit1/u1_k2_sophie-intro.mp3",
+  "./audio/english/unit1/u1_k2_where-ben-from.mp3"
 ];
 
 self.addEventListener("install", function (e) {
