@@ -12,7 +12,7 @@ Hält den Groq-Schlüssel geheim. Die App ruft diesen Worker, der Worker ruft Gr
 
 **3. Worker veröffentlichen** (im Ordner `worker/`):
 ```powershell
-cd C:\Users\HP\Documents\Claude\lern-nrw\worker
+cd C:\Pfad\zum\Projekt\lern-nrw\worker
 npx wrangler login          # öffnet den Browser, einmal bestätigen
 npx wrangler secret put GROQ_API_KEY   # hier den Groq-Schlüssel einfügen
 npx wrangler deploy

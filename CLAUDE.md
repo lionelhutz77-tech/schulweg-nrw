@@ -12,7 +12,7 @@ Skill **lern-auswertung** anwenden (Fehleranalyse, Zielsprache-Regel, Lernstand-
 
 ## Aufbau
 - `index.html` (bindet Inhalte als `<script>`), `js/` (app.js, config.js mit Worker-Endpoint, winkel.js für SVG-Interaktiv), `content/` (mathe-klasse5.js, mathe-klasse6.js, englisch-6.js), `service-worker.js`, `prompts/` (ChatGPT-Prompt für Inhaltserfassung), `quelle/` (Buchquellen, **nie öffentlich**, gitignored).
-- KI-Schicht: Cloudflare Worker in `worker/` (`groq-worker.js`, ruft Groq `llama-3.3-70b-versatile`). Endpoint: `https://schulweg-ki.lernapp-nrw.workers.dev`. Modi: erklaerung / freitext / neue_aufgabe.
+- KI-Schicht: Cloudflare Worker in `worker/` (`groq-worker.js`, ruft standardmäßig Groq `openai/gpt-oss-20b`; per Worker-Variable `GROQ_MODEL` änderbar). Endpoint: `https://schulweg-ki.lernapp-nrw.workers.dev`. Modi: erklaerung / freitext / neue_aufgabe.
 
 ## Konventionen / Gotchas
 - Worker-Deploy: `cd worker && npx wrangler deploy` (OAuth-Creds liegen lokal → ich kann selbst deployen). `GROQ_API_KEY` bleibt als Worker-Secret erhalten.

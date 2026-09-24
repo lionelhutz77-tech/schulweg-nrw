@@ -11,7 +11,9 @@ Gebaut als **PWA** (läuft auf iPad/iPhone/Android/PC im Browser, lässt sich au
 - ✅ Fehleranalyse pro typischer Falschantwort + Schritt-für-Schritt-Lernsequenz
 - ✅ Warmes Orange statt Rot, „Versuch’s nochmal“ statt Beschämung
 - ✅ Offline-fähig (Service Worker)
-- ⏳ Inhalte: Mathe Klasse 5 (Punkt vor Strich, Brüche) – Deutsch/Englisch folgen
+- ✅ Englisch Klasse 5: „Nice to meet you“, zwei Vokabeltest-Proben S. 180–181, Vorbereitung S. 182, lokaler Dialog und Vokabeltrainer
+- ✅ Allgemeine aktive Lernroutine für Englisch Klasse 7; konkrete Schulaufgaben folgen mit den nächsten Unterlagen
+- ✅ Deutsch Klasse 7: sachlich berichten (W-Fragen, Schreibplan, Präteritum/Plusquamperfekt, Fehlerdiagnose und lokale Bericht-Werkstatt)
 - ⏳ Eltern-Dashboard (Statistik + Lernplan) – Platzhalter
 - ⏳ Groq-KI-Schicht für unvorhergesehene Fehler – Phase 2
 
@@ -20,7 +22,7 @@ Wegen Browser-Sicherheit am besten über einen kleinen lokalen Server starten
 (Doppelklick auf `index.html` funktioniert meist auch, da Inhalte als `.js` geladen werden):
 
 ```powershell
-cd C:\Users\HP\Documents\Claude\lern-nrw
+cd C:\Pfad\zum\Projekt\lern-nrw
 python -m http.server 8000
 ```
 Dann im Browser: http://localhost:8000

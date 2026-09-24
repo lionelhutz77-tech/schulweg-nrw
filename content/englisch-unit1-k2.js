@@ -283,7 +283,7 @@ window.SCHULWEG.unit1k2 = {
       art: "aufgabe",
       activityType: "hoerauswahl",
       skill: "listening",
-      titel: "Wer mag Basketball?",
+      titel: "Wer mag Fußball?",
       audio: { kind: "sentence", key: "u1.k2.r-hoer-neu", text: "He is from Manchester. He likes football.", lang: "en-GB" },
       frage: "Wer ist das?",
       typ: "mc",

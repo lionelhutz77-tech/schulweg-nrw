@@ -99,7 +99,8 @@ export default {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+          model: env.GROQ_MODEL || "openai/gpt-oss-20b",
+          max_tokens: 1200,
           temperature: 0.3,
           response_format: { type: "json_object" },
           messages: [

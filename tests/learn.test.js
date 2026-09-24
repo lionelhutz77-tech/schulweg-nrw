@@ -757,8 +757,7 @@ test("K2: K1→K2-Abhängigkeit - K1 demonstrated keine Brücke nötig", functio
 
 test("K2: Source-Audit - Audio-Refs providerneutral", function () {
   // Statische Prüfung der K2-Source ohne window-Abhängigkeit
-  var fs = require("fs");
-  var k2Source = fs.readFileSync("./content/englisch-unit1-k2.js", "utf-8");
+  var k2Source = fs.readFileSync(path.join(__dirname, "..", "content", "englisch-unit1-k2.js"), "utf-8");
 
   // Kein Provider hardcoded
   assert.equal(k2Source.indexOf("elevenlabs") === -1, true);

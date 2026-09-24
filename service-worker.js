@@ -1,5 +1,5 @@
 /* Offline-Cache fuer Schulweg NRW (network-first: online immer aktuell) */
-var CACHE = "schulweg-v5";
+var CACHE = "schulweg-v7";
 var DATEIEN = [
   "./",
   "./index.html",
@@ -17,7 +17,15 @@ var DATEIEN = [
   "./js/learn/journey.js",
   "./js/learn/ui.js",
   "./content/englisch-unit1.js",
+  "./content/englisch-unit1-k2.js",
+  "./content/englisch-5.js",
+  "./content/englisch-6.js",
+  "./content/englisch-7.js",
+  "./content/deutsch-4.js",
+  "./content/deutsch-6.js",
+  "./content/deutsch-7.js",
   "./content/mathe-klasse5.js",
+  "./content/mathe-klasse6.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   // K1 + K2 Audio-Assets (en-GB-LibbyNeural, Microsoft Neural TTS)

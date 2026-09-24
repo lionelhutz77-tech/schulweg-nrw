@@ -279,14 +279,18 @@
         '<div class="bar"><span style="width:0;background:var(--' + fach.farbe + ')"></span></div></div>'
       );
     }).join("");
-    // Lernreisen (Unit 1, Slice 1–N) nur anbieten, wenn Inhalt + UI geladen sind
+    // Lernreisen projektweit registrieren und passend zum Klassenbereich filtern.
+    var quellen = [window.SCHULWEG.unit1, window.SCHULWEG.unit1k2]
+      .concat(window.SCHULWEG.lernreisen || []);
+    var gesehen = {};
     var reisen = [];
-    var k1 = window.SCHULWEG.unit1 && window.SCHULWEG.learnUI &&
-      window.SCHULWEG.unit1.fachKey === state.fachKey ? window.SCHULWEG.unit1 : null;
-    var k2 = window.SCHULWEG.unit1k2 && window.SCHULWEG.learnUI &&
-      window.SCHULWEG.unit1k2.fachKey === state.fachKey ? window.SCHULWEG.unit1k2 : null;
-    if (k1) reisen.push({ daten: k1, id: "reise-k1" });
-    if (k2) reisen.push({ daten: k2, id: "reise-k2" });
+    if (window.SCHULWEG.learnUI) quellen.forEach(function (daten) {
+      if (!daten || daten.fachKey !== state.fachKey || !daten.kompetenz) return;
+      var schluessel = daten.fachKey + ":" + daten.kompetenz.id;
+      if (gesehen[schluessel]) return;
+      gesehen[schluessel] = true;
+      reisen.push({ daten: daten, id: "reise-" + reisen.length });
+    });
     var reisenHtml = reisen.map(function (r) {
       return '<button class="btn btn-primary" id="' + r.id + '" style="margin:0 0 9px; display:block; width:100%">🚀 Lernreise: ' + r.daten.kompetenz.titel + '</button>';
     }).join("");
@@ -848,6 +852,14 @@
           fertig((vortext || "") + (a.musterloesung
             ? '<div class="analyse" style="background:var(--akzent-bg)"><div class="head" style="color:var(--akzent-text)">Beispiel-Lösung</div><p style="color:var(--akzent-text)">' + a.musterloesung + "</p></div>"
             : ""));
+        }
+        if (a.nurLokal) {
+          var liste = (a.checkliste || []).map(function (punkt) {
+            return '<li>' + punkt + '</li>';
+          }).join("");
+          muster('<p class="muted">Dein Text bleibt auf diesem Gerät. Prüfe ihn Punkt für Punkt:</p>' +
+            (liste ? '<div class="analyse"><div class="head">Deine Checkliste</div><ul style="margin:8px 0 0;padding-left:20px;line-height:1.7">' + liste + '</ul></div>' : ""));
+          return;
         }
         if (!kiAktiv()) { muster('<p class="muted">Vergleiche deinen Text mit dem Beispiel:</p>'); return; }
 
