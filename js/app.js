@@ -300,6 +300,7 @@
       '<div class="grid">' + karten + "</div>" +
       '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>' +
       (fach.vokabeltrainer ? '<button class="btn btn-soft" id="vok" style="margin-top:10px">🗂️ Vokabeltrainer</button>' : "") +
+      (fach.sprachcoach ? '<button class="btn btn-primary" id="sprachcoach" style="margin-top:10px">🎙️ Begleiteter ChatGPT-Sprachcoach</button>' : "") +
       (hatMarkieren(fach) ? '<button class="btn btn-soft" id="drucken" style="margin-top:10px">📄 Arbeitsblatt zum Ausdrucken</button>' : "");
     app.querySelector(".back").onclick = zeigeFaecher;
     app.querySelectorAll("[data-thema]").forEach(function (n) {
@@ -314,6 +315,8 @@
     if (db) db.onclick = function () { zeigeArbeitsblatt(fach); };
     var vb = document.getElementById("vok");
     if (vb) vb.onclick = function () { starteVokabeltrainer(fach); };
+    var sb = document.getElementById("sprachcoach");
+    if (sb) sb.onclick = function () { zeigeSprachcoach(fach); };
     // Lernreisen-Buttons (K1, K2, ...)
     reisen.forEach(function (r) {
       var btn = document.getElementById(r.id);
@@ -373,6 +376,77 @@
   // ist nur noch ein duenner Aufruf der neuen, getrennten Lernlogik-Schicht.
   function starteVokabeltrainer(fach) {
     window.SCHULWEG.vocabUI.starteEinheit(fach, state, app, zeigeThemen);
+  }
+
+  // Kostenloser, datensparsamer Voice-Workflow: Die App erzeugt aus den
+  // lokalen SRS-Daten einen anonymen Auftrag fuer ChatGPT. Ein validierter
+  // Lernpass kann danach lokal zurueckgespeichert werden. Keine Profilnamen
+  // oder freien Kindtexte werden automatisch uebertragen.
+  function zeigeSprachcoach(fach) {
+    var coach = window.SCHULWEG.voiceCoach;
+    var storage = window.SCHULWEG_VOCAB.storage;
+    var heute = new Date().toISOString().slice(0, 10);
+    var geladen = storage.ladeZustand(state.profil.profileId, state.fachKey, localStorage, heute);
+    var progress = (geladen.status === "ok" || geladen.status === "empty") ? geladen.container.progress : {};
+    var voiceState = coach.ladeState(localStorage, state.profil.profileId, state.fachKey);
+    var prompt = coach.baueLernauftrag({
+      fachKey: state.fachKey,
+      vocab: fach.vokabeltrainer,
+      progress: progress,
+      voiceState: voiceState,
+      heute: heute,
+      maxWoerter: 12,
+      verboteneNamen: [state.profil.name].concat(state.profil.legacyNames || [])
+    });
+    var letzte = voiceState.sessions.length ? voiceState.sessions[voiceState.sessions.length - 1] : null;
+
+    app.innerHTML =
+      topbar("Englisch-Sprachcoach", fach.sprachcoach.unit + " · " + fach.sprachcoach.stoff, true) +
+      '<div class="intro-box"><p><b>So funktioniert es:</b> Die App wählt aus dem lokalen Lernstand die passenden Wörter. Du kopierst den anonymen Lernauftrag zu ChatGPT, startest dort den Sprachmodus und übernimmst am Ende den Lernpass zurück.</p>' +
+      '<p class="muted"><b>Wichtig:</b> Unter 13 Jahren darf ChatGPT nur gemeinsam mit einem Erwachsenen benutzt werden. Keine Namen, Schule, Adresse oder echten Wohnort nennen.</p></div>' +
+      (letzte ? '<div class="analyse" style="margin-top:12px"><div class="head">Letzte Sprachrunde</div><p>' +
+        letzte.sicher.length + " Wörter sicher · " + letzte.ueben.length + " Wörter weiter üben · " + letzte.datum + "</p></div>" :
+        '<p class="muted">Noch keine Sprachrunde gespeichert – wir starten mit dem Vokabeltrainer-Stand.</p>') +
+      '<button class="btn btn-primary" id="coach-copy">1 · Lernauftrag kopieren</button>' +
+      '<button class="btn btn-soft" id="coach-open" style="margin-top:10px">2 · ChatGPT öffnen</button>' +
+      '<details style="margin-top:14px"><summary class="muted">Lernauftrag anzeigen</summary><textarea id="coach-prompt" class="text-in" rows="9" readonly style="margin-top:10px"></textarea></details>' +
+      '<div class="q-card" style="margin-top:18px"><p class="q-frage" style="font-size:18px">3 · Lernpass nach dem Gespräch einfügen</p>' +
+      '<p class="muted">ChatGPT zeigt am Ende eine Zeile mit <b>SCHULWEG-LERNPASS-V1</b>. Kopiere diese Zeile hier hinein.</p>' +
+      '<textarea id="coach-pass" class="text-in" rows="4" placeholder="Lernpass hier einfügen …"></textarea>' +
+      '<button class="btn btn-primary" id="coach-import" disabled>Lernpass speichern</button><div id="coach-status"></div></div>';
+
+    app.querySelector(".back").onclick = zeigeThemen;
+    document.getElementById("coach-prompt").value = prompt;
+    var copyBtn = document.getElementById("coach-copy");
+    copyBtn.onclick = function () {
+      function fertig() { copyBtn.textContent = "✓ Lernauftrag kopiert"; }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(prompt).then(fertig).catch(function () {
+          var feld = document.getElementById("coach-prompt"); feld.select(); document.execCommand("copy"); fertig();
+        });
+      } else {
+        var feld = document.getElementById("coach-prompt"); feld.select(); document.execCommand("copy"); fertig();
+      }
+    };
+    document.getElementById("coach-open").onclick = function () {
+      window.open((window.SCHULWEG_CONFIG && window.SCHULWEG_CONFIG.chatgptVoiceUrl) || "https://chatgpt.com/", "_blank", "noopener");
+    };
+    var passFeld = document.getElementById("coach-pass");
+    var importBtn = document.getElementById("coach-import");
+    passFeld.oninput = function () { importBtn.disabled = passFeld.value.indexOf(coach.MARKER) < 0; };
+    importBtn.onclick = function () {
+      var status = document.getElementById("coach-status");
+      try {
+        var erlaubteIds = fach.vokabeltrainer.map(function (v) { return v.id; });
+        var lernpass = coach.leseLernpass(passFeld.value, erlaubteIds, heute);
+        var neu = coach.fuegeLernpassHinzu(voiceState, lernpass);
+        coach.speichereState(localStorage, state.profil.profileId, state.fachKey, neu);
+        status.innerHTML = '<div class="pill ok" style="margin-top:12px">✓ Gespeichert: ' + lernpass.sicher.length + " sicher, " + lernpass.ueben.length + " weiter üben</div>";
+        importBtn.disabled = true;
+      } catch (e) {
+        status.innerHTML = '<div class="pill no" style="margin-top:12px">Lernpass nicht erkannt. Bitte die vollständige Zeile kopieren.</div>';
+      }
+    };
   }
 
   function zeigeArbeitAuswahl() {
