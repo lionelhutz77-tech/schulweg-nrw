@@ -298,7 +298,9 @@
       topbar(fach.fach, "Klasse " + fach.klasse + " · Thema wählen", true) +
       (reisenHtml ? '<div style="margin-bottom:9px">' + reisenHtml + '</div>' : "") +
       '<div class="grid">' + karten + "</div>" +
+      (fach.lerncheck ? '<button class="btn btn-primary" id="lerncheck" style="margin-top:20px">🎯 ' + fach.lerncheck.titel + ' · bis ' + fach.lerncheck.datum + '</button>' : "") +
       '<button class="btn btn-soft" id="arbeit" style="margin-top:20px">📝 Für eine Arbeit lernen (mehrere auswählen)</button>' +
+      '<button class="btn btn-soft" id="lernwerkzeuge" style="margin-top:10px">🧠 Lernwerkzeuge: erklären, vergleichen, Quiz …</button>' +
       (fach.vokabeltrainer ? '<button class="btn btn-soft" id="vok" style="margin-top:10px">🗂️ Vokabeltrainer</button>' : "") +
       (fach.sprachcoach ? '<button class="btn btn-primary" id="sprachcoach" style="margin-top:10px">🎙️ Begleiteter ChatGPT-Sprachcoach</button>' : "") +
       (hatMarkieren(fach) ? '<button class="btn btn-soft" id="drucken" style="margin-top:10px">📄 Arbeitsblatt zum Ausdrucken</button>' : "");
@@ -310,7 +312,10 @@
         if (t.lektionen) starteTutor(t); else if (t.lernweg) zeigeLernweg(t); else zeigeIntro();
       };
     });
+    var lb = document.getElementById("lerncheck");
+    if (lb) lb.onclick = function () { zeigeLerncheck(fach); };
     document.getElementById("arbeit").onclick = zeigeArbeitAuswahl;
+    document.getElementById("lernwerkzeuge").onclick = function () { zeigeLernwerkzeuge(fach); };
     var db = document.getElementById("drucken");
     if (db) db.onclick = function () { zeigeArbeitsblatt(fach); };
     var vb = document.getElementById("vok");
@@ -324,6 +329,137 @@
         btn.onclick = function () { window.SCHULWEG.learnUI.starteLernreise(app, state, zeigeThemen, r.daten); };
       }
     });
+  }
+
+  function zeigeLernwerkzeuge(fach) {
+    var werkzeuge = window.SCHULWEG.lernWerkzeuge;
+    var themen = fach.themen || [];
+    var optionen = themen.map(function (thema, index) {
+      return '<option value="' + index + '">' + thema.titel + (thema.seiten ? " · " + thema.seiten : "") + '</option>';
+    }).join("");
+    var karten = werkzeuge.MODI.map(function (modus) {
+      return '<button class="card lernwerkzeug" data-modus="' + modus.id + '" style="text-align:left;border:1.5px solid var(--border)">' +
+        '<h3 style="margin:0">' + modus.icon + " " + modus.label + '</h3></button>';
+    }).join("");
+    app.innerHTML =
+      topbar("Lernwerkzeuge", fach.fach + " · Klasse " + fach.klasse, true) +
+      '<div class="intro-box"><p><b>Wähle ein Thema und eine Lernform.</b> Daraus entsteht ein anonymer Lernauftrag. Unter 13 Jahren bitte nur gemeinsam mit einem Erwachsenen in ChatGPT verwenden.</p></div>' +
+      '<label for="lernwerkzeug-thema"><b>Thema</b></label><select id="lernwerkzeug-thema" class="text-in" style="margin:8px 0 14px">' + optionen + '</select>' +
+      '<div class="grid">' + karten + '</div>' +
+      '<div id="lernwerkzeug-ausgabe" style="display:none;margin-top:18px"><textarea id="lernwerkzeug-prompt" class="text-in" rows="10" readonly></textarea>' +
+      '<button class="btn btn-primary" id="lernwerkzeug-copy">Lernauftrag kopieren</button>' +
+      '<button class="btn btn-soft" id="lernwerkzeug-open" style="margin-top:10px">ChatGPT öffnen</button></div>';
+    app.querySelector(".back").onclick = zeigeThemen;
+    app.querySelectorAll(".lernwerkzeug").forEach(function (button) {
+      button.onclick = function () {
+        var thema = themen[+document.getElementById("lernwerkzeug-thema").value];
+        var prompt = werkzeuge.baueAuftrag({
+          modus: button.dataset.modus,
+          fach: fach.fach,
+          klasse: fach.klasse,
+          thema: thema.titel,
+          seiten: thema.seiten || ""
+        });
+        var ausgabe = document.getElementById("lernwerkzeug-ausgabe");
+        var feld = document.getElementById("lernwerkzeug-prompt");
+        ausgabe.style.display = "block";
+        feld.value = prompt;
+        document.getElementById("lernwerkzeug-copy").onclick = function () {
+          function fertig() { document.getElementById("lernwerkzeug-copy").textContent = "✓ Lernauftrag kopiert"; }
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(prompt).then(fertig).catch(function () { feld.select(); document.execCommand("copy"); fertig(); });
+          else { feld.select(); document.execCommand("copy"); fertig(); }
+        };
+        document.getElementById("lernwerkzeug-open").onclick = function () {
+          window.open((window.SCHULWEG_CONFIG && window.SCHULWEG_CONFIG.chatgptVoiceUrl) || "https://chatgpt.com/", "_blank", "noopener");
+        };
+      };
+    });
+  }
+
+  // ---------- Lerncheck mit Tagesmissionen ----------
+  // Buchaufgaben werden nur als Seitenauftrag gespeichert. Damit bleibt die
+  // App urheberrechtlich sauber und erfindet keine Aufgabeninhalte.
+  function zeigeLerncheck(fach) {
+    var plan = fach.lerncheck;
+    var key = "schulweg_lerncheck_" + plan.id + "_" + state.profil.profileId;
+
+    function ladeStand() {
+      try {
+        var stand = JSON.parse(localStorage.getItem(key) || "{}");
+        return stand && typeof stand === "object" ? stand : {};
+      } catch (e) { return {}; }
+    }
+    function speichereStand(stand) {
+      try { localStorage.setItem(key, JSON.stringify(stand)); } catch (e) {}
+    }
+    function findeThema(id) {
+      return fach.themen.filter(function (t) { return t.id === id; })[0];
+    }
+    function starteThema(id) {
+      var thema = findeThema(id);
+      if (!thema) return;
+      state.thema = thema;
+      if (thema.lernweg) zeigeLernweg(thema); else zeigeIntro();
+    }
+    function starteMischcheck(ids) {
+      var aufgaben = [];
+      ids.forEach(function (id) {
+        var thema = findeThema(id);
+        if (thema && thema.aufgaben) aufgaben = aufgaben.concat(thema.aufgaben);
+      });
+      if (aufgaben.length) starteQuiz({ titel: "Mini-Generalprobe · Englisch 7", aufgaben: mische(aufgaben) });
+    }
+    function actionHtml(a, tagIndex, taskIndex) {
+      var attr = ' data-tag="' + tagIndex + '" data-aufgabe="' + taskIndex + '"';
+      if (a.art === "vokabeln") return '<button class="btn btn-soft lerncheck-action" data-action="vokabeln"' + attr + '>🗂️ trainieren</button>';
+      if (a.art === "thema") return '<button class="btn btn-soft lerncheck-action" data-action="thema"' + attr + '>🚀 App-Training</button>';
+      if (a.art === "mischcheck") return '<button class="btn btn-soft lerncheck-action" data-action="mischcheck"' + attr + '>⚡ Mini-Check</button>';
+      return "";
+    }
+    function render() {
+      var stand = ladeStand(), total = 0, fertig = 0;
+      plan.tage.forEach(function (tag) { tag.aufgaben.forEach(function (a) { total++; if (stand[a.id]) fertig++; }); });
+      var prozent = total ? Math.round((fertig / total) * 100) : 0;
+      var status = prozent === 100 ? "Prüfungsfit!" : (prozent >= 60 ? "Auf Kurs!" : "Startklar!");
+      var tageHtml = plan.tage.map(function (tag, tagIndex) {
+        var aufgabenHtml = tag.aufgaben.map(function (a, taskIndex) {
+          var done = !!stand[a.id];
+          return '<div class="intro-box" style="margin:9px 0 0;padding:12px;opacity:' + (done ? "0.68" : "1") + '">' +
+            '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">' +
+            '<input class="lerncheck-toggle" type="checkbox" data-tag="' + tagIndex + '" data-aufgabe="' + taskIndex + '"' + (done ? " checked" : "") + ' style="margin-top:4px">' +
+            '<span><b>' + a.text + '</b>' + (a.buch ? '<br><span class="muted">📚 Buch/Workbook bereitlegen – der genaue Aufgabeninhalt ist noch nicht digital vorhanden.</span>' : "") + '</span></label>' +
+            actionHtml(a, tagIndex, taskIndex) + '</div>';
+        }).join("");
+        return '<details' + (tagIndex === 0 ? " open" : "") + ' style="margin:12px 0;border:1.5px solid var(--border);border-radius:14px;padding:12px">' +
+          '<summary style="cursor:pointer"><b>' + tag.datum + " · " + tag.titel + '</b><span class="muted"> · ' + tag.minuten + '</span></summary>' +
+          '<p class="muted" style="margin:10px 0 4px">🎯 ' + tag.fokus + '</p>' + aufgabenHtml + '</details>';
+      }).join("");
+      app.innerHTML =
+        topbar(plan.titel, "bis " + plan.datum, true) +
+        '<div class="result-hero" style="padding:18px"><div class="big" style="font-size:28px">' + prozent + '%</div><p>' + status + ' · ' + fertig + ' von ' + total + ' Missionen erledigt</p><div class="bar"><span style="width:' + prozent + '%;background:var(--englisch)"></span></div></div>' +
+        '<div class="intro-box"><p><b>Ziel Note 1:</b> ' + plan.ziel + '</p><p class="muted">' + plan.hinweis + '</p></div>' +
+        '<div class="analyse"><div class="head">📷 Für die genauen Buchaufgaben noch fotografieren/hochladen</div><ul style="margin:8px 0 0;padding-left:20px;line-height:1.7">' +
+        plan.fehlendeSeiten.map(function (seite) { return '<li>' + seite + '</li>'; }).join("") + '</ul></div>' + tageHtml;
+
+      app.querySelector(".back").onclick = zeigeThemen;
+      app.querySelectorAll(".lerncheck-toggle").forEach(function (box) {
+        box.onchange = function () {
+          var aufgabe = plan.tage[+box.dataset.tag].aufgaben[+box.dataset.aufgabe];
+          var neu = ladeStand();
+          if (box.checked) neu[aufgabe.id] = true; else delete neu[aufgabe.id];
+          speichereStand(neu); render();
+        };
+      });
+      app.querySelectorAll(".lerncheck-action").forEach(function (button) {
+        button.onclick = function () {
+          var aufgabe = plan.tage[+button.dataset.tag].aufgaben[+button.dataset.aufgabe];
+          if (button.dataset.action === "vokabeln") starteVokabeltrainer(fach);
+          else if (button.dataset.action === "thema") starteThema(aufgabe.thema);
+          else if (button.dataset.action === "mischcheck") starteMischcheck(aufgabe.themen);
+        };
+      });
+    }
+    render();
   }
 
   function mische(arr) {

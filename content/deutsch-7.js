@@ -127,6 +127,51 @@ window.SCHULWEG.faecher["deutsch-7"] = {
       ]
     },
     {
+      id: "operatoren-coach",
+      titel: "Operatoren-Coach: Genau das tun, was gefragt ist",
+      seiten: "Lernmethode für alle Sachfächer",
+      voraussetzung: "eine Aufgabenstellung",
+      intro: "Wozu brauchst du das? Operatoren sind die Arbeitswörter einer Aufgabe. Wenn du sie richtig erkennst, weißt du, wie ausführlich deine Antwort sein muss und verschenkst keine Punkte.",
+      aufgaben: [
+        {
+          typ: "mc", frage: "Die Aufgabe lautet: ‚Nenne zwei Ursachen.‘ Was wird erwartet?",
+          antworten: ["Zwei passende Ursachen knapp angeben", "Eine Ursache ausführlich erklären", "Vor- und Nachteile bewerten"],
+          richtig: "Zwei passende Ursachen knapp angeben", erklaerung: "‚Nennen‘ verlangt passende Stichwörter oder kurze Angaben, aber noch keine ausführliche Erklärung.",
+          fehler: { "Eine Ursache ausführlich erklären": "Das wäre mehr als verlangt und nennt außerdem nur eine Ursache.", "Vor- und Nachteile bewerten": "Das gehört zu ‚beurteilen‘, nicht zu ‚nennen‘." }
+        },
+        {
+          typ: "mc", frage: "Die Aufgabe lautet: ‚Beschreibe den Ablauf.‘ Welche Antwortform passt?",
+          antworten: ["Merkmale und Schritte sachlich in einer sinnvollen Reihenfolge darstellen", "Nur zwei Begriffe aufschreiben", "Eine persönliche Meinung abgeben"],
+          richtig: "Merkmale und Schritte sachlich in einer sinnvollen Reihenfolge darstellen", erklaerung: "‚Beschreiben‘ zeigt, wie etwas aussieht oder abläuft, ohne es schon vollständig zu begründen.",
+          fehler: { "Nur zwei Begriffe aufschreiben": "Das wäre eher ‚nennen‘ und für eine Beschreibung zu knapp.", "Eine persönliche Meinung abgeben": "Eine Meinung ist bei ‚beschreiben‘ nicht gefragt." }
+        },
+        {
+          typ: "mc", frage: "Was muss eine gute Antwort auf ‚Erkläre die Auswirkung‘ zusätzlich enthalten?",
+          antworten: ["Einen nachvollziehbaren Zusammenhang zwischen Ursache und Folge", "Nur die Überschrift", "Eine unbewiesene Vermutung"],
+          richtig: "Einen nachvollziehbaren Zusammenhang zwischen Ursache und Folge", erklaerung: "‚Erklären‘ bedeutet: zeigen, warum oder wie etwas geschieht. Hilfreich sind Wörter wie weil, dadurch und deshalb.",
+          fehler: { "Nur die Überschrift": "Eine Überschrift zeigt keinen Zusammenhang.", "Eine unbewiesene Vermutung": "Eine Erklärung braucht nachvollziehbare und passende Informationen." }
+        },
+        {
+          typ: "mc", frage: "Die Aufgabe lautet: ‚Erläutere den Vorgang an einem Beispiel.‘ Was gehört hinein?",
+          antworten: ["Erklärung und ein passendes Beispiel, das den Zusammenhang verdeutlicht", "Nur ein Beispiel ohne Erklärung", "Eine Liste ohne Zusammenhang"],
+          richtig: "Erklärung und ein passendes Beispiel, das den Zusammenhang verdeutlicht", erklaerung: "‚Erläutern‘ verlangt eine genauere Erklärung, häufig mit Beispiel oder Veranschaulichung.",
+          fehler: { "Nur ein Beispiel ohne Erklärung": "Das Beispiel muss mit dem erklärten Zusammenhang verbunden werden.", "Eine Liste ohne Zusammenhang": "Eine Aufzählung erläutert noch nicht, wie die Punkte zusammenhängen." }
+        },
+        {
+          typ: "mc", frage: "Welche Antwort passt zu ‚Begründe deine Entscheidung‘?",
+          antworten: ["Entscheidung nennen und mit überprüfbaren Argumenten stützen", "Nur schreiben: ‚Das finde ich besser.‘", "Den Aufgabentext wiederholen"],
+          richtig: "Entscheidung nennen und mit überprüfbaren Argumenten stützen", erklaerung: "Beim Begründen braucht jede Aussage ein Warum. Eine persönliche Meinung allein reicht nicht.",
+          fehler: { "Nur schreiben: ‚Das finde ich besser.‘": "Hier fehlt das Argument, das die Entscheidung stützt.", "Den Aufgabentext wiederholen": "Eine Wiederholung liefert noch keinen Grund." }
+        },
+        {
+          typ: "mc", frage: "Was unterscheidet ‚Beurteilen‘ von ‚Nennen‘?",
+          antworten: ["Beim Beurteilen werden Kriterien, Argumente und ein begründetes Urteil gebraucht", "Beim Beurteilen genügen einzelne Stichwörter", "Es gibt keinen Unterschied"],
+          richtig: "Beim Beurteilen werden Kriterien, Argumente und ein begründetes Urteil gebraucht", erklaerung: "Ein Urteil entsteht erst, nachdem passende Argumente abgewogen wurden.",
+          fehler: { "Beim Beurteilen genügen einzelne Stichwörter": "Stichwörter reichen für ein nachvollziehbares Urteil nicht aus.", "Es gibt keinen Unterschied": "Die Operatoren verlangen unterschiedlich tiefe Antworten." }
+        }
+      ]
+    },
+    {
       id: "bericht-detektiv",
       titel: "Bericht-Detektiv: Fehler finden",
       seiten: "Klartext 7 S. 60–68 · Arbeitsheft S. 22–24",

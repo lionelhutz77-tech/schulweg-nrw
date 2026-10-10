@@ -11,11 +11,11 @@ function ladeDeutsch7() {
   return window.SCHULWEG.faecher["deutsch-7"];
 }
 
-test("Deutsch Klasse 7 hat Tutor, Fehlerquiz und lokale Schreibwerkstatt", function () {
+test("Deutsch Klasse 7 hat Tutor, Operatoren-Coach, Fehlerquiz und lokale Schreibwerkstatt", function () {
   var fach = ladeDeutsch7();
   assert.equal(fach.klasse, 7);
   assert.deepEqual(fach.themen.map(function (t) { return t.id; }), [
-    "tutor-sachlicher-bericht", "bericht-detektiv", "bericht-werkstatt-lokal"
+    "tutor-sachlicher-bericht", "operatoren-coach", "bericht-detektiv", "bericht-werkstatt-lokal"
   ]);
 });
 
@@ -29,7 +29,7 @@ test("Tutor deckt die zentralen Bericht-Kompetenzen ab", function () {
 });
 
 test("Fehlerquiz gibt zu jeder falschen Multiple-Choice-Antwort eine Diagnose", function () {
-  var quiz = ladeDeutsch7().themen[1];
+  var quiz = ladeDeutsch7().themen[2];
   assert.ok(quiz.aufgaben.length >= 10);
   quiz.aufgaben.filter(function (a) { return a.typ === "mc"; }).forEach(function (a) {
     a.antworten.filter(function (antwort) { return antwort !== a.richtig; }).forEach(function (antwort) {
@@ -39,12 +39,25 @@ test("Fehlerquiz gibt zu jeder falschen Multiple-Choice-Antwort eine Diagnose", 
 });
 
 test("Freie Berichtaufgabe bleibt lokal und besitzt eine konkrete Checkliste", function () {
-  var werkstatt = ladeDeutsch7().themen[2];
+  var werkstatt = ladeDeutsch7().themen[3];
   werkstatt.aufgaben.forEach(function (a) {
     assert.equal(a.typ, "freitext");
     assert.equal(a.nurLokal, true);
     assert.ok(a.checkliste.length >= 6);
     assert.ok(a.musterloesung);
+  });
+});
+
+test("Operatoren-Coach trennt Antworttiefen und diagnostiziert jede Falschantwort", function () {
+  var coach = ladeDeutsch7().themen[1];
+  var text = JSON.stringify(coach);
+  ["Nenne", "Beschreibe", "Erkläre", "Erläutere", "Begründe", "Beurteilen"].forEach(function (operator) {
+    assert.match(text, new RegExp(operator, "i"), "Operator fehlt: " + operator);
+  });
+  coach.aufgaben.forEach(function (a) {
+    a.antworten.filter(function (antwort) { return antwort !== a.richtig; }).forEach(function (antwort) {
+      assert.ok(a.fehler && a.fehler[antwort], "Diagnose fehlt: " + antwort);
+    });
   });
 });
 

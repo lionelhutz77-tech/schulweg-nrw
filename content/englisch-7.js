@@ -84,6 +84,119 @@ window.SCHULWEG = window.SCHULWEG || { faecher: {} };
     farbe: "englisch",
     icon: "🇬🇧",
     sprachcoach: { unit: "Unit 1", stoff: "S. 8–16", titel: "London Speaking Coach" },
+    lerncheck: {
+      id: "en7-unit1-2026-10-08",
+      titel: "1er-Mission: Englisch-Arbeit",
+      datum: "08.10.2026",
+      ziel: "Sehr gut vorbereitet: Unit-1-Wörter aktiv abrufen, Texte sicher verstehen und einen eigenen englischen Text planen.",
+      hinweis: "Die App enthält eigene Unit-1-Übungen. Buch- und Workbook-Aufgaben bleiben Seitenaufträge, bis die Originalseiten vorliegen – so wird nichts aus dem Buch nacherfunden.",
+      fehlendeSeiten: [
+        "Workbook S. 3–8 (Nr. 1, 2, 3a, 3b, 5a, 6, 7, 9a–c, 10a–b)",
+        "Textbook S. 14–16 für die konkreten Lese- und Schreibaufgaben",
+        "Textbook S. 95 (More Practice 4 und Nr. 1b)",
+        "die noch offenen Aufgaben aus dem Unterricht (Foto oder genauer Auftrag)"
+      ],
+      tage: [
+        {
+          datum: "28.09.", titel: "Startklar", minuten: "15–20 Min.",
+          fokus: "Überblick schaffen und die ersten Wörter aktiv abrufen.",
+          aufgaben: [
+            { id: "start-check", text: "Lerncheck anschauen und alle Materialien bereitlegen.", art: "manuell" },
+            { id: "start-vocab", text: "10 Unit-1-Vokabeln aktiv trainieren.", art: "vokabeln" },
+            { id: "start-reading", text: "Textbook S. 14–15 einmal ohne Wörterbuch lesen.", art: "manuell", buch: true }
+          ]
+        },
+        {
+          datum: "29.09.", titel: "Reading I", minuten: "20–25 Min.",
+          fokus: "Beim Lesen Schlüsselwörter, Personen und Reihenfolge finden.",
+          aufgaben: [
+            { id: "r1-book", text: "Textbook S. 14–15 noch einmal lesen; unbekannte Wörter markieren.", art: "manuell", buch: true },
+            { id: "r1-app", text: "App-Training: Eine London-Geschichte verstehen.", art: "thema", thema: "u1-story" },
+            { id: "r1-wb", text: "Workbook S. 3, Nr. 1 + 2 bearbeiten.", art: "manuell", buch: true }
+          ]
+        },
+        {
+          datum: "30.09.", titel: "Wortschatz festigen", minuten: "20 Min.",
+          fokus: "Wörter Deutsch → Englisch abrufen und in Sätzen sehen.",
+          aufgaben: [
+            { id: "vocab-1", text: "10–15 Unit-1-Vokabeln trainieren; schwierige Wörter laut sagen.", art: "vokabeln" },
+            { id: "wb-4", text: "Workbook S. 4, Nr. 3a + 3b bearbeiten.", art: "manuell", buch: true },
+            { id: "vocab-check-1", text: "App-Mini-Check: Unit-1-Vokabeln.", art: "thema", thema: "u1-vocab-check" }
+          ]
+        },
+        {
+          datum: "01.10.", titel: "Reading II", minuten: "20–25 Min.",
+          fokus: "Eine Geschichte in der richtigen Reihenfolge nacherzählen.",
+          aufgaben: [
+            { id: "wb-5", text: "Workbook S. 5, Nr. 5a bearbeiten.", art: "manuell", buch: true },
+            { id: "reading-retell", text: "App-Training: Geschichte mit Problem, Idee und Ende nacherzählen.", art: "thema", thema: "u1-story" },
+            { id: "class-open", text: "Offene Aufgaben aus dem Unterricht bearbeiten, falls es welche gibt.", art: "manuell", buch: true }
+          ]
+        },
+        {
+          datum: "02.10.", titel: "Workbook-Tag", minuten: "20 Min.",
+          fokus: "Genau arbeiten; Fehler nicht übergehen, sondern markieren.",
+          aufgaben: [
+            { id: "wb-6", text: "Workbook S. 6, Nr. 6 + 7 bearbeiten.", art: "manuell", buch: true },
+            { id: "mp4", text: "Textbook S. 95, More Practice 4 bearbeiten.", art: "manuell", buch: true },
+            { id: "vocab-2", text: "10 Unit-1-Vokabeln wiederholen.", art: "vokabeln" }
+          ]
+        },
+        {
+          datum: "03.10.", titel: "Writing I", minuten: "20–25 Min.",
+          fokus: "Ideen sortieren, klare Sätze bauen und eine Meinung begründen.",
+          aufgaben: [
+            { id: "writing-app", text: "App-Training: My neighbourhood planen und schreiben.", art: "thema", thema: "u1-writing-neighbourhood" },
+            { id: "tb-16", text: "Textbook S. 16 bearbeiten.", art: "manuell", buch: true },
+            { id: "vocab-3", text: "Schwierige Wörter aus dem Schreiben in die Wiederholungsrunde nehmen.", art: "vokabeln" }
+          ]
+        },
+        {
+          datum: "04.10.", titel: "Workbook II", minuten: "20–25 Min.",
+          fokus: "Genau hinschauen und anschließend Fehler verbessern.",
+          aufgaben: [
+            { id: "wb-7", text: "Workbook S. 7, Nr. 9a, 9b, 9c bearbeiten.", art: "manuell", buch: true },
+            { id: "wb-8", text: "Workbook S. 8, Nr. 10a + 10b bearbeiten.", art: "manuell", buch: true },
+            { id: "reading-repeat", text: "Textbook S. 14–15 flüssig noch einmal lesen.", art: "manuell", buch: true }
+          ]
+        },
+        {
+          datum: "05.10.", titel: "Writing II", minuten: "20–25 Min.",
+          fokus: "Schreibaufgaben selbstständig planen und mit Checkliste prüfen.",
+          aufgaben: [
+            { id: "mp1b", text: "Textbook S. 95, Nr. 1b bearbeiten.", art: "manuell", buch: true },
+            { id: "writing-repeat", text: "App-Schreibtraining wiederholen; danach die eigene Checkliste nutzen.", art: "thema", thema: "u1-writing-neighbourhood" },
+            { id: "vocab-check-2", text: "App-Mini-Check: Unit-1-Vokabeln ohne Hilfe.", art: "thema", thema: "u1-vocab-check" }
+          ]
+        },
+        {
+          datum: "06.10.", titel: "Mini-Generalprobe", minuten: "25 Min.",
+          fokus: "Lesen, Wortschatz und Schreiben gemischt üben – wie vor einer Arbeit.",
+          aufgaben: [
+            { id: "mixed-check", text: "App-Mini-Check: Reading + Writing + Vocabulary gemischt.", art: "mischcheck", themen: ["u1-story", "u1-writing-neighbourhood", "u1-vocab-check"] },
+            { id: "error-list", text: "Alle Fehler der Workbook-Seiten verbessern oder mit einem Stern markieren.", art: "manuell", buch: true }
+          ]
+        },
+        {
+          datum: "07.10.", titel: "Sicher werden", minuten: "15–20 Min.",
+          fokus: "Nur noch Lücken schließen, nicht alles neu anfangen.",
+          aufgaben: [
+            { id: "weak-vocab", text: "Vokabeltrainer: nur die schwierigen Wörter wiederholen.", art: "vokabeln" },
+            { id: "reading-final", text: "Textbook S. 14–15 lesen und Inhalt in 3 eigenen englischen Sätzen erzählen.", art: "manuell", buch: true },
+            { id: "writing-list", text: "Schreib-Check: vollständige Sätze, passende Wörter, because/Meinung prüfen.", art: "manuell" }
+          ]
+        },
+        {
+          datum: "08.10.", titel: "Arbeitsmorgen", minuten: "10–12 Min.",
+          fokus: "Ruhig abrufen, Selbstvertrauen mitnehmen – nichts Neues mehr lernen.",
+          aufgaben: [
+            { id: "final-vocab", text: "5–10 schwierige Vokabeln einmal aktiv abrufen.", art: "vokabeln" },
+            { id: "final-plan", text: "Mini-Plan im Kopf: Reading erst genau lesen, Writing erst planen, dann prüfen.", art: "manuell" },
+            { id: "final-win", text: "Mission abschließen: Du bist vorbereitet. Viel Erfolg!", art: "manuell" }
+          ]
+        }
+      ]
+    },
     themen: [
       { id: "u1-london", titel: "Unit 1: London entdecken", seiten: "S. 8–13", voraussetzung: "erste Unit-1-Wörter", intro: "Wozu? Du kannst über London sprechen, Tipps geben und deine Meinung begründen.", aufgaben: london },
       { id: "u1-story", titel: "Eine London-Geschichte verstehen", seiten: "S. 14–15", voraussetzung: "Orte und Aktivitäten in London", intro: "Wozu? Du erkennst Problem, Lösung und Reihenfolge einer Geschichte und erzählst sie mit eigenen Sätzen nach.", aufgaben: reading },
